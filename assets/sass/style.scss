@@ -1,0 +1,369 @@
+// Most of the styling comes from http://getbootstrap.com/examples/justified-nav/
+body {
+	padding-top: 20px;
+}
+
+.footer {
+	border-top: 1px solid #eee;
+	margin-top: 40px;
+	padding-bottom: 40px;
+	padding-top: 40px;
+}
+
+a {
+	:hover, :focus {
+		text-decoration: none;
+	}
+
+	&[target='_blank'], &[href$='.pdf'], &[href^='mailto:'] {
+		margin-right: .2em;
+		padding-right: .8em;
+	}
+
+	&[target='_blank'] {
+		background: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAgAAAAIBAAAAAAklAxWAAAABGdBTUEAALGPC/xhBQAAAAFzUkdCAK7OHOkAAAAgY0hSTQAAeiYAAICEAAD6AAAAgOgAAHUwAADqYAAAOpgAABdwnLpRPAAAAAJ0Uk5TAA/mLNCpAAAAAmJLR0QADzoyPqMAAAAJcEhZcwAAAEgAAABIAEbJaz4AAAAlSURBVAjXNcahEQAwEMOw7L+BUeYMcp+U6BQdAUndjprO3j5AHwmkGT8jnRHWAAAAJXRFWHRkYXRlOmNyZWF0ZQAyMDEzLTA4LTE5VDIyOjA5OjA2LTAzOjAwymYJcgAAACV0RVh0ZGF0ZTptb2RpZnkAMjAwOC0wMS0xOFQxMjo0MDo1OS0wNDowMMOK57EAAAAASUVORK5CYII=') no-repeat scroll right center transparent;
+	}
+
+	&[href$='.pdf'] {
+		background: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAgAAAAICAMAAADz0U65AAAABGdBTUEAALGPC/xhBQAAAAFzUkdCAK7OHOkAAAAgY0hSTQAAeiYAAICEAAD6AAAAgOgAAHUwAADqYAAAOpgAABdwnLpRPAAAAJlQTFRFAAAAg4ODkpKSjo6OZ2dnXV1dWFhYUlJSTExMvb29uLi4tLS0qKio4QkJ6xER3AoKygMDsAAAycnJ09PToQMDpgYGogQEmgEBgwAAwMDAsrKyiYmJ9/f39vb2+aCg9fX18fHxoaGh+vr6+Pj4+4CApaWl/f39/NfX/Ken+5WV+6Cg/cfH/ra2pKSkhIiRg4aNhIaJhYWFampq/S0JWQAAAAl0Uk5TAH+/v39/f39/RNtnWQAAAAlwSFlzAAAASAAAAEgARslrPgAAAEtJREFUCNcNxkcCQDAABMDVe+9EDdEF/38ccxpAMEzLFgHH9fwgjCTESZrlRVkBMqmbtusBZaAjoROgsnlZtz/afjDGTkC/OL+f9wOlmgYB1mYbBwAAACV0RVh0ZGF0ZTpjcmVhdGUAMjAxMy0wOC0yMFQxOTo1NzoxNC0wMzowMOuESxYAAAAldEVYdGRhdGU6bW9kaWZ5ADIwMTItMDQtMTFUMTI6MzU6MTAtMDM6MDBvDMzWAAAAAElFTkSuQmCC') no-repeat scroll right center transparent;
+	}
+
+	&[href^='mailto:'] {
+		background: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAoAAAAKCAYAAACNMs+9AAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAF1JREFUeNqMkFEOwEAERFezN+JM7sSZ3ElrEw0/rfkS82IA7r4mutZQW1VHI3cWzAyPmhlr5aATjYinUfdNKLwXJCKocIXCa9HRMDPPqAo1MOHPY0Tk93KYPvwWYAD6DTYUlxqTtgAAAABJRU5ErkJggg==') no-repeat scroll right center transparent;
+	}
+}
+
+// Custom container
+.container {
+	margin: 0 auto;
+	max-width: 1000px;
+
+	> hr {
+		margin: 2em 0;
+	}
+
+	a {
+		&[href] {
+			border-bottom: 1px dotted #ccc;
+		}
+	}
+}
+
+.jumbotron {
+	background-color: transparent;
+	text-align: center;
+
+	.btn {
+		font-size: 21px;
+		padding: 14px 24px;
+	}
+}
+
+// Blockquote and citation style: http://www.webmaster-source.com/2012/04/24/pure-css-blockquote-styling/
+blockquote {
+	position: relative;
+
+	> .source {
+		color: #999;
+		display: block;
+		font-size: 90%;
+		margin-top: .5em;
+
+		&::before {
+			content: '\2014 \2009';
+		}
+	}
+
+	&::before {
+		color: #7a7a7a;
+		content: '\201C';
+		display: block;
+		font-size: 500%;
+		left: -.1em;
+		position: absolute;
+		top: -.25em;
+	}
+}
+
+.nav-justified {
+	background-color: #eee;
+	border: 1px solid #ccc;
+	border-radius: 5px;
+
+	> li {
+		:first-child {
+			> a {
+				border-radius: 5px 5px 0 0;
+			}
+		}
+
+		> a {
+			background-color: #e5e5e5; // Old browsers
+			background-image: linear-gradient(top, #f5f5f5 0%, #e5e5e5 100%); // W3C
+			background-image: -moz-linear-gradient(top, #f5f5f5 0%, #e5e5e5 100%); // FF3.6+
+			background-image: -webkit-gradient(linear, left top, left bottom, color-stop(0%, s#f5f5f5), color-stop(100%, #e5e5e5)); // Chrome,Safari4+
+			background-image: -webkit-linear-gradient(top, #f5f5f5 0%, #e5e5e5 100%); // Chrome 10+,Safari 5.1+
+			background-image: -ms-linear-gradient(top, #f5f5f5 0%, #e5e5e5 100%); // IE10+s
+			background-image: -o-linear-gradient(top, #f5f5f5 0%, #e5e5e5 100%); // Opera 11.10+
+			background-repeat: repeat-x; // Repeat the gradient
+			border-bottom: 1px solid #d5d5d5;
+			color: #777;
+			font-weight: bold;
+			padding-bottom: 15px;
+			padding-top: 15px;
+			text-align: center;
+		}
+	}
+
+	> .active {
+		a {
+			background-color: #ddd;
+			background-image: none;
+			box-shadow: inset 0 3px 7px rgba(0, 0, 0, .15);
+
+			:hover, :focus {
+				background-color: #ddd;
+				background-image: none;
+				box-shadow: inset 0 3px 7px rgba(0, 0, 0, .15);
+			}
+		}
+	}
+}
+
+// Résumé styles mostly from http://www.hongkiat.com/blog/responsive-resume/
+.resume {
+	small {
+		display: block;
+		margin-bottom: 1em;
+	}
+
+	> #info {
+		float: left;
+		margin-bottom: 1em;
+
+		> small {
+			border-right: 1px solid #000;
+			display: inline-block;
+			padding-left: .5em;
+			padding-right: .5em;
+
+			:last-child {
+				border-right: 0;
+			}
+		}
+	}
+
+	> #photo {
+		float: right;
+
+		> img {
+			-moz-border-radius: .3em;
+			-moz-box-shadow: 0 .2em .4em rgba(0, 0, 0, .2);
+			-o-border-radius: .3em;
+			-o-box-shadow: 0 .2em .4em rgba(0, 0, 0, .2);
+			-webkit-border-radius: .3em;
+			-webkit-box-shadow: 0 .2em .4em rgba(0, 0, 0, .2);
+			border: .1em solic #ccc;
+			border-radius: .3em;
+			box-shadow: 0 .2em .4em rgba(0, 0, 0, .2);
+			padding: .5em;
+		}
+	}
+
+	h1 {
+		margin-bottom: .16em;
+	}
+
+	h2, h3 {
+		margin-bottom: .42em;
+	}
+
+	h2 {
+		font-weight: normal;
+	}
+
+	h3, h4 {
+		font-weight: bold;
+	}
+
+	h3 {
+		text-decoration: underline;
+	}
+
+	h4 {
+		clear: both;
+		margin-bottom: .1em;
+	}
+
+	p, ul {
+		margin-bottom: .5em;
+		padding-left: 5em;
+	}
+
+	ul {
+		list-style: disc;
+	}
+
+	.left, .right {
+		display: block;
+		width: 49%;
+	}
+
+	.left {
+		float: left;
+	}
+
+	.right {
+		float: right;
+	}
+
+	.jobtitle {
+		font-size: 1.75em;
+		margin-bottom: .8em;
+	}
+}
+
+// Fix for Google Maps
+.google-map-canvas, .google-map-canvas * {
+	box-sizing: content-box;
+}
+
+// Forms
+form {
+	dl {
+		display: block;
+		margin-bottom: 20px;
+		margin-top: 0;
+		padding-left: 20px;
+
+		&#forclient, &#forrecruiting {
+			display: none;
+			visibility: hidden;
+		}
+
+		dt, dd {
+			display: block;
+			padding-top: 6px;
+			width: 100%;
+		}
+
+		dd {
+			margin: 0;
+
+			input {
+				margin: 0;
+
+				&[type='text'], &[type='tel'], &[type='password'], &[type='email'], &[type='number'], &[type='date'], &[type='website'], &[type='time'] {
+					border: 1px solid #ccc;
+					padding: 12px;
+					width: 75%;
+				}
+			}
+
+			select, textarea {
+				border: 1px solid #ccc;
+				margin: 0;
+				padding: 12px;
+				width: 75%;
+			}
+
+			input, textarea {
+				&[placeholder] {
+					color: #777;
+				}
+			}
+		}
+
+		dt {
+			margin: 4px 0;
+
+			label {
+				display: inline-block;
+				margin-bottom: 5px;
+				max-width: 100%;
+
+				&::after {
+					content: ':';
+				}
+
+				.required {
+					color: #f00;
+				}
+			}
+		}
+	}
+
+	fieldset {
+		border: 0;
+		margin: 0;
+		padding: 0;
+
+		input {
+			&[type='button'], &[type='submit'] {
+				border-radius: 15px;
+				cursor: pointer;
+				padding: 10px 8px;
+			}
+		}
+	}
+
+	legend {
+		border: 0;
+		border-bottom: 1px dotted #ccc;
+		display: block;
+		margin-bottom: 20px;
+		padding: 10px 0 5px;
+	}
+}
+
+@media (min-width: 768px) {
+	.nav-justified {
+		max-height: 52px;
+
+		> li {
+			> a {
+				border-left: 1px solid #fff;
+				border-right: 1px solid #d5d5d5;
+			}
+
+			:first-child {
+				> a {
+					border-left: 0;
+					border-radius: 5px 0 0 5px;
+				}
+			}
+
+			:last-child {
+				> a {
+					border-radius: 0 5px 5px 0;
+					border-right: 0;
+				}
+			}
+		}
+	}
+}
+
+@media screen and (min-width: 768px) {
+	.masthead, .marketing, .footer {
+		padding-left: 0;
+		padding-right: 0;
+	}
+}
+
+@media only screen and (max-width: 740px) {
+	.resume {
+		> #info {
+			display: block;
+			float: none;
+			text-align: center;
+		}
+
+		p, ul {
+			padding-left: 0;
+		}
+
+		.left, .right {
+			width: 100%;
+		}
+	}
+}
