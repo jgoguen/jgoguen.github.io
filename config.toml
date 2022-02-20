@@ -5,7 +5,6 @@ title = "Heap Overrun"
 theme = "coder"
 
 canonifyurls = true
-
 paginate = 20
 
 pygmentsstyle = "bw"
