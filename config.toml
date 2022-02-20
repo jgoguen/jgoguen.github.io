@@ -16,8 +16,8 @@ pygmentscodefencesguesssyntax = true
 	author = "Joel Goguen"
 	disableWebFonts = true
 	since = 2013
-	info = "Info blurb"
-	description = "Description blurb"
+	info = "Father, InfoSec, System Administrator, Software Developer"
+	description = "This is the personal website for Joel Goguen"
 
 	colorScheme = "auto"
 	favicon_16 = "/img/favicon-16x16.png"
