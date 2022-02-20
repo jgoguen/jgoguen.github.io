@@ -28,6 +28,8 @@ jobs:
         run: hugo --minify
       - name: Create CNAME file
         run: printf 'jgoguen.ca' >public/CNAME
+      - name: Create nojekyll file
+        run: touch public/.nojekyll
       - name: Deploy
         uses: peaceiris/actions-gh-pages@v3
         with:
