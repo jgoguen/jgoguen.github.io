@@ -12,6 +12,17 @@ pygmentsstyle = "bw"
 pygmentscodefences = true
 pygmentscodefencesguesssyntax = true
 
+enableGitInfo = true
+
+[frontmatter]
+	date = ['date', 'publishDate', 'lastmod']
+	expiryDate = ['expiryDate']
+	lastmod = [':git', 'lastmod', 'date', 'publishDate']
+	publishDate = ['publishDate', 'date']
+
+[permalinks]
+	posts = '/posts/:year/:month/:day/:title/'
+
 [params]
 	author = "Joel Goguen"
 	disableWebFonts = true
@@ -69,6 +80,11 @@ pygmentscodefencesguesssyntax = true
 	url = "/docs/resume.pdf"
 
 [[menu.main]]
-	name = "Contact Me"
+	name = "Posts"
 	weight = 3
+	url = "/posts"
+
+[[menu.main]]
+	name = "Contact Me"
+	weight = 4
 	url = "/contact"
