@@ -33,33 +33,6 @@ a {
 	}
 }
 
-// Custom container
-.container {
-	margin: 0 auto;
-	max-width: 1000px;
-
-	> hr {
-		margin: 2em 0;
-	}
-
-	a {
-		&[href] {
-			border-bottom: 1px dotted #ccc;
-		}
-	}
-}
-
-.jumbotron {
-	background-color: transparent;
-	text-align: center;
-
-	.btn {
-		font-size: 21px;
-		padding: 14px 24px;
-	}
-}
-
-// Blockquote and citation style: http://www.webmaster-source.com/2012/04/24/pure-css-blockquote-styling/
 blockquote {
 	position: relative;
 
@@ -82,51 +55,6 @@ blockquote {
 		left: -.1em;
 		position: absolute;
 		top: -.25em;
-	}
-}
-
-.nav-justified {
-	background-color: #eee;
-	border: 1px solid #ccc;
-	border-radius: 5px;
-
-	> li {
-		:first-child {
-			> a {
-				border-radius: 5px 5px 0 0;
-			}
-		}
-
-		> a {
-			background-color: #e5e5e5; // Old browsers
-			background-image: linear-gradient(top, #f5f5f5 0%, #e5e5e5 100%); // W3C
-			background-image: -moz-linear-gradient(top, #f5f5f5 0%, #e5e5e5 100%); // FF3.6+
-			background-image: -webkit-gradient(linear, left top, left bottom, color-stop(0%, s#f5f5f5), color-stop(100%, #e5e5e5)); // Chrome,Safari4+
-			background-image: -webkit-linear-gradient(top, #f5f5f5 0%, #e5e5e5 100%); // Chrome 10+,Safari 5.1+
-			background-image: -ms-linear-gradient(top, #f5f5f5 0%, #e5e5e5 100%); // IE10+s
-			background-image: -o-linear-gradient(top, #f5f5f5 0%, #e5e5e5 100%); // Opera 11.10+
-			background-repeat: repeat-x; // Repeat the gradient
-			border-bottom: 1px solid #d5d5d5;
-			color: #777;
-			font-weight: bold;
-			padding-bottom: 15px;
-			padding-top: 15px;
-			text-align: center;
-		}
-	}
-
-	> .active {
-		a {
-			background-color: #ddd;
-			background-image: none;
-			box-shadow: inset 0 3px 7px rgba(0, 0, 0, .15);
-
-			:hover, :focus {
-				background-color: #ddd;
-				background-image: none;
-				box-shadow: inset 0 3px 7px rgba(0, 0, 0, .15);
-			}
-		}
 	}
 }
 
@@ -223,11 +151,6 @@ blockquote {
 	}
 }
 
-// Fix for Google Maps
-.google-map-canvas, .google-map-canvas * {
-	box-sizing: content-box;
-}
-
 // Forms
 form {
 	dl {
@@ -316,37 +239,11 @@ form {
 	}
 }
 
-@media (min-width: 768px) {
-	.nav-justified {
-		max-height: 52px;
-
-		> li {
-			> a {
-				border-left: 1px solid #fff;
-				border-right: 1px solid #d5d5d5;
-			}
-
-			:first-child {
-				> a {
-					border-left: 0;
-					border-radius: 5px 0 0 5px;
-				}
-			}
-
-			:last-child {
-				> a {
-					border-radius: 0 5px 5px 0;
-					border-right: 0;
-				}
-			}
+.content {
+	article {
+		p {
+			text-align: inherit;
 		}
-	}
-}
-
-@media screen and (min-width: 768px) {
-	.masthead, .marketing, .footer {
-		padding-left: 0;
-		padding-right: 0;
 	}
 }
 

@@ -34,6 +34,8 @@ enableGitInfo = true
 	favicon_16 = "/img/favicon-16x16.png"
 	favicon_32 = "/img/favicon-32x32.png"
 
+	customSCSS = ["sass/style.scss"]
+
 [[params.social]]
 	name = "Github"
 	icon = "fa fa-github fa-2x"
