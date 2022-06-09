@@ -1,0 +1,195 @@
+<!doctype html><html lang=en><head><meta charset=utf-8><meta name=viewport content="width=device-width,initial-scale=1"><meta http-equiv=content-language content="en"><meta name=color-scheme content="light dark"><meta name=author content="Joel Goguen"><meta name=description content="Using OpenBSD as a home Internet gateway with Xfinity/Comcast with IPv6
+support
+"><meta name=keywords content><meta name=twitter:card content="summary"><meta name=twitter:title content="OpenBSD IPv6 Home Internet Gateway with Xfinity/Comcast"><meta name=twitter:description content="Using OpenBSD as a home Internet gateway with Xfinity/Comcast with IPv6
+support
+"><meta property="og:title" content="OpenBSD IPv6 Home Internet Gateway with Xfinity/Comcast"><meta property="og:description" content="Using OpenBSD as a home Internet gateway with Xfinity/Comcast with IPv6
+support
+"><meta property="og:type" content="article"><meta property="og:url" content="https://jgoguen.ca/posts/2022/06/08/openbsd-ipv6-home-internet-gateway-with-xfinity/comcast/"><meta property="article:section" content="posts"><meta property="article:published_time" content="2022-06-08T00:00:00+00:00"><meta property="article:modified_time" content="2022-06-08T19:26:18-07:00"><title>OpenBSD IPv6 Home Internet Gateway with Xfinity/Comcast · Heap Overrun</title><link rel=canonical href=https://jgoguen.ca/posts/2022/06/08/openbsd-ipv6-home-internet-gateway-with-xfinity/comcast/><link rel=preload href="https://jgoguen.ca/fonts/forkawesome-webfont.woff2?v=1.2.0" as=font type=font/woff2 crossorigin><link rel=stylesheet href=https://jgoguen.ca/css/coder.min.d9fddbffe6f27e69985dc5fe0471cdb0e57fbf4775714bc3d847accb08f4a1f6.css integrity="sha256-2f3b/+byfmmYXcX+BHHNsOV/v0d1cUvD2Eesywj0ofY=" crossorigin=anonymous media=screen><link rel=stylesheet href=https://jgoguen.ca/css/coder-dark.min.002ee2378e14c7a68f1f0a53d9694ed252090987c4e768023fac694a4fc5f793.css integrity="sha256-AC7iN44Ux6aPHwpT2WlO0lIJCYfE52gCP6xpSk/F95M=" crossorigin=anonymous media=screen><link rel=stylesheet href=https://jgoguen.ca/sass/style.min.1563189db4f97568c45840b4927a92a8486d9437f5ab3b215701b52e3c20aa5e.css integrity="sha256-FWMYnbT5dWjEWEC0knqSqEhtlDf1qzshVwG1Ljwgql4=" crossorigin=anonymous media=screen><link rel=icon type=image/png href=https://jgoguen.ca/img/favicon-32x32.png sizes=32x32><link rel=icon type=image/png href=https://jgoguen.ca/img/favicon-16x16.png sizes=16x16><link rel=apple-touch-icon href=https://jgoguen.ca/images/apple-touch-icon.png><link rel=apple-touch-icon sizes=180x180 href=https://jgoguen.ca/images/apple-touch-icon.png><meta name=generator content="Hugo 0.100.2"></head><body class="preload-transitions colorscheme-auto"><div class=float-container><a id=dark-mode-toggle class=colorscheme-toggle><i class="fa fa-adjust fa-fw" aria-hidden=true></i></a></div><main class=wrapper><nav class=navigation><section class=container><a class=navigation-title href=https://jgoguen.ca/>Heap Overrun</a>
+<input type=checkbox id=menu-toggle>
+<label class="menu-button float-right" for=menu-toggle><i class="fa fa-bars fa-fw" aria-hidden=true></i></label><ul class=navigation-list><li class=navigation-item><a class=navigation-link href=https://jgoguen.ca/about>About Me</a></li><li class=navigation-item><a class=navigation-link href=https://jgoguen.ca/docs/resume.pdf>Résumé</a></li><li class=navigation-item><a class=navigation-link href=https://jgoguen.ca/posts>Posts</a></li><li class=navigation-item><a class=navigation-link href=https://jgoguen.ca/contact>Contact Me</a></li></ul></section></nav><div class=content><section class="container post"><article><header><div class=post-title><h1 class=title><a class=title-link href=https://jgoguen.ca/posts/2022/06/08/openbsd-ipv6-home-internet-gateway-with-xfinity/comcast/>OpenBSD IPv6 Home Internet Gateway with Xfinity/Comcast</a></h1></div><div class=post-meta><div class=date><span class=posted-on><i class="fa fa-calendar" aria-hidden=true></i>
+<time datetime=2022-06-08T00:00:00Z>June 8, 2022</time></span>
+<span class=posted-on><i class="fa fa-calendar" aria-hidden=true></i>
+<time datetime=2022-06-08T19:26:18-07:00>Updated: June 8, 2022</time></span>
+<span class=reading-time><i class="fa fa-clock-o" aria-hidden=true></i>
+6-minute read</span></div><div class=tags><i class="fa fa-tag" aria-hidden=true></i>
+<span class=tag><a href=https://jgoguen.ca/tags/openbsd/>OpenBSD</a></span>
+<span class=separator>•</span>
+<span class=tag><a href=https://jgoguen.ca/tags/xfinity/>Xfinity</a></span>
+<span class=separator>•</span>
+<span class=tag><a href=https://jgoguen.ca/tags/network/>network</a></span>
+<span class=separator>•</span>
+<span class=tag><a href=https://jgoguen.ca/tags/ipv6/>IPv6</a></span></div></div></header><div><p>When you sign up for Internet service, one thing you&rsquo;re going to get is a home
+gateway. It&rsquo;s going to offer wired and wireless Internet connections plus
+a bunch of other things you may not want and probably won&rsquo;t need. Unfortunately,
+one of the things it&rsquo;s going to offer you is poor performance. The wireless
+network on it probably won&rsquo;t cover your whole house, and if you&rsquo;re also limited
+in where you can hook it up that could mean poor coverage in the most important
+areas. It&rsquo;s also not built on the best hardware for the job, so when it counts
+the most you may not get the connection speeds you expect. And, perhaps most
+importantly, it&rsquo;s not all that secure.</p><h2 id=before-you-start>Before you start
+<a class=heading-link href=#before-you-start><i class="fa fa-link" aria-hidden=true></i></a></h2><p>Before doing anything, decide:</p><ul><li>Are you comfortable installing and configuring a computer that will become
+a critical part of your home Internet setup?</li><li>Are you comfortable being technical support if something isn&rsquo;t working
+properly?</li><li>Your ISP is unlikely to give you much support, can you troubleshoot enough to
+prove a problem isn&rsquo;t on your end?</li></ul><h2 id=hardware>Hardware
+<a class=heading-link href=#hardware><i class="fa fa-link" aria-hidden=true></i></a></h2><p>Most ISP home gateways have a way to put them into bridge mode, where a single
+device is directly exposed to the Internet. If you don&rsquo;t want to deal with
+buying your own modem and getting it registered with Xfinity, this may be
+a viable option. However, considering the home gateway is an additional charge
+you should get a modem. Removing the home gateway rental fee will pay for the
+modem over time. I use the
+<a href=https://www.amazon.com/dp/B07DY16W2Z>Arris SURFboard SB8200 gigabit modem</a>. No
+setup is needed on the modem itself, simply call Xfinity customer support and
+ask them to register the modem on your account.</p><p>For the gateway/router, I&rsquo;m using a
+<a href=https://protectli.com/vault-2-port/>2-port Protectli vault</a> with 4GB RAM. It&rsquo;s
+a good platform, quiet and fanless, fully supported by OpenBSD out of the box.</p><p>You&rsquo;ll most likely want a switch, and some wireless access points. These can be
+anything you want; I&rsquo;m using a UniFi 8-port 150W POE+ switch, and a few UniFi
+AC-Pro access points, all of which are old enough to be discontinued. If you
+also want to use UniFi equipment, look through
+<a href=https://store.ui.com/collections/unifi-network-switching>https://store.ui.com/collections/unifi-network-switching</a> and
+<a href=https://store.ui.com/collections/unifi-network-wireless>https://store.ui.com/collections/unifi-network-wireless</a> to see what fits your
+needs.</p><h2 id=installation>Installation
+<a class=heading-link href=#installation><i class="fa fa-link" aria-hidden=true></i></a></h2><p>To begin, install the latest OpenBSD release. OpenBSD has an
+<a href=https://www.openbsd.org/faq/faq4.html>excellent installation guide</a> you can
+follow if needed. The default automatic partition scheme is fine unless you have
+some specific needs.</p><p>After installation is complete, reboot and configure
+<a href=https://man.openbsd.org/doas><code>doas(1)</code></a>. Remember that, unlike <code>sudo</code>, all
+users who may call <code>doas(1)</code> need to pass a rule in
+<a href=https://man.openbsd.org/doas.conf><code>doas.conf(5)</code></a>:</p><div class=highlight><pre tabindex=0 style=background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-fallback data-lang=fallback><span style=display:flex><span># cat /etc/doas.conf
+</span></span><span style=display:flex><span>permit persist :wheel
+</span></span><span style=display:flex><span>permit nopass root
+</span></span></code></pre></div><p>Make sure your user is added to the <code>wheel</code> group, or replace <code>:wheel</code> with your
+username.</p><h2 id=configuration>Configuration
+<a class=heading-link href=#configuration><i class="fa fa-link" aria-hidden=true></i></a></h2><h3 id=pf4><code>pf(4)</code>
+<a class=heading-link href=#pf4><i class="fa fa-link" aria-hidden=true></i></a></h3><p>Before anything else, set up a minimal
+<a href=https://man.openbsd.org/pf.conf><code>pf.conf(5)</code></a>. <code>egress</code> will be the WAN
+interface.</p><div class=highlight><pre tabindex=0 style=background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-fallback data-lang=fallback><span style=display:flex><span>% doas cat /etc/pf.conf
+</span></span><span style=display:flex><span>table &lt;martians&gt; const { \
+</span></span><span style=display:flex><span>        0.0.0.0/8 10.0.0.0/8 127.0.0.0/8 169.254.0.0/16 172.16.0.0/12 192.0.0.0/24 \
+</span></span><span style=display:flex><span>        192.0.2.0/24 192.88.99.0/24 192.168.0.0/16 198.18.0.0/15 198.51.100.0/24 \
+</span></span><span style=display:flex><span>        203.0.113.0/24 224.0.0.0/3 \
+</span></span><span style=display:flex><span>        ::/128 ::/96 ::1/128 ::ffff:0:0/96 100::/64 2001:10::/28 2001:2::/48 \
+</span></span><span style=display:flex><span>        2001:db8::/32 3ffe::/16 fec0::/10 fc00::/7 \
+</span></span><span style=display:flex><span>}
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>set block-policy return
+</span></span><span style=display:flex><span>set skip on lo
+</span></span><span style=display:flex><span>set reassemble yes no-df
+</span></span><span style=display:flex><span>set loginterface egress
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>match in all scrub (no-df random-id reassemble tcp)
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span># NOTE: If you need to make game consoles work, add static-port to the end of
+</span></span><span style=display:flex><span># this line
+</span></span><span style=display:flex><span>match out on egress inet from !(egress:network) to any nat-to (egress:0)
+</span></span><span style=display:flex><span># Port build user does not need network
+</span></span><span style=display:flex><span>block drop out log quick proto {tcp udp} user _pbuild
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>block drop in quick on egress from &lt;martians&gt; to any
+</span></span><span style=display:flex><span>block drop out quick on egress from any to &lt;martians&gt;
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span># Default deny all incoming traffic, default allow all outgoing traffic
+</span></span><span style=display:flex><span>block return all
+</span></span><span style=display:flex><span>pass out modulate state
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>pass in inet proto icmp all icmp-type echoreq
+</span></span><span style=display:flex><span>pass in inet6 proto icmp6 all icmp6-type { echoreq neighbrsol neighbradv }
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>pass in on egress inet6 proto icmp6 all icmp6-type routeradv
+</span></span><span style=display:flex><span>pass in on !egress inet6 proto icmp6 all icmp6-type routersol
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>pass in on egress inet proto udp from port bootps to port bootpc
+</span></span><span style=display:flex><span>pass in on !egress inet proto udp from port bootpc to port bootps
+</span></span><span style=display:flex><span>pass in on egress inet6 proto udp from fe80::/10 port dhcpv6-server to fe80::/10 port dhcpv6-client no state
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>pass in on $if_lan proto tcp from ($if_lan:network) to ($if_lan) port 22 modulate state
+</span></span></code></pre></div><p>Always verify your <code>pf.conf(5)</code> changes, then apply the new rules:</p><div class=highlight><pre tabindex=0 style=background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-fallback data-lang=fallback><span style=display:flex><span>% doas pfctl -nf /etc/pf.conf
+</span></span><span style=display:flex><span>% doas pfctl -F rules -f /etc/pf.conf
+</span></span></code></pre></div><h3 id=network-interfaces>Network Interfaces
+<a class=heading-link href=#network-interfaces><i class="fa fa-link" aria-hidden=true></i></a></h3><p>First, configure your Ethernet interfaces using the
+<a href=http://man.openbsd.org/hostname.if><code>hostname.if(5)</code></a> files. The WAN interface
+is <code>em0</code>, the LAN interface is <code>em1</code>. <code>/etc/hostname.em0</code> requires only two easy
+lines:</p><div class=highlight><pre tabindex=0 style=background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-fallback data-lang=fallback><span style=display:flex><span>% cat /etc/hostname.em0
+</span></span><span style=display:flex><span>inet autoconf
+</span></span><span style=display:flex><span>up
+</span></span></code></pre></div><p>You might be tempted to include <code>inet6 autoconf</code> here, but don&rsquo;t. IPv6 will be
+configured later, in a way that allows requesting an IPv6 previx via Prefix
+Delegation and advertising that IPv6 prefix on the internal network.</p><p><code>/etc/hostname.em1</code> is similarly easy. Again, don&rsquo;t add an <code>inet6</code> line, IPv6
+will be handled later.</p><div class=highlight><pre tabindex=0 style=background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-fallback data-lang=fallback><span style=display:flex><span>% cat /etc/hostname.em1
+</span></span><span style=display:flex><span>inet 192.168.0.1 255.255.255.0 192.168.0.255
+</span></span><span style=display:flex><span>up
+</span></span></code></pre></div><p>Change the <code>inet</code> line to match your own preferred network addressing.</p><h3 id=internal-ipv4-addressing-with-dhcpd8>Internal IPv4 addressing with <code>dhcpd(8)</code>
+<a class=heading-link href=#internal-ipv4-addressing-with-dhcpd8><i class="fa fa-link" aria-hidden=true></i></a></h3><p>Next, set up <a href=https://man.openbsd.org/dhcpd><code>dhcpd(8)</code></a> so clients on the LAN
+can get IPv4 addresses. A minimal
+<a href=https://man.openbsd.org/dhcpd.conf><code>dhcpd.conf(5)</code></a>:</p><div class=highlight><pre tabindex=0 style=background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-fallback data-lang=fallback><span style=display:flex><span>% cat /etc/dhcpd.conf
+</span></span><span style=display:flex><span>option domain-name-servers 9.9.9.9 8.8.8.8;
+</span></span><span style=display:flex><span>default-lease-time 86400;
+</span></span><span style=display:flex><span>max-lease-time 86400;
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>subnet 192.168.0.0 netmask 255.255.255.0 {
+</span></span><span style=display:flex><span>  option routers 192.168.0.1;
+</span></span><span style=display:flex><span>  range 192.168.0.100 192.168.0.199;
+</span></span><span style=display:flex><span>}
+</span></span></code></pre></div><p>This will allow up to 100 clients to request an IPv4 address, and leave room for
+any static IP address assignment you might need. Enable and start <code>dhcpd</code>:</p><div class=highlight><pre tabindex=0 style=background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-fallback data-lang=fallback><span style=display:flex><span>% doas rcctl enable dhcpd
+</span></span><span style=display:flex><span>% doas rcctl start dhcpd
+</span></span></code></pre></div><h3 id=external-ipv6-addresses-with-dhcpcd>External IPv6 addresses with <code>dhcpcd</code>
+<a class=heading-link href=#external-ipv6-addresses-with-dhcpcd><i class="fa fa-link" aria-hidden=true></i></a></h3><p><code>dhcpcd</code> is what will handle IPv6 on the Internet side. It must first be
+installed:</p><div class=highlight><pre tabindex=0 style=background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-fallback data-lang=fallback><span style=display:flex><span>% doas pkg_add dhcpcd
+</span></span></code></pre></div><p>Then create <code>/etc/dhcpcd.conf</code>. What has worked for me is:</p><div class=highlight><pre tabindex=0 style=background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-fallback data-lang=fallback><span style=display:flex><span>% cat /etc/dhcpcd.conf
+</span></span><span style=display:flex><span>nooption domain_name_servers
+</span></span><span style=display:flex><span>nooption domain_name
+</span></span><span style=display:flex><span>nooption domain_search
+</span></span><span style=display:flex><span>nooption host_name
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>ipv6only
+</span></span><span style=display:flex><span>noipv6rs
+</span></span><span style=display:flex><span>duid
+</span></span><span style=display:flex><span>persistent
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>option rapid_commit
+</span></span><span style=display:flex><span>option interface_mtu
+</span></span><span style=display:flex><span>require dhcp_server_identifier
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>script /usr/bin/true
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>vendorclassid
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>allowinterfaces em0 em1
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>interface em0
+</span></span><span style=display:flex><span>        ipv6rs
+</span></span><span style=display:flex><span>        ia_na 1
+</span></span><span style=display:flex><span>        ia_pd 1/::/60 em1/1/64
+</span></span></code></pre></div><p>Finally, enable and start <code>dhcpcd</code>:</p><div class=highlight><pre tabindex=0 style=background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-fallback data-lang=fallback><span style=display:flex><span>% doas rcctl enable dhcpcd
+</span></span><span style=display:flex><span>% doas rcctl start dhcpcd
+</span></span></code></pre></div><p><a href=https://man.openbsd.org/slaacd><code>slaacd(8)</code></a> is also needed. Xfinity hands out
+addresses using DHCPv6, which is handled by <code>dhcpcd</code>, but routing information
+comes from Router Advertisements, which requires <code>slaacd(8)</code>:</p><div class=highlight><pre tabindex=0 style=background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-fallback data-lang=fallback><span style=display:flex><span>% doas rcctl enable slaacd
+</span></span><span style=display:flex><span>% doas rcctl start slaacd
+</span></span></code></pre></div><p>At this point, you should be able to verify IPv6 connectivity from the OpenBSD
+gateway with <code>ping6 www.google.com</code>.</p><h3 id=internal-ipv6-addresses-with-rad8>Internal IPv6 addresses with <code>rad(8)</code>
+<a class=heading-link href=#internal-ipv6-addresses-with-rad8><i class="fa fa-link" aria-hidden=true></i></a></h3><p>Now that you have an IPv6 prefix delegated, you need to advertise that prefix on
+your internal network. <a href=https://man.openbsd.org/rad><code>rad(8)</code></a> allows clients on
+your internal network to request IPv6 addresses using SLAAC. A minimal
+<a href=https://man.openbsd.org/rad.conf><code>rad.conf(5)</code></a>:</p><div class=highlight><pre tabindex=0 style=background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-fallback data-lang=fallback><span style=display:flex><span>% cat /etc/rad.conf
+</span></span><span style=display:flex><span>other configuration no
+</span></span><span style=display:flex><span>interface em1
+</span></span></code></pre></div><p>Enable and start <code>rad(8)</code>:</p><div class=highlight><pre tabindex=0 style=background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-fallback data-lang=fallback><span style=display:flex><span>% doas rcctl enable rad
+</span></span><span style=display:flex><span>% doas rcctl start rad
+</span></span></code></pre></div><h3 id=enable-forwarding-packets>Enable forwarding packets
+<a class=heading-link href=#enable-forwarding-packets><i class="fa fa-link" aria-hidden=true></i></a></h3><p>The last step is to allow forwarding packets. Add these two lines to
+<code>/etc/sysctl.conf</code>:</p><div class=highlight><pre tabindex=0 style=background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-fallback data-lang=fallback><span style=display:flex><span>net.inet.ip.forwarding=1
+</span></span><span style=display:flex><span>net.inet6.ip6.forwarding=1
+</span></span></code></pre></div><p>To apply the changes immediately, run:</p><div class=highlight><pre tabindex=0 style=background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-fallback data-lang=fallback><span style=display:flex><span>% doas sysctl net.inet.ip.forwarding=1 net.inet6.ip6.forwarding=1
+</span></span></code></pre></div><h2 id=trust-but-verify>Trust, but Verify
+<a class=heading-link href=#trust-but-verify><i class="fa fa-link" aria-hidden=true></i></a></h2><p>At this point, you should be able to:</p><ul><li>Run <code>ifconfig em0</code> on your new gateway and see one IPv4 address and two IPv6
+addresses.</li><li>Run <code>ifconfig em1</code> on your new gateway and see a different IPv4 address and
+two different IPv6 addresses.</li><li>Run <code>ping6 www.google.com</code> from both your new gateway and a LAN client and see
+responses.</li><li>Check the IP addresses assigned to any internal LAN client and see both an
+IPv4 address and at least one IPv6 address in the same range as the address
+from the output of <code>ifconfig em1</code>.</li></ul></div><footer></footer></article></section></div><footer class=footer><section class=container>©
+2013 -
+2022
+Joel Goguen
+·
+Powered by <a href=https://gohugo.io/>Hugo</a> & <a href=https://github.com/luizdepra/hugo-coder/>Coder</a>.</section></footer></main><script src=https://jgoguen.ca/js/coder.min.faf284b268283ca4c276087ba3ee2dc8bd9c8e95dde688c2f16efaa82c4884be.js integrity="sha256-+vKEsmgoPKTCdgh7o+4tyL2cjpXd5ojC8W76qCxIhL4="></script></body></html>
