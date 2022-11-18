@@ -8,6 +8,7 @@ aliases = [
 +++
 
 I am a Canadian software developer and GNU/Linux system administrator currently
+living in the United States and
 employed as a Security Engineer with a strong track record of securing systems
 I administer. In addition to my strong background in GNU/Linux and Information
 Security, I am also familiar with [OpenBSD][openbsd] and macOS.
@@ -24,12 +25,8 @@ been demonstrated to work, and ensuring any new solutions are developed with
 both security and the end user experience as primary considerations and
 thoroughly tested before being moved to a production environment.
 
-Despite being employed as a software developer, a favourite activity of mine
-outside of work is developing software. I do not currently have any specific
-side projects, although I contribute to various projects as I am able.
-
 When I'm not stuck in front of a computer screen, I enjoy reading High Fantasy
 and Science Fiction novels. I'm generally not a fan of television but I'm always
-happy to watch Doctor Who. I'm also fond of my cat and my Newfoundland dog.
+happy to watch Doctor Who.
 
 [openbsd]: https://www.openbsd.org
