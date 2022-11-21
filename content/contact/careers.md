@@ -95,6 +95,8 @@ ensure the subject line contains the word "cerulean" to show me you've read this
 far.
 
 - What is the name of your company and what industry are they in?
+- What role(s) are you asking me to consider? Please include either a full job
+  description or a link to a full job description.
 - How diverse is your company, and the team I would be working with? Am I
   expecting to work with primarily other white males or can I expect to work
   with a diverse team and company leadership?
