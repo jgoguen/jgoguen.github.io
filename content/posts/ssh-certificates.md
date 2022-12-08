@@ -407,7 +407,7 @@ If you do decide to completely remove any other authentication method, you
 should keep a "break glass" user account active that can log in with a password
 (and 2-factor authentication if possible).
 
-## Allow  auternate user login on specific hosts
+## Allow alternate user login on specific hosts
 
 The examples given so far will allow logging in as the `deploybot` user on any
 host where that user exists. You may want to restrict where a user can log in as
