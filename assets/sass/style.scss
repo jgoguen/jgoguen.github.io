@@ -1,6 +1,9 @@
+@import '../../themes/coder/assets/scss/_variables';
+
 // Most of the styling comes from http://getbootstrap.com/examples/justified-nav/
 body {
 	padding-top: 20px;
+
 }
 
 .footer {
@@ -243,6 +246,46 @@ form {
 	article {
 		p {
 			text-align: inherit;
+		}
+	}
+}
+
+.hidden {
+	display: none;
+	visibility: hidden;
+}
+
+#progress-bar {
+	height: 1rem;
+	position: fixed;
+	top: 0;
+	left: 0;
+}
+
+@media only screen {
+	body {
+		#progress-bar {
+			background-color: $bg-color-dark;
+		}
+
+		&.colorscheme-dark {
+			#progress-bar {
+				background-color: $bg-color;
+			}
+		}
+
+		&.colorscheme-auto {
+			@media (prefers-color-scheme: dark) {
+				#progress-bar {
+					background-color: $bg-color;
+				}
+			}
+		}
+	}
+
+	.float-container {
+		a {
+			display: block;
 		}
 	}
 }
