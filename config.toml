@@ -23,6 +23,10 @@ enableGitInfo = true
 [permalinks]
 	posts = '/posts/:year/:month/:day/:title/'
 
+[markup]
+	[markup.highlight]
+		noClasses = false
+
 [params]
 	author = "Joel Goguen"
 	disableWebFonts = true
@@ -35,6 +39,7 @@ enableGitInfo = true
 	favicon_32 = "/img/favicon_32x32.png"
 
 	customSCSS = ["sass/style.scss"]
+	customJS = ["/js/scrollbar.js"]
 
 [[params.social]]
 	name = "Github"
