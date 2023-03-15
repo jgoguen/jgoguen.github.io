@@ -50,7 +50,7 @@ enableGitInfo = true
 	name = "Mastodon"
 	icon = "fa fa-mastodon fa-2x"
 	weight = 2
-	url = "https://infosec.exchange/@jgoguen"
+	url = "https://hachyderm.io/@jgoguen"
 [[params.social]]
 	name = "Github"
 	icon = "fa fa-github fa-2x"
