@@ -13,6 +13,7 @@ For more detail, please [download my r&eacute;sum&eacute;][cvpdf].
 # Experience
 
 ## Meta
+
 ### Security Engineer
 
 Time in role: March 2018 -- present
@@ -48,6 +49,7 @@ retain our compliance status and to ensure teams were fully aware of the
 possible paths through projects involving PCI- and SOX-compliant services.
 
 ## University of New Brunswick
+
 ### Developer / System Administrator
 
 Time in role: May 2010 -- May 2014
@@ -64,6 +66,7 @@ and Active Directory Federation Services Single Sign-On services. I also managed
 Apache HTTP and Apache Tomcat servers.
 
 ## Q1Labs
+
 ### Software Developer
 
 Time in role: April 2007 -- November 2008
@@ -80,6 +83,7 @@ auto-update packages, as well as the auto-update packages themselves after the
 necessary components had been gathered and assembled.
 
 # Education
+
 ## University of New Brunswick
 
 Bachelor of Computer Science, May 2010

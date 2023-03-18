@@ -31,7 +31,5 @@ receive unsolicited commercial electronic messages (CEMs), unsolicited bulk
 emails (UBEs), unsolicited commercial emails (UCEs), or any similar unsolicited
 mass communication of any kind.
 
-[cvpdf]: /docs/resume.pdf
 [career]: careers/
 [email]: mailto:contact@jgoguen.ca
-[linkedin]: https://www.linkedin.com/in/joelgoguen
