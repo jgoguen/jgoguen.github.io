@@ -1,0 +1,55 @@
+{
+  "image": "mcr.microsoft.com/devcontainers/base:debian",
+  "features": {
+    "ghcr.io/devcontainers/features/hugo:1": {
+      "extended": true
+    }
+  },
+  "runArgs": [
+    "-e",
+    "GIT_EDITOR=code --wait"
+  ],
+  "forwardPorts": [
+    1313
+  ],
+  "remoteUser": "vscode",
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "bungcip.better-toml",
+        "DavidAnson.vscode-markdownlint",
+        "yzhang.markdown-all-in-one"
+      ],
+      "settings": {
+        "editor.autoIndent": "advanced",
+        "editor.formatOnPaste": false,
+        "editor.formatOnSave": true,
+        "editor.formatOnSaveMode": "modificationsIfAvailable",
+        "editor.formatOnType": true,
+        "editor.insertSpaces": false,
+        "editor.linkedEditing": true,
+        "editor.renderControlCharacters": true,
+        "editor.renderFinalNewline": "off",
+        "editor.renderWhitespace": "boundary",
+        "editor.tabSize": 2,
+        "files.autoSave": "onFocusChange",
+        "files.eol": "\n",
+        "files.insertFinalNewline": true,
+        "files.trimFinalNewlines": true,
+        "files.trimTrailingWhitespace": true,
+        "html.format.indentInnerHtml": true,
+        "markdown.extension.orderedList.marker": "one",
+        "markdown.preview.fontFamily": "Fira Code Retina, ",
+        "markdown.preview.linkify": true,
+        "markdown.preview.openMarkdownLinks": "inEditor",
+        "markdownlint.run": "onSave",
+        "workbench.colorCustomizations": {
+          "tab.activeBorderTop": "#00ff00"
+        },
+        "[markdown]": {
+          "editor.insertSpaces": true
+        }
+      }
+    }
+  }
+}
