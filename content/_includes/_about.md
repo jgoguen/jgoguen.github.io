@@ -4,8 +4,7 @@ established standards and best practices to my work. I take pride in delivering
 high-quality results and consistently improving both back-end infrastructure and
 the end-user experience.
 
-Originally from Canada, I live in the United States where I'm employed as
-a Security Engineer with Meta.
+I live in the United States where I'm employed as a Security Engineer with Meta.
 
 As a software developer, I am familiar with shell scripting, Python 3, and
 Golang. I can also work with C, Java, or Perl, and I can learn new languages as
