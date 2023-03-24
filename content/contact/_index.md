@@ -11,9 +11,7 @@ In general, I can be reached [via email][email], although you may find other
 methods more appropriate depending on your purpose.
 
 If you're contacting me about career opportunities, please use my [career
-contact page][career] instead. Please note that I am not seeking new employment
-opportunities at this time, nor am I considering changing jobs, and I am only
-considering 100% fully and permanently remote roles within the United States.
+contact page][career] instead.
 
 If you're contacting me about an open-source project I'm involved with, please
 consider whether another avenue is more appropriate. If you have a bug report
