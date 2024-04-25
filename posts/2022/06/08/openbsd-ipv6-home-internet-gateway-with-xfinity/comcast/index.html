@@ -1,24 +1,25 @@
-<!doctype html><html lang=en><head><title>OpenBSD IPv6 Home Internet Gateway with Xfinity/Comcast · Heap Overrun</title><meta charset=utf-8><meta name=viewport content="width=device-width,initial-scale=1"><meta name=color-scheme content="light dark"><meta name=author content="Joel Goguen"><meta name=description content="Using OpenBSD as a home Internet gateway with Xfinity/Comcast with IPv6
+<!doctype html><html lang=en><head><title>OpenBSD IPv6 Home Internet Gateway with Xfinity/Comcast · Heap Overrun
+</title><meta charset=utf-8><meta name=viewport content="width=device-width,initial-scale=1"><meta name=color-scheme content="light dark"><meta name=author content="Joel Goguen"><meta name=description content="Using OpenBSD as a home Internet gateway with Xfinity/Comcast with IPv6
 support
 "><meta name=keywords content><meta name=twitter:card content="summary"><meta name=twitter:title content="OpenBSD IPv6 Home Internet Gateway with Xfinity/Comcast"><meta name=twitter:description content="Using OpenBSD as a home Internet gateway with Xfinity/Comcast with IPv6
 support
-"><meta property="og:title" content="OpenBSD IPv6 Home Internet Gateway with Xfinity/Comcast"><meta property="og:description" content="Using OpenBSD as a home Internet gateway with Xfinity/Comcast with IPv6
+"><meta property="og:url" content="https://jgoguen.ca/posts/2022/06/08/openbsd-ipv6-home-internet-gateway-with-xfinity/comcast/"><meta property="og:site_name" content="Heap Overrun"><meta property="og:title" content="OpenBSD IPv6 Home Internet Gateway with Xfinity/Comcast"><meta property="og:description" content="Using OpenBSD as a home Internet gateway with Xfinity/Comcast with IPv6
 support
-"><meta property="og:type" content="article"><meta property="og:url" content="https://jgoguen.ca/posts/2022/06/08/openbsd-ipv6-home-internet-gateway-with-xfinity/comcast/"><meta property="article:section" content="posts"><meta property="article:published_time" content="2022-06-08T00:00:00+00:00"><meta property="article:modified_time" content="2022-06-08T19:26:18-07:00"><link rel=canonical href=https://jgoguen.ca/posts/2022/06/08/openbsd-ipv6-home-internet-gateway-with-xfinity/comcast/><link rel=preload href="https://jgoguen.ca/fonts/forkawesome-webfont.woff2?v=1.2.0" as=font type=font/woff2 crossorigin><link rel=stylesheet href=https://jgoguen.ca/css/coder.min.0669b62fc2c181a12a4ba10be9984e385c9a5e83dc7cb7ae3759ad0b98d7e8b2.css integrity="sha256-Bmm2L8LBgaEqS6EL6ZhOOFyaXoPcfLeuN1mtC5jX6LI=" crossorigin=anonymous media=screen><link rel=stylesheet href=https://jgoguen.ca/css/coder-dark.min.f6534b0b446b75d9b6ad77a97d43ede2ddaeff1b6e2361fb7198d6f8fcb7f83f.css integrity="sha256-9lNLC0Rrddm2rXepfUPt4t2u/xtuI2H7cZjW+Py3+D8=" crossorigin=anonymous media=screen><link rel=stylesheet href=https://jgoguen.ca/sass/style.min.3883faa308771b21043df839bde4f99986a7eed407a6c0c2942edba5faa78163.css integrity="sha256-OIP6owh3GyEEPfg5veT5mYan7tQHpsDClC7bpfqngWM=" crossorigin=anonymous media=screen><link rel=icon type=image/png href=https://jgoguen.ca/img/favicon_32x32.png sizes=32x32><link rel=icon type=image/png href=https://jgoguen.ca/img/favicon_16x16.png sizes=16x16><link rel=apple-touch-icon href=https://jgoguen.ca/images/apple-touch-icon.png><link rel=apple-touch-icon sizes=180x180 href=https://jgoguen.ca/images/apple-touch-icon.png><link rel=manifest href=https://jgoguen.ca/site.webmanifest><link rel=mask-icon href=https://jgoguen.ca/images/safari-pinned-tab.svg color=#5bbad5><meta name=generator content="Hugo 0.111.3"><link rel=me href=https://hachyderm.io/@jgoguen></head><body class="preload-transitions colorscheme-auto"><div class=float-container><a id=scroll-to-top class=hidden><i class="fa fa-arrow-up fa-fw" aria-hidden=true></i></a>
-<a id=dark-mode-toggle class=colorscheme-toggle><i class="fa fa-adjust fa-fw" aria-hidden=true></i></a></div><main class=wrapper><nav class=navigation><section class=container><a class=navigation-title href=https://jgoguen.ca/>Heap Overrun</a>
-<input type=checkbox id=menu-toggle>
+"><meta property="og:locale" content="en-ca"><meta property="og:type" content="article"><meta property="article:section" content="posts"><meta property="article:published_time" content="2022-06-08T00:00:00+00:00"><meta property="article:modified_time" content="2022-06-08T19:26:18-07:00"><meta property="article:tag" content="OpenBSD"><meta property="article:tag" content="Xfinity"><meta property="article:tag" content="Network"><meta property="article:tag" content="IPv6"><link rel=canonical href=https://jgoguen.ca/posts/2022/06/08/openbsd-ipv6-home-internet-gateway-with-xfinity/comcast/><link rel=preload href="https://jgoguen.ca/fonts/forkawesome-webfont.woff2?v=1.2.0" as=font type=font/woff2 crossorigin><link rel=stylesheet href=https://jgoguen.ca/css/coder.min.0669b62fc2c181a12a4ba10be9984e385c9a5e83dc7cb7ae3759ad0b98d7e8b2.css integrity="sha256-Bmm2L8LBgaEqS6EL6ZhOOFyaXoPcfLeuN1mtC5jX6LI=" crossorigin=anonymous media=screen><link rel=stylesheet href=https://jgoguen.ca/css/coder-dark.min.f6534b0b446b75d9b6ad77a97d43ede2ddaeff1b6e2361fb7198d6f8fcb7f83f.css integrity="sha256-9lNLC0Rrddm2rXepfUPt4t2u/xtuI2H7cZjW+Py3+D8=" crossorigin=anonymous media=screen><link rel=stylesheet href=https://jgoguen.ca/sass/style.min.3883faa308771b21043df839bde4f99986a7eed407a6c0c2942edba5faa78163.css integrity="sha256-OIP6owh3GyEEPfg5veT5mYan7tQHpsDClC7bpfqngWM=" crossorigin=anonymous media=screen><link rel=icon type=image/png href=https://jgoguen.ca/img/favicon_32x32.png sizes=32x32><link rel=icon type=image/png href=https://jgoguen.ca/img/favicon_16x16.png sizes=16x16><link rel=apple-touch-icon href=https://jgoguen.ca/images/apple-touch-icon.png><link rel=apple-touch-icon sizes=180x180 href=https://jgoguen.ca/images/apple-touch-icon.png><link rel=manifest href=https://jgoguen.ca/site.webmanifest><link rel=mask-icon href=https://jgoguen.ca/images/safari-pinned-tab.svg color=#5bbad5><meta name=generator content="Hugo 0.125.3"><link rel=me href=https://hachyderm.io/@jgoguen></head><body class="preload-transitions colorscheme-auto"><div class=float-container><a id=scroll-to-top class=hidden><i class="fa fa-arrow-up fa-fw" aria-hidden=true></i>
+</a><a id=dark-mode-toggle class=colorscheme-toggle><i class="fa fa-adjust fa-fw" aria-hidden=true></i></a></div><main class=wrapper><nav class=navigation><section class=container><a class=navigation-title href=https://jgoguen.ca/>Heap Overrun
+</a><input type=checkbox id=menu-toggle>
 <label class="menu-button float-right" for=menu-toggle><i class="fa fa-bars fa-fw" aria-hidden=true></i></label><ul class=navigation-list><li class=navigation-item><a class=navigation-link href=https://jgoguen.ca/about>About Me</a></li><li class=navigation-item><a class=navigation-link href=https://jgoguen.ca/docs/resume.pdf>Résumé</a></li><li class=navigation-item><a class=navigation-link href=https://jgoguen.ca/posts>Posts</a></li><li class=navigation-item><a class=navigation-link href=https://jgoguen.ca/contact>Contact Me</a></li></ul></section></nav><div class=content><div id=progress-bar class=hidden aria-hidden=true></div><section class="container post"><article><header><div class=post-title><h1 class=title><a class=title-link href=https://jgoguen.ca/posts/2022/06/08/openbsd-ipv6-home-internet-gateway-with-xfinity/comcast/>OpenBSD IPv6 Home Internet Gateway with Xfinity/Comcast</a></h1></div><div class=post-meta><div class=date><span class=posted-on><i class="fa fa-calendar" aria-hidden=true></i>
-<time datetime=2022-06-08T00:00:00Z>June 8, 2022</time></span>
-<span class=posted-on><i class="fa fa-calendar" aria-hidden=true></i>
-<time datetime=2022-06-08T19:26:18-07:00>Updated: June 8, 2022</time></span>
-<span class=reading-time><i class="fa fa-clock-o" aria-hidden=true></i>
+<time datetime=2022-06-08T00:00:00Z>June 8, 2022
+</time></span><span class=posted-on><i class="fa fa-calendar" aria-hidden=true></i>
+<time datetime=2022-06-08T19:26:18-07:00>Updated: June 8, 2022
+</time></span><span class=reading-time><i class="fa fa-clock-o" aria-hidden=true></i>
 6-minute read</span></div><div class=tags><i class="fa fa-tag" aria-hidden=true></i>
-<span class=tag><a href=https://jgoguen.ca/tags/openbsd/>OpenBSD</a></span>
-<span class=separator>•</span>
-<span class=tag><a href=https://jgoguen.ca/tags/xfinity/>Xfinity</a></span>
-<span class=separator>•</span>
-<span class=tag><a href=https://jgoguen.ca/tags/network/>network</a></span>
-<span class=separator>•</span>
+<span class=tag><a href=https://jgoguen.ca/tags/openbsd/>OpenBSD</a>
+</span><span class=separator>•</span>
+<span class=tag><a href=https://jgoguen.ca/tags/xfinity/>Xfinity</a>
+</span><span class=separator>•</span>
+<span class=tag><a href=https://jgoguen.ca/tags/network/>Network</a>
+</span><span class=separator>•</span>
 <span class=tag><a href=https://jgoguen.ca/tags/ipv6/>IPv6</a></span></div></div></header><div><p>When you sign up for Internet service, one thing you&rsquo;re going to get is a home
 gateway. It&rsquo;s going to offer wired and wireless Internet connections plus
 a bunch of other things you may not want and probably won&rsquo;t need. Unfortunately,
@@ -68,46 +69,46 @@ username.</p><h2 id=configuration>Configuration
 <a class=heading-link href=#pf4><i class="fa fa-link" aria-hidden=true title="Link to heading"></i>
 <span class=sr-only>Link to heading</span></a></h3><p>Before anything else, set up a minimal
 <a href=https://man.openbsd.org/pf.conf class=external-link target=_blank rel=noopener><code>pf.conf(5)</code></a>. <code>egress</code> will be the WAN
-interface.</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-fallback data-lang=fallback><span class=line><span class=cl>% doas cat /etc/pf.conf
-</span></span><span class=line><span class=cl>table &lt;martians&gt; const { \
-</span></span><span class=line><span class=cl>        0.0.0.0/8 10.0.0.0/8 127.0.0.0/8 169.254.0.0/16 172.16.0.0/12 192.0.0.0/24 \
-</span></span><span class=line><span class=cl>        192.0.2.0/24 192.88.99.0/24 192.168.0.0/16 198.18.0.0/15 198.51.100.0/24 \
-</span></span><span class=line><span class=cl>        203.0.113.0/24 224.0.0.0/3 \
-</span></span><span class=line><span class=cl>        ::/128 ::/96 ::1/128 ::ffff:0:0/96 100::/64 2001:10::/28 2001:2::/48 \
-</span></span><span class=line><span class=cl>        2001:db8::/32 3ffe::/16 fec0::/10 fc00::/7 \
-</span></span><span class=line><span class=cl>}
+interface.</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-gdscript3 data-lang=gdscript3><span class=line><span class=cl><span class=o>%</span> <span class=n>doas</span> <span class=n>cat</span> <span class=o>/</span><span class=n>etc</span><span class=o>/</span><span class=n>pf</span><span class=o>.</span><span class=n>conf</span>
+</span></span><span class=line><span class=cl><span class=n>table</span> <span class=o>&lt;</span><span class=n>martians</span><span class=o>&gt;</span> <span class=k>const</span> <span class=p>{</span> \
+</span></span><span class=line><span class=cl>        <span class=mf>0.0</span><span class=o>.</span><span class=mf>0.0</span><span class=o>/</span><span class=mi>8</span> <span class=mf>10.0</span><span class=o>.</span><span class=mf>0.0</span><span class=o>/</span><span class=mi>8</span> <span class=mf>127.0</span><span class=o>.</span><span class=mf>0.0</span><span class=o>/</span><span class=mi>8</span> <span class=mf>169.254</span><span class=o>.</span><span class=mf>0.0</span><span class=o>/</span><span class=mi>16</span> <span class=mf>172.16</span><span class=o>.</span><span class=mf>0.0</span><span class=o>/</span><span class=mi>12</span> <span class=mf>192.0</span><span class=o>.</span><span class=mf>0.0</span><span class=o>/</span><span class=mi>24</span> \
+</span></span><span class=line><span class=cl>        <span class=mf>192.0</span><span class=o>.</span><span class=mf>2.0</span><span class=o>/</span><span class=mi>24</span> <span class=mf>192.88</span><span class=o>.</span><span class=mf>99.0</span><span class=o>/</span><span class=mi>24</span> <span class=mf>192.168</span><span class=o>.</span><span class=mf>0.0</span><span class=o>/</span><span class=mi>16</span> <span class=mf>198.18</span><span class=o>.</span><span class=mf>0.0</span><span class=o>/</span><span class=mi>15</span> <span class=mf>198.51</span><span class=o>.</span><span class=mf>100.0</span><span class=o>/</span><span class=mi>24</span> \
+</span></span><span class=line><span class=cl>        <span class=mf>203.0</span><span class=o>.</span><span class=mf>113.0</span><span class=o>/</span><span class=mi>24</span> <span class=mf>224.0</span><span class=o>.</span><span class=mf>0.0</span><span class=o>/</span><span class=mi>3</span> \
+</span></span><span class=line><span class=cl>        <span class=p>::</span><span class=o>/</span><span class=mi>128</span> <span class=p>::</span><span class=o>/</span><span class=mi>96</span> <span class=p>::</span><span class=mi>1</span><span class=o>/</span><span class=mi>128</span> <span class=p>::</span><span class=n>ffff</span><span class=p>:</span><span class=mi>0</span><span class=p>:</span><span class=mi>0</span><span class=o>/</span><span class=mi>96</span> <span class=mi>100</span><span class=p>::</span><span class=o>/</span><span class=mi>64</span> <span class=mi>2001</span><span class=p>:</span><span class=mi>10</span><span class=p>::</span><span class=o>/</span><span class=mi>28</span> <span class=mi>2001</span><span class=p>:</span><span class=mi>2</span><span class=p>::</span><span class=o>/</span><span class=mi>48</span> \
+</span></span><span class=line><span class=cl>        <span class=mi>2001</span><span class=p>:</span><span class=n>db8</span><span class=p>::</span><span class=o>/</span><span class=mi>32</span> <span class=mi>3</span><span class=n>ffe</span><span class=p>::</span><span class=o>/</span><span class=mi>16</span> <span class=n>fec0</span><span class=p>::</span><span class=o>/</span><span class=mi>10</span> <span class=n>fc00</span><span class=p>::</span><span class=o>/</span><span class=mi>7</span> \
+</span></span><span class=line><span class=cl><span class=p>}</span>
 </span></span><span class=line><span class=cl>
-</span></span><span class=line><span class=cl>set block-policy return
-</span></span><span class=line><span class=cl>set skip on lo
-</span></span><span class=line><span class=cl>set reassemble yes no-df
-</span></span><span class=line><span class=cl>set loginterface egress
+</span></span><span class=line><span class=cl><span class=n>set</span> <span class=n>block</span><span class=o>-</span><span class=n>policy</span> <span class=k>return</span>
+</span></span><span class=line><span class=cl><span class=n>set</span> <span class=n>skip</span> <span class=n>on</span> <span class=n>lo</span>
+</span></span><span class=line><span class=cl><span class=n>set</span> <span class=n>reassemble</span> <span class=n>yes</span> <span class=n>no</span><span class=o>-</span><span class=n>df</span>
+</span></span><span class=line><span class=cl><span class=n>set</span> <span class=n>loginterface</span> <span class=n>egress</span>
 </span></span><span class=line><span class=cl>
-</span></span><span class=line><span class=cl>match in all scrub (no-df random-id reassemble tcp)
+</span></span><span class=line><span class=cl><span class=n>match</span> <span class=ow>in</span> <span class=n>all</span> <span class=n>scrub</span> <span class=p>(</span><span class=n>no</span><span class=o>-</span><span class=n>df</span> <span class=n>random</span><span class=o>-</span><span class=n>id</span> <span class=n>reassemble</span> <span class=n>tcp</span><span class=p>)</span>
 </span></span><span class=line><span class=cl>
-</span></span><span class=line><span class=cl># NOTE: If you need to make game consoles work, add static-port to the end of
-</span></span><span class=line><span class=cl># this line
-</span></span><span class=line><span class=cl>match out on egress inet from !(egress:network) to any nat-to (egress:0)
-</span></span><span class=line><span class=cl># Port build user does not need network
-</span></span><span class=line><span class=cl>block drop out log quick proto {tcp udp} user _pbuild
+</span></span><span class=line><span class=cl><span class=c1># NOTE: If you need to make game consoles work, add static-port to the end of</span>
+</span></span><span class=line><span class=cl><span class=c1># this line</span>
+</span></span><span class=line><span class=cl><span class=n>match</span> <span class=n>out</span> <span class=n>on</span> <span class=n>egress</span> <span class=n>inet</span> <span class=n>from</span> <span class=o>!</span><span class=p>(</span><span class=n>egress</span><span class=p>:</span><span class=n>network</span><span class=p>)</span> <span class=n>to</span> <span class=n>any</span> <span class=n>nat</span><span class=o>-</span><span class=n>to</span> <span class=p>(</span><span class=n>egress</span><span class=p>:</span><span class=mi>0</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=c1># Port build user does not need network</span>
+</span></span><span class=line><span class=cl><span class=n>block</span> <span class=n>drop</span> <span class=n>out</span> <span class=nb>log</span> <span class=n>quick</span> <span class=n>proto</span> <span class=p>{</span><span class=n>tcp</span> <span class=n>udp</span><span class=p>}</span> <span class=n>user</span> <span class=n>_pbuild</span>
 </span></span><span class=line><span class=cl>
-</span></span><span class=line><span class=cl>block drop in quick on egress from &lt;martians&gt; to any
-</span></span><span class=line><span class=cl>block drop out quick on egress from any to &lt;martians&gt;
+</span></span><span class=line><span class=cl><span class=n>block</span> <span class=n>drop</span> <span class=ow>in</span> <span class=n>quick</span> <span class=n>on</span> <span class=n>egress</span> <span class=n>from</span> <span class=o>&lt;</span><span class=n>martians</span><span class=o>&gt;</span> <span class=n>to</span> <span class=n>any</span>
+</span></span><span class=line><span class=cl><span class=n>block</span> <span class=n>drop</span> <span class=n>out</span> <span class=n>quick</span> <span class=n>on</span> <span class=n>egress</span> <span class=n>from</span> <span class=n>any</span> <span class=n>to</span> <span class=o>&lt;</span><span class=n>martians</span><span class=o>&gt;</span>
 </span></span><span class=line><span class=cl>
-</span></span><span class=line><span class=cl># Default deny all incoming traffic, default allow all outgoing traffic
-</span></span><span class=line><span class=cl>block return all
-</span></span><span class=line><span class=cl>pass out modulate state
+</span></span><span class=line><span class=cl><span class=c1># Default deny all incoming traffic, default allow all outgoing traffic</span>
+</span></span><span class=line><span class=cl><span class=n>block</span> <span class=k>return</span> <span class=n>all</span>
+</span></span><span class=line><span class=cl><span class=k>pass</span> <span class=n>out</span> <span class=n>modulate</span> <span class=n>state</span>
 </span></span><span class=line><span class=cl>
-</span></span><span class=line><span class=cl>pass in inet proto icmp all icmp-type echoreq
-</span></span><span class=line><span class=cl>pass in inet6 proto icmp6 all icmp6-type { echoreq neighbrsol neighbradv }
+</span></span><span class=line><span class=cl><span class=k>pass</span> <span class=ow>in</span> <span class=n>inet</span> <span class=n>proto</span> <span class=n>icmp</span> <span class=n>all</span> <span class=n>icmp</span><span class=o>-</span><span class=n>type</span> <span class=n>echoreq</span>
+</span></span><span class=line><span class=cl><span class=k>pass</span> <span class=ow>in</span> <span class=n>inet6</span> <span class=n>proto</span> <span class=n>icmp6</span> <span class=n>all</span> <span class=n>icmp6</span><span class=o>-</span><span class=n>type</span> <span class=p>{</span> <span class=n>echoreq</span> <span class=n>neighbrsol</span> <span class=n>neighbradv</span> <span class=p>}</span>
 </span></span><span class=line><span class=cl>
-</span></span><span class=line><span class=cl>pass in on egress inet6 proto icmp6 all icmp6-type routeradv
-</span></span><span class=line><span class=cl>pass in on !egress inet6 proto icmp6 all icmp6-type routersol
+</span></span><span class=line><span class=cl><span class=k>pass</span> <span class=ow>in</span> <span class=n>on</span> <span class=n>egress</span> <span class=n>inet6</span> <span class=n>proto</span> <span class=n>icmp6</span> <span class=n>all</span> <span class=n>icmp6</span><span class=o>-</span><span class=n>type</span> <span class=n>routeradv</span>
+</span></span><span class=line><span class=cl><span class=k>pass</span> <span class=ow>in</span> <span class=n>on</span> <span class=o>!</span><span class=n>egress</span> <span class=n>inet6</span> <span class=n>proto</span> <span class=n>icmp6</span> <span class=n>all</span> <span class=n>icmp6</span><span class=o>-</span><span class=n>type</span> <span class=n>routersol</span>
 </span></span><span class=line><span class=cl>
-</span></span><span class=line><span class=cl>pass in on egress inet proto udp from port bootps to port bootpc
-</span></span><span class=line><span class=cl>pass in on !egress inet proto udp from port bootpc to port bootps
-</span></span><span class=line><span class=cl>pass in on egress inet6 proto udp from fe80::/10 port dhcpv6-server to fe80::/10 port dhcpv6-client no state
+</span></span><span class=line><span class=cl><span class=k>pass</span> <span class=ow>in</span> <span class=n>on</span> <span class=n>egress</span> <span class=n>inet</span> <span class=n>proto</span> <span class=n>udp</span> <span class=n>from</span> <span class=n>port</span> <span class=n>bootps</span> <span class=n>to</span> <span class=n>port</span> <span class=n>bootpc</span>
+</span></span><span class=line><span class=cl><span class=k>pass</span> <span class=ow>in</span> <span class=n>on</span> <span class=o>!</span><span class=n>egress</span> <span class=n>inet</span> <span class=n>proto</span> <span class=n>udp</span> <span class=n>from</span> <span class=n>port</span> <span class=n>bootpc</span> <span class=n>to</span> <span class=n>port</span> <span class=n>bootps</span>
+</span></span><span class=line><span class=cl><span class=k>pass</span> <span class=ow>in</span> <span class=n>on</span> <span class=n>egress</span> <span class=n>inet6</span> <span class=n>proto</span> <span class=n>udp</span> <span class=n>from</span> <span class=n>fe80</span><span class=p>::</span><span class=o>/</span><span class=mi>10</span> <span class=n>port</span> <span class=n>dhcpv6</span><span class=o>-</span><span class=n>server</span> <span class=n>to</span> <span class=n>fe80</span><span class=p>::</span><span class=o>/</span><span class=mi>10</span> <span class=n>port</span> <span class=n>dhcpv6</span><span class=o>-</span><span class=n>client</span> <span class=n>no</span> <span class=n>state</span>
 </span></span><span class=line><span class=cl>
-</span></span><span class=line><span class=cl>pass in on $if_lan proto tcp from ($if_lan:network) to ($if_lan) port 22 modulate state
+</span></span><span class=line><span class=cl><span class=k>pass</span> <span class=ow>in</span> <span class=n>on</span> <span class=o>$</span><span class=n>if_lan</span> <span class=n>proto</span> <span class=n>tcp</span> <span class=n>from</span> <span class=p>(</span><span class=o>$</span><span class=n>if_lan</span><span class=p>:</span><span class=n>network</span><span class=p>)</span> <span class=n>to</span> <span class=p>(</span><span class=o>$</span><span class=n>if_lan</span><span class=p>)</span> <span class=n>port</span> <span class=mi>22</span> <span class=n>modulate</span> <span class=n>state</span>
 </span></span></code></pre></div><p>Always verify your <code>pf.conf(5)</code> changes, then apply the new rules:</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-fallback data-lang=fallback><span class=line><span class=cl>% doas pfctl -nf /etc/pf.conf
 </span></span><span class=line><span class=cl>% doas pfctl -F rules -f /etc/pf.conf
 </span></span></code></pre></div><h3 id=network-interfaces>Network Interfaces
@@ -201,8 +202,7 @@ responses.</li><li>Check the IP addresses assigned to any internal LAN client an
 IPv4 address and at least one IPv6 address in the same range as the address
 from the output of <code>ifconfig em1</code>.</li></ul></div><footer></footer></article></section></div><footer class=footer><section class=container>©
 2013 -
-2023
+2024
 Joel Goguen
 ·
-Powered by <a href=https://gohugo.io/>Hugo</a> & <a href=https://github.com/luizdepra/hugo-coder/>Coder</a>.</section></footer></main><script src=https://jgoguen.ca/js/coder.min.6ae284be93d2d19dad1f02b0039508d9aab3180a12a06dcc71b0b0ef7825a317.js integrity="sha256-auKEvpPS0Z2tHwKwA5UI2aqzGAoSoG3McbCw73gloxc="></script>
-<script src=https://jgoguen.ca/js/scrollbar.min.1eea81363c83b9d090626bcfd7b529574d2f1b23ddd40a5c76aea3dfd8810712.js integrity="sha256-HuqBNjyDudCQYmvP17UpV00vGyPd1Apcdq6j39iBBxI="></script></body></html>
+Powered by <a href=https://gohugo.io/>Hugo</a> & <a href=https://github.com/luizdepra/hugo-coder/>Coder</a>.</section></footer></main><script src=https://jgoguen.ca/js/coder.min.6ae284be93d2d19dad1f02b0039508d9aab3180a12a06dcc71b0b0ef7825a317.js integrity="sha256-auKEvpPS0Z2tHwKwA5UI2aqzGAoSoG3McbCw73gloxc="></script><script src=https://jgoguen.ca/js/scrollbar.min.1eea81363c83b9d090626bcfd7b529574d2f1b23ddd40a5c76aea3dfd8810712.js integrity="sha256-HuqBNjyDudCQYmvP17UpV00vGyPd1Apcdq6j39iBBxI="></script></body></html>
