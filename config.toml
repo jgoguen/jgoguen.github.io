@@ -42,20 +42,15 @@ enableGitInfo = true
 	customJS = ["/js/scrollbar.js"]
 
 [[params.social]]
-  name = "Codeberg"
-  icon = "fa fa-code-fork fa-2x"
-  weight = 1
-  url = "https://codeberg.org/jgoguen"
+	name = "Github"
+	icon = "fa fa-github fa-2x"
+	weight = 5
+	url = "https://github.com/jgoguen"
 [[params.social]]
 	name = "Mastodon"
 	icon = "fa fa-mastodon fa-2x"
 	weight = 2
 	url = "https://hachyderm.io/@jgoguen"
-[[params.social]]
-	name = "Github"
-	icon = "fa fa-github fa-2x"
-	weight = 5
-	url = "https://github.com/jgoguen"
 [[params.social]]
 	name = "LinkedIn"
 	icon = "fa fa-linkedin fa-2x"
