@@ -1,13 +1,13 @@
 <!doctype html><html lang=en><head><title>SSH Certificates · Heap Overrun
-</title><meta charset=utf-8><meta name=viewport content="width=device-width,initial-scale=1"><meta name=color-scheme content="light dark"><meta name=author content="Joel Goguen"><meta name=description content="/ Controlling access to SSH servers using certificates"><meta name=keywords content><meta name=twitter:card content="summary"><meta name=twitter:title content="SSH Certificates"><meta name=twitter:description content="/ Controlling access to SSH servers using certificates"><meta property="og:url" content="https://jgoguen.ca/posts/2022/12/07/ssh-certificates/"><meta property="og:site_name" content="Heap Overrun"><meta property="og:title" content="SSH Certificates"><meta property="og:description" content="/ Controlling access to SSH servers using certificates"><meta property="og:locale" content="en-ca"><meta property="og:type" content="article"><meta property="article:section" content="posts"><meta property="article:published_time" content="2022-12-07T00:00:00+00:00"><meta property="article:modified_time" content="2022-12-08T18:08:06-05:00"><meta property="article:tag" content="SSH"><meta property="article:tag" content="Certificates"><link rel=canonical href=https://jgoguen.ca/posts/2022/12/07/ssh-certificates/><link rel=preload href="https://jgoguen.ca/fonts/forkawesome-webfont.woff2?v=1.2.0" as=font type=font/woff2 crossorigin><link rel=stylesheet href=https://jgoguen.ca/css/coder.min.0669b62fc2c181a12a4ba10be9984e385c9a5e83dc7cb7ae3759ad0b98d7e8b2.css integrity="sha256-Bmm2L8LBgaEqS6EL6ZhOOFyaXoPcfLeuN1mtC5jX6LI=" crossorigin=anonymous media=screen><link rel=stylesheet href=https://jgoguen.ca/css/coder-dark.min.f6534b0b446b75d9b6ad77a97d43ede2ddaeff1b6e2361fb7198d6f8fcb7f83f.css integrity="sha256-9lNLC0Rrddm2rXepfUPt4t2u/xtuI2H7cZjW+Py3+D8=" crossorigin=anonymous media=screen><link rel=stylesheet href=https://jgoguen.ca/sass/style.min.3883faa308771b21043df839bde4f99986a7eed407a6c0c2942edba5faa78163.css integrity="sha256-OIP6owh3GyEEPfg5veT5mYan7tQHpsDClC7bpfqngWM=" crossorigin=anonymous media=screen><link rel=icon type=image/png href=https://jgoguen.ca/img/favicon_32x32.png sizes=32x32><link rel=icon type=image/png href=https://jgoguen.ca/img/favicon_16x16.png sizes=16x16><link rel=apple-touch-icon href=https://jgoguen.ca/images/apple-touch-icon.png><link rel=apple-touch-icon sizes=180x180 href=https://jgoguen.ca/images/apple-touch-icon.png><link rel=manifest href=https://jgoguen.ca/site.webmanifest><link rel=mask-icon href=https://jgoguen.ca/images/safari-pinned-tab.svg color=#5bbad5><meta name=generator content="Hugo 0.125.3"><link rel=me href=https://hachyderm.io/@jgoguen><meta name=robots content="noai, noimageai"></head><body class="preload-transitions colorscheme-auto"><div class=float-container><a id=scroll-to-top class=hidden><i class="fa fa-arrow-up fa-fw" aria-hidden=true></i>
+</title><meta charset=utf-8><meta name=viewport content="width=device-width,initial-scale=1"><meta name=color-scheme content="light dark"><meta name=author content="Joel Goguen"><meta name=description content="/ Controlling access to SSH servers using certificates"><meta name=keywords content="blog,developer,sysadmin,system administrator,personal,firewall,OpenBSD,Linux"><meta name=twitter:card content="summary"><meta name=twitter:title content="SSH Certificates"><meta name=twitter:description content="/ Controlling access to SSH servers using certificates"><meta property="og:url" content="https://jgoguen.ca/posts/2022/12/07/ssh-certificates/"><meta property="og:site_name" content="Heap Overrun"><meta property="og:title" content="SSH Certificates"><meta property="og:description" content="/ Controlling access to SSH servers using certificates"><meta property="og:locale" content="en-ca"><meta property="og:type" content="article"><meta property="article:section" content="posts"><meta property="article:published_time" content="2022-12-07T00:00:00+00:00"><meta property="article:modified_time" content="2022-12-08T18:08:06-05:00"><meta property="article:tag" content="SSH"><meta property="article:tag" content="Certificates"><link rel=canonical href=https://jgoguen.ca/posts/2022/12/07/ssh-certificates/><link rel=preload href=https://jgoguen.ca/fonts/fa-brands-400.woff2 as=font type=font/woff2 crossorigin><link rel=preload href=https://jgoguen.ca/fonts/fa-regular-400.woff2 as=font type=font/woff2 crossorigin><link rel=preload href=https://jgoguen.ca/fonts/fa-solid-900.woff2 as=font type=font/woff2 crossorigin><link rel=stylesheet href=https://jgoguen.ca/css/coder.min.38c4552ac40f9ae3408bad40358f654ebd8804412fe74ed56f2d6c8a7af82dd3.css integrity="sha256-OMRVKsQPmuNAi61ANY9lTr2IBEEv507Vby1sinr4LdM=" crossorigin=anonymous media=screen><link rel=stylesheet href=https://jgoguen.ca/css/coder-dark.min.a00e6364bacbc8266ad1cc81230774a1397198f8cfb7bcba29b7d6fcb54ce57f.css integrity="sha256-oA5jZLrLyCZq0cyBIwd0oTlxmPjPt7y6KbfW/LVM5X8=" crossorigin=anonymous media=screen><link rel=stylesheet href=https://jgoguen.ca/sass/style.min.3883faa308771b21043df839bde4f99986a7eed407a6c0c2942edba5faa78163.css integrity="sha256-OIP6owh3GyEEPfg5veT5mYan7tQHpsDClC7bpfqngWM=" crossorigin=anonymous media=screen><link rel=icon type=image/svg+xml href=https://jgoguen.ca/images/favicon.svg sizes=any><link rel=icon type=image/png href=https://jgoguen.ca/img/favicon_32x32.png sizes=32x32><link rel=icon type=image/png href=https://jgoguen.ca/img/favicon_16x16.png sizes=16x16><link rel=apple-touch-icon href=https://jgoguen.ca/images/apple-touch-icon.png><link rel=apple-touch-icon sizes=180x180 href=https://jgoguen.ca/images/apple-touch-icon.png><link rel=manifest href=https://jgoguen.ca/site.webmanifest><link rel=mask-icon href=https://jgoguen.ca/images/safari-pinned-tab.svg color=#5bbad5><link rel=me href=https://hachyderm.io/@jgoguen><meta name=robots content="noai, noimageai"><meta name=CCBot content="nofollow"><meta name=robots content="noai, noimageai"><meta name=tdm-reservation content="1"></head><body class="preload-transitions colorscheme-auto"><div class=float-container><a id=scroll-to-top class=hidden><i class="fa fa-arrow-up fa-fw" aria-hidden=true></i>
 </a><a id=dark-mode-toggle class=colorscheme-toggle><i class="fa fa-adjust fa-fw" aria-hidden=true></i></a></div><main class=wrapper><nav class=navigation><section class=container><a class=navigation-title href=https://jgoguen.ca/>Heap Overrun
 </a><input type=checkbox id=menu-toggle>
-<label class="menu-button float-right" for=menu-toggle><i class="fa fa-bars fa-fw" aria-hidden=true></i></label><ul class=navigation-list><li class=navigation-item><a class=navigation-link href=https://jgoguen.ca/about>About Me</a></li><li class=navigation-item><a class=navigation-link href=https://jgoguen.ca/docs/resume.pdf>Résumé</a></li><li class=navigation-item><a class=navigation-link href=https://jgoguen.ca/posts>Posts</a></li><li class=navigation-item><a class=navigation-link href=https://jgoguen.ca/contact>Contact Me</a></li></ul></section></nav><div class=content><div id=progress-bar class=hidden aria-hidden=true></div><section class="container post"><article><header><div class=post-title><h1 class=title><a class=title-link href=https://jgoguen.ca/posts/2022/12/07/ssh-certificates/>SSH Certificates</a></h1></div><div class=post-meta><div class=date><span class=posted-on><i class="fa fa-calendar" aria-hidden=true></i>
+<label class="menu-button float-right" for=menu-toggle><i class="fa-solid fa-bars fa-fw" aria-hidden=true></i></label><ul class=navigation-list><li class=navigation-item><a class=navigation-link href=https://jgoguen.ca/about>About Me</a></li><li class=navigation-item><a class=navigation-link href=https://jgoguen.ca/docs/resume.pdf>Résumé</a></li><li class=navigation-item><a class=navigation-link href=https://jgoguen.ca/posts>Posts</a></li><li class=navigation-item><a class=navigation-link href=https://jgoguen.ca/contact>Contact Me</a></li></ul></section></nav><div class=content><div id=progress-bar class=hidden aria-hidden=true></div><section class="container post"><article><header><div class=post-title><h1 class=title><a class=title-link href=https://jgoguen.ca/posts/2022/12/07/ssh-certificates/>SSH Certificates</a></h1></div><div class=post-meta><div class=date><span class=posted-on><i class="fa fa-calendar" aria-hidden=true></i>
 <time datetime=2022-12-07T00:00:00Z>December 7, 2022
 </time></span><span class=posted-on><i class="fa fa-calendar" aria-hidden=true></i>
 <time datetime=2022-12-08T18:08:06-05:00>Updated: December 8, 2022
 </time></span><span class=reading-time><i class="fa fa-clock-o" aria-hidden=true></i>
-14-minute read</span></div><div class=tags><i class="fa fa-tag" aria-hidden=true></i>
+14-minute read</span></div><div class=tags><i class="fa-solid fa-tag" aria-hidden=true></i>
 <span class=tag><a href=https://jgoguen.ca/tags/ssh/>SSH</a>
 </span><span class=separator>•</span>
 <span class=tag><a href=https://jgoguen.ca/tags/certificates/>Certificates</a></span></div></div></header><div><p>If you have a SSH server, you&rsquo;ve probably heard that you should be using SSH key
@@ -35,7 +35,7 @@ a TLS certificate, SSH certificates can be used for both identifying a server to
 a user and identifying a user to a server. In this post, we&rsquo;ll explore how to
 set up your SSH Certificate Authority (CA), how to issue certificates for both
 users and hosts, and how to revoke SSH certificates when needed.</p><h1 id=creating-your-ssh-ca>Creating your SSH CA
-<a class=heading-link href=#creating-your-ssh-ca><i class="fa fa-link" aria-hidden=true title="Link to heading"></i>
+<a class=heading-link href=#creating-your-ssh-ca><i class="fa-solid fa-link" aria-hidden=true title="Link to heading"></i>
 <span class=sr-only>Link to heading</span></a></h1><p>The first thing you need to do is create your Certificate Authority keys. Unlike
 TLS CAs, SSH CAs don&rsquo;t have the concept of intermediate issuers because you
 don&rsquo;t actually have a CA certificat, you only have SSH keys trusted as signing
@@ -43,7 +43,7 @@ keys. This means your SSH CA is your root CA and can&rsquo;t be kept offline. If
 possible, the private key should always be kept in secure hardware of some kind,
 such as a Hardware Security Module (HSM) or local TPM. If you do, you&rsquo;ll need to
 first create a private key on the secure storage using the PKCS#11 interface.</p><h2 id=create-a-key-in-secure-hardware>Create a key in Secure Hardware
-<a class=heading-link href=#create-a-key-in-secure-hardware><i class="fa fa-link" aria-hidden=true title="Link to heading"></i>
+<a class=heading-link href=#create-a-key-in-secure-hardware><i class="fa-solid fa-link" aria-hidden=true title="Link to heading"></i>
 <span class=sr-only>Link to heading</span></a></h2><p>First you need to know the PKCS#11 URI of the secure hardware module you want to
 use. You can find this with the <code>p11tool</code> command, part of the <code>gnutls-utils</code>
 package on CentOS and similar distributions:</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-gdscript3 data-lang=gdscript3><span class=line><span class=cl><span class=o>$</span> <span class=n>p11tool</span> <span class=o>--</span><span class=n>list</span><span class=o>-</span><span class=n>tokens</span>
@@ -70,7 +70,7 @@ key per CA.</p><div class=highlight><pre tabindex=0 class=chroma><code class=lan
 </span></span></code></pre></div><p>This is not the public key you want to save! You need the public key in the
 standard SSH format. To get that, run <code>ssh-keygen -D libsuperhsm2.so -e >ssh-ca.pub</code>.
 You will use this later when issuing SSH certificates.</p><h2 id=create-a-key-on-disk>Create a key on disk
-<a class=heading-link href=#create-a-key-on-disk><i class="fa fa-link" aria-hidden=true title="Link to heading"></i>
+<a class=heading-link href=#create-a-key-on-disk><i class="fa-solid fa-link" aria-hidden=true title="Link to heading"></i>
 <span class=sr-only>Link to heading</span></a></h2><p>If you don&rsquo;t have secure hardware available, you will need to store your private
 keys on disk. These will allow anyone with access to create new certificates
 trusted by all your devices, so be sure to appropriately protect them!</p><p>Creating a private key on disk is a matter of a single command:</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-fallback data-lang=fallback><span class=line><span class=cl>$ ssh-keygen -t ecdsa -b 521 -f ssh-ca -C &#39;SSH CA Certificate&#39;
@@ -97,12 +97,12 @@ trusted by all your devices, so be sure to appropriately protect them!</p><p>Cre
 public key). You should create one set of keys for each SSH CA you intend to use;
 this usually means creating two sets of keys, one for host certificates and one
 for user certificates.</p><h1 id=signing-a-host-certificate>Signing a Host Certificate
-<a class=heading-link href=#signing-a-host-certificate><i class="fa fa-link" aria-hidden=true title="Link to heading"></i>
+<a class=heading-link href=#signing-a-host-certificate><i class="fa-solid fa-link" aria-hidden=true title="Link to heading"></i>
 <span class=sr-only>Link to heading</span></a></h1><p>Now that you have your CA keys created, you&rsquo;re ready to issue SSH certificates.
 The first type we&rsquo;ll look at is a host certificate, which identifies a SSH
 server to a connecting client. All you need is your SSH server&rsquo;s host public key,
 stored in <code>/etc/ssh/ssh_host_*_key.pub</code>, and the keys generated earlier.</p><h2 id=signing-with-pkcs11>Signing with PKCS#11
-<a class=heading-link href=#signing-with-pkcs11><i class="fa fa-link" aria-hidden=true title="Link to heading"></i>
+<a class=heading-link href=#signing-with-pkcs11><i class="fa-solid fa-link" aria-hidden=true title="Link to heading"></i>
 <span class=sr-only>Link to heading</span></a></h2><p>To sign with a private key stored in secure hardware, use the <code>-D</code> option to
 <code>ssh-keygen</code>:</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-fallback data-lang=fallback><span class=line><span class=cl>$ ssh-keygen -s ssh-ca.pub -D libsuperhsm2.so -I dev1234.example.com -h -n dev1234.example.com,dev1234,10.20.0.134 -V +52w -z $(date +%s) ./ssh_host_ecdsa_key.pub
 </span></span><span class=line><span class=cl>Enter PIN for &#39;puffy-hsm&#39;:
@@ -117,12 +117,12 @@ current time as seconds since the UNIX epoch, which causes the certificate
 serial number to be set to the current time. You don&rsquo;t need this option, but
 it can sometimes be helpful to have a serial number defined. If you don&rsquo;t set
 a serial number, 0 will be used.</li><li><code>./ssh_host_ecdsa_key.pub</code>: The path to the host public key to sign.</li></ul><h2 id=signing-with-on-disk-keys>Signing with on-disk keys
-<a class=heading-link href=#signing-with-on-disk-keys><i class="fa fa-link" aria-hidden=true title="Link to heading"></i>
+<a class=heading-link href=#signing-with-on-disk-keys><i class="fa-solid fa-link" aria-hidden=true title="Link to heading"></i>
 <span class=sr-only>Link to heading</span></a></h2><p>To sign with a private key stored on disk, leave out the <code>-D</code> option and pass
 the private key to <code>-s</code>:</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-fallback data-lang=fallback><span class=line><span class=cl>$ ssh-keygen -s ssh-ca -I dev1234.example.com -h -n dev1234.example.com,dev1234,10.20.0.134 -V +52w -z $(date +%s) ./ssh_host_ecdsa_key.pub
 </span></span><span class=line><span class=cl>Signed host key ./ssh_host_ecdsa_key-cert.pub: id &#34;dev1234.example.com&#34; serial 1670459268 for dev1234.example.com,dev1234,10.20.0.134 valid from 2022-12-05T22:45:00 to 2023-12-04T22:46:02
 </span></span></code></pre></div><h2 id=using-the-host-certificate>Using the host certificate
-<a class=heading-link href=#using-the-host-certificate><i class="fa fa-link" aria-hidden=true title="Link to heading"></i>
+<a class=heading-link href=#using-the-host-certificate><i class="fa-solid fa-link" aria-hidden=true title="Link to heading"></i>
 <span class=sr-only>Link to heading</span></a></h2><p>Once you&rsquo;ve generated a host SSH certificate, you need to tell <code>sshd</code> to use it.
 Add this line to <code>/etc/ssh/sshd_config</code> and restart <code>sshd</code>:</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-fallback data-lang=fallback><span class=line><span class=cl>HostCertificate /etc/ssh/ssh_host_ecdsa_key-cert.pub
 </span></span></code></pre></div><p>Now your SSH server is configured to present a host certificate, so the last
@@ -134,11 +134,11 @@ step is to tell clients to trust the certificate. Start by generating the
 SSH host certificate. And when you eventually reinstall a host, as long as you
 sign a new SSH host certificate for the host users won&rsquo;t see the dreaded
 &ldquo;WARNING: REMOTE HOST IDENTIFICATION HAS CHANGED!&rdquo; message.</p><h1 id=signing-a-user-certificate>Signing a User Certificate
-<a class=heading-link href=#signing-a-user-certificate><i class="fa fa-link" aria-hidden=true title="Link to heading"></i>
+<a class=heading-link href=#signing-a-user-certificate><i class="fa-solid fa-link" aria-hidden=true title="Link to heading"></i>
 <span class=sr-only>Link to heading</span></a></h1><p>Once you have SSH host certificates deployed, the next step is to use SSH user
 certificates to identify users to servers. The commands to do so are similar to
 host certificates. You will also need the public portion of the user&rsquo;s SSH key.</p><h2 id=signing-with-pkcs11-1>Signing with PKCS#11
-<a class=heading-link href=#signing-with-pkcs11-1><i class="fa fa-link" aria-hidden=true title="Link to heading"></i>
+<a class=heading-link href=#signing-with-pkcs11-1><i class="fa-solid fa-link" aria-hidden=true title="Link to heading"></i>
 <span class=sr-only>Link to heading</span></a></h2><p>To sign a user certificate with a key stored in secure hardware, we once again
 use the <code>-D</code> option to <code>ssh-keygen</code>:</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-fallback data-lang=fallback><span class=line><span class=cl>$ ssh-keygen -s ssh-ca.pub -D libsuperhsm2.so -I jgoguen@example.com -n jgoguen,deploybot -V +2w -z $(date +%s) ./user.pub
 </span></span><span class=line><span class=cl>Enter PIN for &#39;puffy-hsm&#39;:
@@ -155,12 +155,12 @@ current time as seconds since the UNIX epoch, which causes the certificate
 serial number to be set to the current time. You don&rsquo;t need this option, but
 it can sometimes be helpful to have a serial number defined. If you don&rsquo;t set
 a serial number, 0 will be used.</li><li><code>./jgoguen.pub</code>: The path to the user public key to sign.</li></ul><h2 id=signing-with-on-disk-keys-1>Signing with on-disk keys
-<a class=heading-link href=#signing-with-on-disk-keys-1><i class="fa fa-link" aria-hidden=true title="Link to heading"></i>
+<a class=heading-link href=#signing-with-on-disk-keys-1><i class="fa-solid fa-link" aria-hidden=true title="Link to heading"></i>
 <span class=sr-only>Link to heading</span></a></h2><p>Again, this is similar to how a host certificate is signed.</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-fallback data-lang=fallback><span class=line><span class=cl>$ ssh-keygen -s ssh-ca -I jgoguen@example.com -n jgoguen,deploybot -V +2w -z $(date +%s) ./user.pub
 </span></span><span class=line><span class=cl>Signed user key ./user-cert.pub: id &#34;jgoguen@example.com&#34; serial 1670459268 for jgoguen,deploybot valid from 2022-12-06T23:06:00 to 2022-12-20T23:07:00
 </span></span></code></pre></div><p>Once again, the options are the same as for signing with a PKCS#11 key except
 that the <code>-s</code> option points to the private key to use for signing.</p><h2 id=using-the-user-certificate>Using the user certificate
-<a class=heading-link href=#using-the-user-certificate><i class="fa fa-link" aria-hidden=true title="Link to heading"></i>
+<a class=heading-link href=#using-the-user-certificate><i class="fa-solid fa-link" aria-hidden=true title="Link to heading"></i>
 <span class=sr-only>Link to heading</span></a></h2><p>To use the user certificate, first all servers must be updated to trust the user
 CA signing key. Copy the contents of the CA public key (in this example,
 <code>ssh-ca.pub</code>) to all servers as <code>/etc/ssh/user-ca.pub</code>. Then add this line to
@@ -173,7 +173,7 @@ files: <code>user</code> (unless the user&rsquo;s private key is stored in a PKC
 <code>~/.ssh/config</code>, set the <code>IdentityFile</code> directive to point to the private key
 file or set the <code>PKCS11Provider</code> directive to point to the PKCS#11 library used
 to store the private key.</p><h1 id=trust-but-verify>Trust But Verify
-<a class=heading-link href=#trust-but-verify><i class="fa fa-link" aria-hidden=true title="Link to heading"></i>
+<a class=heading-link href=#trust-but-verify><i class="fa-solid fa-link" aria-hidden=true title="Link to heading"></i>
 <span class=sr-only>Link to heading</span></a></h1><p>Verifying that SSH certificates are in use is as simple as watching the logs of
 your SSH server. On a modern Linux distribution with <code>systemd</code>, that can be done
 with <code>journalctl -f -u sshd.service</code>. For a successful login, you&rsquo;ll see
@@ -184,10 +184,10 @@ something like this:</p><div class=highlight><pre tabindex=0 class=chroma><code 
 </span></span></code></pre></div><p>And if the certificate is expired:</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-fallback data-lang=fallback><span class=line><span class=cl>sshd[52436]: error: key_cert_check_authority: invalid certificate
 </span></span><span class=line><span class=cl>sshd[52436]: error: Certificate invalid: expired
 </span></span></code></pre></div><h1 id=beyond-the-basics>Beyond The Basics
-<a class=heading-link href=#beyond-the-basics><i class="fa fa-link" aria-hidden=true title="Link to heading"></i>
+<a class=heading-link href=#beyond-the-basics><i class="fa-solid fa-link" aria-hidden=true title="Link to heading"></i>
 <span class=sr-only>Link to heading</span></a></h1><p>Now that you have SSH cetificates deployed and in use, there&rsquo;s a lot more you
 can do. Here&rsquo;s a few ideas you might want to consider.</p><h2 id=restrict-ssh-options>Restrict SSH options
-<a class=heading-link href=#restrict-ssh-options><i class="fa fa-link" aria-hidden=true title="Link to heading"></i>
+<a class=heading-link href=#restrict-ssh-options><i class="fa-solid fa-link" aria-hidden=true title="Link to heading"></i>
 <span class=sr-only>Link to heading</span></a></h2><p>Maybe you don&rsquo;t want to allow users to forward ports through the SSH server, or
 you don&rsquo;t want to allow X11 forwarding. If you check <code>man ssh-keygen</code> and look
 for the <code>-O</code> flag, you&rsquo;ll see a number of different things you can enforce in
@@ -213,7 +213,7 @@ the <code>ssh-keygen</code> command used to issue a user certificate:</p><div cl
 </span></span></code></pre></div><p>The <code>permit-X11-forwarding</code> and <code>permit-port-forwarding</code> options, which are
 enabled by default, are not present, so users will not be able to forward ports
 or X11 connections.</p><h2 id=enforce-a-bastion-host>Enforce a Bastion Host
-<a class=heading-link href=#enforce-a-bastion-host><i class="fa fa-link" aria-hidden=true title="Link to heading"></i>
+<a class=heading-link href=#enforce-a-bastion-host><i class="fa-solid fa-link" aria-hidden=true title="Link to heading"></i>
 <span class=sr-only>Link to heading</span></a></h2><p>A good way to improve the security of your SSH servers is to simply not expose
 them to the Internet in the first place and require all connections to pass
 through a bastion host. A bastion host is an otherwise normal SSH server, but
@@ -243,7 +243,7 @@ instead:</p><div class=highlight><pre tabindex=0 class=chroma><code class=langua
 </span></span><span class=line><span class=cl>  IdentityFile pkcs11:object=ssh-user
 </span></span></code></pre></div><p>If you add the SSH certificate and key to your local SSH agent, you can skip the
 <code>CertificateFile</code> and <code>IdentityFile</code> parameters entirely.</p><h2 id=enforce-certificate-authentication>Enforce certificate authentication
-<a class=heading-link href=#enforce-certificate-authentication><i class="fa fa-link" aria-hidden=true title="Link to heading"></i>
+<a class=heading-link href=#enforce-certificate-authentication><i class="fa-solid fa-link" aria-hidden=true title="Link to heading"></i>
 <span class=sr-only>Link to heading</span></a></h2><p>If you previously had public key authentication enabled, using certificates
 doesn&rsquo;t change that. Users can still log in with their SSH private keys, and
 they can add their own SSH keys to their <code>authorized_keys</code> file to allow them to
@@ -258,7 +258,7 @@ ability to log in with anything but certificates, also add this line to
 </span></span></code></pre></div><p>If you do decide to completely remove any other authentication method, you
 should keep a &ldquo;break glass&rdquo; user account active that can log in with a password
 (and 2-factor authentication if possible).</p><h2 id=allow-alternate-user-login-on-specific-hosts>Allow alternate user login on specific hosts
-<a class=heading-link href=#allow-alternate-user-login-on-specific-hosts><i class="fa fa-link" aria-hidden=true title="Link to heading"></i>
+<a class=heading-link href=#allow-alternate-user-login-on-specific-hosts><i class="fa-solid fa-link" aria-hidden=true title="Link to heading"></i>
 <span class=sr-only>Link to heading</span></a></h2><p>The examples given so far will allow logging in as the <code>deploybot</code> user on any
 host where that user exists. You may want to restrict where a user can log in as
 <code>deploybot</code> though, such as only allowing users to log in as <code>deploybot</code> on
@@ -270,7 +270,7 @@ logins for, add this line to <code>/etc/ssh/sshd_config</code>:</p><div class=hi
 principals of users allowed to log in as <code>deploybot</code>, one per line. Restart
 <code>sshd</code> when finished. Now a user with a certificate that has a principal in this
 file can simply log in with <code>ssh deploybot@buildtest1234.example.com</code> but <code>ssh deploybot@dev1234.example.com</code> would fail.</p><h1 id=conclusion>Conclusion
-<a class=heading-link href=#conclusion><i class="fa fa-link" aria-hidden=true title="Link to heading"></i>
+<a class=heading-link href=#conclusion><i class="fa-solid fa-link" aria-hidden=true title="Link to heading"></i>
 <span class=sr-only>Link to heading</span></a></h1><p>If you manage large fleets of machines, or you manage many users, SSH
 certificates give you a fairly easy way to improve the overall security of your
 servers with easier and better access control compared to plain SSH keys or
@@ -282,4 +282,4 @@ allowing you to scale at least to a small organization.</p></div><footer></foote
 2024
 Joel Goguen
 ·
-Powered by <a href=https://gohugo.io/>Hugo</a> & <a href=https://github.com/luizdepra/hugo-coder/>Coder</a>.</section></footer></main><script src=https://jgoguen.ca/js/coder.min.6ae284be93d2d19dad1f02b0039508d9aab3180a12a06dcc71b0b0ef7825a317.js integrity="sha256-auKEvpPS0Z2tHwKwA5UI2aqzGAoSoG3McbCw73gloxc="></script><script src=https://jgoguen.ca/js/scrollbar.min.1eea81363c83b9d090626bcfd7b529574d2f1b23ddd40a5c76aea3dfd8810712.js integrity="sha256-HuqBNjyDudCQYmvP17UpV00vGyPd1Apcdq6j39iBBxI="></script></body></html>
+Powered by <a href=https://gohugo.io/ target=_blank rel=noopener>Hugo</a> & <a href=https://github.com/luizdepra/hugo-coder/ target=_blank rel=noopener>Coder</a>.</section></footer></main><script src=https://jgoguen.ca/js/coder.min.6ae284be93d2d19dad1f02b0039508d9aab3180a12a06dcc71b0b0ef7825a317.js integrity="sha256-auKEvpPS0Z2tHwKwA5UI2aqzGAoSoG3McbCw73gloxc="></script><script src=https://jgoguen.ca/js/scrollbar.min.1eea81363c83b9d090626bcfd7b529574d2f1b23ddd40a5c76aea3dfd8810712.js integrity="sha256-HuqBNjyDudCQYmvP17UpV00vGyPd1Apcdq6j39iBBxI="></script></body></html>
