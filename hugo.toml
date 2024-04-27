@@ -29,10 +29,10 @@ enableGitInfo = true
 
 [params]
 	author = "Joel Goguen"
-	disableWebFonts = true
 	since = 2013
 	info = "Father, InfoSec, System Administrator, Software Developer"
 	description = "This is the personal website for Joel Goguen"
+	keywords = "blog,developer,sysadmin,system administrator,personal,firewall,OpenBSD,Linux"
 
 	colorScheme = "auto"
 	favicon_16 = "/img/favicon_16x16.png"
@@ -43,32 +43,22 @@ enableGitInfo = true
 
 [[params.social]]
 	name = "Github"
-	icon = "fa fa-github fa-2x"
+	icon = "fa-brands fa-github fa-2x"
 	weight = 5
 	url = "https://github.com/jgoguen"
 [[params.social]]
 	name = "Mastodon"
-	icon = "fa fa-mastodon fa-2x"
+	icon = "fa-brands fa-mastodon fa-2x"
 	weight = 2
 	url = "https://hachyderm.io/@jgoguen"
 [[params.social]]
 	name = "LinkedIn"
-	icon = "fa fa-linkedin fa-2x"
+	icon = "fa-brands fa-linkedin fa-2x"
 	weight = 50
 	url = "https://www.linkedin.com/in/joelgoguen"
 [[params.social]]
-	name = "Buy Me A Coffee"
-	icon = "fa fa-buymeacoffee fa-2x"
-	weight = 97
-	url = "https://www.buymeacoffee.com/jgoguen"
-[[params.social]]
-	name = "Liberapay"
-	icon = "fa fa-liberapay fa-2x"
-	weight = 98
-	url = "https://liberapay.com/jgoguen"
-[[params.social]]
 	name = "PayPal"
-	icon = "fa fa-paypal fa-2x"
+	icon = "fa-brands fa-paypal fa-2x"
 	weight = 99
 	url = "https://paypal.me/jtgoguen"
 
