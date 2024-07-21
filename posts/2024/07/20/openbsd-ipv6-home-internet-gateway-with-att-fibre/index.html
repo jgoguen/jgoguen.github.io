@@ -1,0 +1,307 @@
+<!doctype html><html lang=en><head><title>OpenBSD IPv6 Home Internet Gateway with AT&amp;T Fibre · Heap Overrun
+</title><meta charset=utf-8><meta name=viewport content="width=device-width,initial-scale=1"><meta name=color-scheme content="light dark"><meta name=author content="Joel Goguen"><meta name=description content="Using OpenBSD as a home Internet gateway with AT&amp;T Fibre with IPv6
+support
+"><meta name=keywords content="blog,developer,sysadmin,system administrator,personal,firewall,OpenBSD,Linux"><meta name=twitter:card content="summary"><meta name=twitter:title content="OpenBSD IPv6 Home Internet Gateway with AT&amp;T Fibre"><meta name=twitter:description content="Using OpenBSD as a home Internet gateway with AT&amp;T Fibre with IPv6
+support"><meta property="og:url" content="https://jgoguen.ca/posts/2024/07/20/openbsd-ipv6-home-internet-gateway-with-att-fibre/"><meta property="og:site_name" content="Heap Overrun"><meta property="og:title" content="OpenBSD IPv6 Home Internet Gateway with AT&amp;T Fibre"><meta property="og:description" content="Using OpenBSD as a home Internet gateway with AT&amp;T Fibre with IPv6
+support"><meta property="og:locale" content="en_ca"><meta property="og:type" content="article"><meta property="article:section" content="posts"><meta property="article:published_time" content="2024-07-20T00:00:00+00:00"><meta property="article:modified_time" content="2024-07-21T13:28:47-04:00"><meta property="article:tag" content="OpenBSD"><meta property="article:tag" content="AT&amp;T"><meta property="article:tag" content="Network"><meta property="article:tag" content="Pf"><meta property="article:tag" content="IPv6"><link rel=canonical href=https://jgoguen.ca/posts/2024/07/20/openbsd-ipv6-home-internet-gateway-with-att-fibre/><link rel=preload href=https://jgoguen.ca/fonts/fa-brands-400.woff2 as=font type=font/woff2 crossorigin><link rel=preload href=https://jgoguen.ca/fonts/fa-regular-400.woff2 as=font type=font/woff2 crossorigin><link rel=preload href=https://jgoguen.ca/fonts/fa-solid-900.woff2 as=font type=font/woff2 crossorigin><link rel=stylesheet href=https://jgoguen.ca/css/coder.min.38c4552ac40f9ae3408bad40358f654ebd8804412fe74ed56f2d6c8a7af82dd3.css integrity="sha256-OMRVKsQPmuNAi61ANY9lTr2IBEEv507Vby1sinr4LdM=" crossorigin=anonymous media=screen><link rel=stylesheet href=https://jgoguen.ca/css/coder-dark.min.a00e6364bacbc8266ad1cc81230774a1397198f8cfb7bcba29b7d6fcb54ce57f.css integrity="sha256-oA5jZLrLyCZq0cyBIwd0oTlxmPjPt7y6KbfW/LVM5X8=" crossorigin=anonymous media=screen><link rel=stylesheet href=https://jgoguen.ca/sass/style.min.8d285dfdfa8a048f760ab9b8b4fadc3c232efac15641c1b573a9cc17aed43401.css integrity="sha256-jShd/fqKBI92Crm4tPrcPCMu+sFWQcG1c6nMF67UNAE=" crossorigin=anonymous media=screen><link rel=icon type=image/svg+xml href=https://jgoguen.ca/images/favicon.svg sizes=any><link rel=icon type=image/png href=https://jgoguen.ca/img/favicon_32x32.png sizes=32x32><link rel=icon type=image/png href=https://jgoguen.ca/img/favicon_16x16.png sizes=16x16><link rel=apple-touch-icon href=https://jgoguen.ca/images/apple-touch-icon.png><link rel=apple-touch-icon sizes=180x180 href=https://jgoguen.ca/images/apple-touch-icon.png><link rel=manifest href=https://jgoguen.ca/site.webmanifest><link rel=mask-icon href=https://jgoguen.ca/images/safari-pinned-tab.svg color=#5bbad5><link rel=me href=https://hachyderm.io/@jgoguen><meta name=robots content="noai, noimageai"><meta name=CCBot content="nofollow"><meta name=robots content="noai, noimageai"><meta name=tdm-reservation content="1"></head><body class="preload-transitions colorscheme-auto"><div class=float-container><a id=scroll-to-top class=hidden><i class="fa fa-arrow-up fa-fw" aria-hidden=true></i>
+</a><a id=dark-mode-toggle class=colorscheme-toggle><i class="fa fa-adjust fa-fw" aria-hidden=true></i></a></div><main class=wrapper><nav class=navigation><section class=container><a class=navigation-title href=https://jgoguen.ca/>Heap Overrun
+</a><input type=checkbox id=menu-toggle>
+<label class="menu-button float-right" for=menu-toggle><i class="fa-solid fa-bars fa-fw" aria-hidden=true></i></label><ul class=navigation-list><li class=navigation-item><a class=navigation-link href=https://jgoguen.ca/about>About Me</a></li><li class=navigation-item><a class=navigation-link href=https://jgoguen.ca/docs/resume.pdf>Résumé</a></li><li class=navigation-item><a class=navigation-link href=https://jgoguen.ca/posts>Posts</a></li><li class=navigation-item><a class=navigation-link href=https://jgoguen.ca/contact>Contact Me</a></li></ul></section></nav><div class=content><div id=progress-bar class=hidden aria-hidden=true></div><section class="container post"><article><header><div class=post-title><h1 class=title><a class=title-link href=https://jgoguen.ca/posts/2024/07/20/openbsd-ipv6-home-internet-gateway-with-att-fibre/>OpenBSD IPv6 Home Internet Gateway with AT&amp;T Fibre</a></h1></div><div class=post-meta><div class=date><span class=posted-on><i class="fa fa-calendar" aria-hidden=true></i>
+<time datetime=2024-07-20T00:00:00Z>July 20, 2024
+</time></span><span class=posted-on><i class="fa fa-calendar" aria-hidden=true></i>
+<time datetime=2024-07-21T13:28:47-04:00>Updated: July 21, 2024
+</time></span><span class=reading-time><i class="fa fa-clock-o" aria-hidden=true></i>
+10-minute read</span></div><div class=tags><i class="fa-solid fa-tag" aria-hidden=true></i>
+<span class=tag><a href=https://jgoguen.ca/tags/openbsd/>OpenBSD</a>
+</span><span class=separator>•</span>
+<span class=tag><a href=https://jgoguen.ca/tags/att/>AT&amp;T</a>
+</span><span class=separator>•</span>
+<span class=tag><a href=https://jgoguen.ca/tags/network/>Network</a>
+</span><span class=separator>•</span>
+<span class=tag><a href=https://jgoguen.ca/tags/pf/>Pf</a>
+</span><span class=separator>•</span>
+<span class=tag><a href=https://jgoguen.ca/tags/ipv6/>IPv6</a></span></div></div></header><div><p>When you sign up for Internet service, one thing you&rsquo;re going to get is a home
+gateway. It&rsquo;s going to offer wired and wireless Internet connections plus
+a bunch of other things you may not want and probably won&rsquo;t need. Unfortunately,
+one of the things it&rsquo;s going to offer you is poor performance. The wireless
+network on it may not cover your whole house, and if you&rsquo;re also limited in
+where you can hook it up that could mean poor coverage in the most important
+areas. It&rsquo;s also not built on the best hardware for the job, so when it counts
+the most you may not get the connection speeds you expect. Depending on your
+needs, you may find that the ISP hardware doesn&rsquo;t offer you enough flexibility.
+And, perhaps most importantly, it&rsquo;s not all that secure, and the firewalls can
+be difficult to configure properly.</p><h2 id=before-you-start>Before you start
+<a class=heading-link href=#before-you-start><i class="fa-solid fa-link" aria-hidden=true title="Link to heading"></i>
+<span class=sr-only>Link to heading</span></a></h2><p>Before doing anything, decide:</p><ul><li>Are you comfortable installing and configuring a computer (or more) that will
+become a critical part of your home Internet setup?</li><li>Are you comfortable being technical support if something isn&rsquo;t working
+properly?</li><li>Your ISP is unlikely to give you much support, can you troubleshoot enough to
+prove a problem isn&rsquo;t on your end?</li></ul><h2 id=hardware>Hardware
+<a class=heading-link href=#hardware><i class="fa-solid fa-link" aria-hidden=true title="Link to heading"></i>
+<span class=sr-only>Link to heading</span></a></h2><p>Most ISP home gateways have a way to put them into bridge mode, where a single
+device is directly exposed to the Internet. The AT&amp;T Fibre
+standard gateway, the BGW320, does not have a bridge mode. The closest it has is
+&ldquo;Passthrough&rdquo;, which works well enough for this.</p><p>For the gateway/router, I&rsquo;m using a
+<a href=https://protectli.com/vault-2-port/ class=external-link target=_blank rel=noopener>2-port Protectli vault</a> with 4GB RAM.
+It&rsquo;s a good platform, quiet and fanless, fully supported by OpenBSD out of the
+box. Throughout this article I&rsquo;ll assume you&rsquo;re also using a Protectli device;
+substitute your own device where Protectli is mentioned, and be aware that
+interface names may be different.</p><p>You&rsquo;ll most likely want a switch, and some wireless access points. These can be
+anything you want; I&rsquo;m using a
+<a href=https://store.ui.com/us/en/collections/unifi-switching-utility-poe/products/usw-lite-16-poe class=external-link target=_blank rel=noopener>UniFi 16-port POE+ switch</a>
+with a few
+<a href=https://store.ui.com/us/en/collections/unifi-wifi-flagship-compact/products/u6-lite class=external-link target=_blank rel=noopener>UniFi AP-6-Lite access points</a>.
+If you also want to use UniFi equipment, look through
+<a href=https://store.ui.com/us/en/collections/unifi-switching-utility-poe class=external-link target=_blank rel=noopener>https://store.ui.com/us/en/collections/unifi-switching-utility-poe</a> and
+<a href=https://store.ui.com/us/en/collections/unifi-wifi-flagship-compact class=external-link target=_blank rel=noopener>https://store.ui.com/us/en/collections/unifi-wifi-flagship-compact</a> to see
+what fits your needs.</p><h2 id=installation>Installation
+<a class=heading-link href=#installation><i class="fa-solid fa-link" aria-hidden=true title="Link to heading"></i>
+<span class=sr-only>Link to heading</span></a></h2><p>To begin, install the latest OpenBSD release. I&rsquo;m using OpenBSD 7.5 for this
+article. OpenBSD has an
+<a href=https://www.openbsd.org/faq/faq4.html class=external-link target=_blank rel=noopener>excellent installation guide</a> you can
+follow if needed. The default automatic partition scheme is fine unless you have
+some specific needs.</p><p>After installation is complete, reboot and configure
+<a href=https://man.openbsd.org/doas class=external-link target=_blank rel=noopener><code>doas(1)</code></a>. Remember that, unlike <code>sudo</code>, all
+users who may call <a href=https://man.openbsd.org/doas class=external-link target=_blank rel=noopener><code>doas(1)</code></a> need to pass a
+rule in <a href=https://man.openbsd.org/doas.conf class=external-link target=_blank rel=noopener><code>doas.conf(5)</code></a>:</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-fallback data-lang=fallback><span class=line><span class=cl># cat /etc/doas.conf
+</span></span><span class=line><span class=cl>permit persist :wheel
+</span></span><span class=line><span class=cl>permit nopass root
+</span></span></code></pre></div><p>Make sure your user is added to the <code>wheel</code> group, or replace <code>:wheel</code> with your
+username.</p><h2 id=configuration>Configuration
+<a class=heading-link href=#configuration><i class="fa-solid fa-link" aria-hidden=true title="Link to heading"></i>
+<span class=sr-only>Link to heading</span></a></h2><h3 id=wan-mac-address>WAN MAC Address
+<a class=heading-link href=#wan-mac-address><i class="fa-solid fa-link" aria-hidden=true title="Link to heading"></i>
+<span class=sr-only>Link to heading</span></a></h3><p>You will need the MAC address of the Protectli&rsquo;s WAN interface later on. The
+BGW320 Passthrough mode will need it. Get that now and write it down for later:</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-sh data-lang=sh><span class=line><span class=cl>% ifconfig em0 <span class=p>|</span> grep lladdr <span class=p>|</span> awk <span class=s1>&#39;{ print $2 }&#39;</span>
+</span></span><span class=line><span class=cl>01:23:45:67:89:ab
+</span></span></code></pre></div><h3 id=pf4><code>pf(4)</code>
+<a class=heading-link href=#pf4><i class="fa-solid fa-link" aria-hidden=true title="Link to heading"></i>
+<span class=sr-only>Link to heading</span></a></h3><p>Before configuring anything else, set up a minimal
+<a href=https://man.openbsd.org/pf.conf class=external-link target=_blank rel=noopener><code>pf.conf(5)</code></a>. <code>egress</code> will be the WAN
+interface.</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-gdscript3 data-lang=gdscript3><span class=line><span class=cl><span class=o>%</span> <span class=n>doas</span> <span class=n>cat</span> <span class=o>/</span><span class=n>etc</span><span class=o>/</span><span class=n>pf</span><span class=o>.</span><span class=n>conf</span>
+</span></span><span class=line><span class=cl><span class=n>if_lan</span> <span class=o>=</span> <span class=n>em1</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1># List of martians from https://ipinfo.io/bogon</span>
+</span></span><span class=line><span class=cl><span class=n>table</span> <span class=o>&lt;</span><span class=n>martians</span><span class=o>&gt;</span> <span class=k>const</span> <span class=p>{</span> \
+</span></span><span class=line><span class=cl> <span class=c1># IPv4 bogons</span>
+</span></span><span class=line><span class=cl> <span class=mf>0.0</span><span class=o>.</span><span class=mf>0.0</span><span class=o>/</span><span class=mi>8</span> <span class=mf>10.0</span><span class=o>.</span><span class=mf>0.0</span><span class=o>/</span><span class=mi>8</span> <span class=mf>100.64</span><span class=o>.</span><span class=mf>0.0</span><span class=o>/</span><span class=mi>10</span> <span class=mf>127.0</span><span class=o>.</span><span class=mf>0.0</span><span class=o>/</span><span class=mi>8</span> <span class=mf>169.254</span><span class=o>.</span><span class=mf>0.0</span><span class=o>/</span><span class=mi>16</span> \
+</span></span><span class=line><span class=cl> <span class=mf>172.16</span><span class=o>.</span><span class=mf>0.0</span><span class=o>/</span><span class=mi>12</span> <span class=mf>192.0</span><span class=o>.</span><span class=mf>0.0</span><span class=o>/</span><span class=mi>24</span> <span class=mf>192.0</span><span class=o>.</span><span class=mf>2.0</span><span class=o>/</span><span class=mi>24</span> <span class=mf>192.88</span><span class=o>.</span><span class=mf>99.0</span><span class=o>/</span><span class=mi>24</span> <span class=mf>192.168</span><span class=o>.</span><span class=mf>0.0</span><span class=o>/</span><span class=mi>16</span> \
+</span></span><span class=line><span class=cl> <span class=mf>198.18</span><span class=o>.</span><span class=mf>0.0</span><span class=o>/</span><span class=mi>15</span> <span class=mf>198.51</span><span class=o>.</span><span class=mf>100.0</span><span class=o>/</span><span class=mi>24</span> <span class=mf>203.0</span><span class=o>.</span><span class=mf>113.0</span><span class=o>/</span><span class=mi>24</span> <span class=mf>224.0</span><span class=o>.</span><span class=mf>0.0</span><span class=o>/</span><span class=mi>4</span> \
+</span></span><span class=line><span class=cl> <span class=mf>240.0</span><span class=o>.</span><span class=mf>0.0</span><span class=o>/</span><span class=mi>4</span> \
+</span></span><span class=line><span class=cl> <span class=c1># IPv6 bogons</span>
+</span></span><span class=line><span class=cl> <span class=c1># NOTE: fe80::/10 is an IPv6 bogon, but it must be accepted on egress to</span>
+</span></span><span class=line><span class=cl> <span class=c1># allow for DHCPv6 and ICMPv6</span>
+</span></span><span class=line><span class=cl> <span class=p>::</span><span class=o>/</span><span class=mi>128</span> <span class=p>::</span><span class=o>/</span><span class=mi>96</span> <span class=p>::</span><span class=mi>1</span><span class=o>/</span><span class=mi>128</span> <span class=p>::</span><span class=n>ffff</span><span class=p>:</span><span class=mi>0</span><span class=p>:</span><span class=mi>0</span><span class=o>/</span><span class=mi>96</span> <span class=mi>100</span><span class=p>::</span><span class=o>/</span><span class=mi>64</span> <span class=mi>2001</span><span class=p>:</span><span class=mi>10</span><span class=p>::</span><span class=o>/</span><span class=mi>28</span> <span class=mi>2001</span><span class=p>:</span><span class=n>db8</span><span class=p>::</span><span class=o>/</span><span class=mi>32</span> \
+</span></span><span class=line><span class=cl> <span class=n>fc00</span><span class=p>::</span><span class=o>/</span><span class=mi>7</span> <span class=n>fec0</span><span class=p>::</span><span class=o>/</span><span class=mi>10</span> \
+</span></span><span class=line><span class=cl> <span class=c1># IPv6-to-4 bogons</span>
+</span></span><span class=line><span class=cl> <span class=mi>2002</span><span class=p>::</span><span class=o>/</span><span class=mi>24</span> <span class=mi>2002</span><span class=p>:</span><span class=n>a00</span><span class=p>::</span><span class=o>/</span><span class=mi>24</span> <span class=mi>2002</span><span class=p>:</span><span class=mi>7</span><span class=n>f00</span><span class=p>::</span><span class=o>/</span><span class=mi>24</span> <span class=mi>2002</span><span class=p>:</span><span class=n>a9fe</span><span class=p>::</span><span class=o>/</span><span class=mi>32</span> <span class=mi>2002</span><span class=p>:</span><span class=n>ac10</span><span class=p>::</span><span class=o>/</span><span class=mi>28</span> \
+</span></span><span class=line><span class=cl> <span class=mi>2002</span><span class=p>:</span><span class=n>c000</span><span class=p>::</span><span class=o>/</span><span class=mi>40</span> <span class=mi>2002</span><span class=p>:</span><span class=n>c000</span><span class=p>:</span><span class=mi>200</span><span class=p>::</span><span class=o>/</span><span class=mi>40</span> <span class=mi>2002</span><span class=p>:</span><span class=n>c0a8</span><span class=p>::</span><span class=o>/</span><span class=mi>32</span> <span class=mi>2002</span><span class=p>:</span><span class=n>c612</span><span class=p>::</span><span class=o>/</span><span class=mi>31</span> \
+</span></span><span class=line><span class=cl> <span class=mi>2002</span><span class=p>:</span><span class=n>c633</span><span class=p>:</span><span class=mi>6400</span><span class=p>::</span><span class=o>/</span><span class=mi>40</span> <span class=mi>2002</span><span class=p>:</span><span class=n>cb00</span><span class=p>:</span><span class=mi>7100</span><span class=p>::</span><span class=o>/</span><span class=mi>40</span> <span class=mi>2002</span><span class=p>:</span><span class=n>e000</span><span class=p>::</span><span class=o>/</span><span class=mi>20</span> \
+</span></span><span class=line><span class=cl> <span class=mi>2002</span><span class=p>:</span><span class=n>f000</span><span class=p>::</span><span class=o>/</span><span class=mi>20</span> <span class=mi>2002</span><span class=p>:</span><span class=n>ffff</span><span class=p>:</span><span class=n>ffff</span><span class=p>::</span><span class=o>/</span><span class=mi>48</span> \
+</span></span><span class=line><span class=cl> <span class=c1># Teredo bogons</span>
+</span></span><span class=line><span class=cl> <span class=mi>2001</span><span class=p>::</span><span class=o>/</span><span class=mi>40</span> <span class=mi>2001</span><span class=p>:</span><span class=mi>0</span><span class=p>:</span><span class=n>a00</span><span class=p>::</span><span class=o>/</span><span class=mi>40</span> <span class=mi>2001</span><span class=p>:</span><span class=mi>0</span><span class=p>:</span><span class=mi>7</span><span class=n>f00</span><span class=p>::</span><span class=o>/</span><span class=mi>40</span> <span class=mi>2001</span><span class=p>:</span><span class=mi>0</span><span class=p>:</span><span class=n>a9fe</span><span class=p>::</span><span class=o>/</span><span class=mi>48</span> \
+</span></span><span class=line><span class=cl> <span class=mi>2001</span><span class=p>:</span><span class=mi>0</span><span class=p>:</span><span class=n>ac10</span><span class=p>::</span><span class=o>/</span><span class=mi>44</span> <span class=mi>2001</span><span class=p>:</span><span class=mi>0</span><span class=p>:</span><span class=n>c000</span><span class=p>::</span><span class=o>/</span><span class=mi>56</span> <span class=mi>2001</span><span class=p>:</span><span class=mi>0</span><span class=p>:</span><span class=n>c000</span><span class=p>:</span><span class=mi>200</span><span class=p>::</span><span class=o>/</span><span class=mi>56</span> \
+</span></span><span class=line><span class=cl> <span class=mi>2001</span><span class=p>:</span><span class=mi>0</span><span class=p>:</span><span class=n>c0a8</span><span class=p>::</span><span class=o>/</span><span class=mi>48</span> <span class=mi>2001</span><span class=p>:</span><span class=mi>0</span><span class=p>:</span><span class=n>c612</span><span class=p>::</span><span class=o>/</span><span class=mi>47</span> <span class=mi>2001</span><span class=p>:</span><span class=mi>0</span><span class=p>:</span><span class=n>c633</span><span class=p>:</span><span class=mi>6400</span><span class=p>::</span><span class=o>/</span><span class=mi>56</span> \
+</span></span><span class=line><span class=cl> <span class=mi>2001</span><span class=p>:</span><span class=mi>0</span><span class=p>:</span><span class=n>cb00</span><span class=p>:</span><span class=mi>7100</span><span class=p>::</span><span class=o>/</span><span class=mi>56</span> <span class=mi>2001</span><span class=p>:</span><span class=mi>0</span><span class=p>:</span><span class=n>e000</span><span class=p>::</span><span class=o>/</span><span class=mi>36</span> <span class=mi>2001</span><span class=p>:</span><span class=mi>0</span><span class=p>:</span><span class=n>f000</span><span class=p>::</span><span class=o>/</span><span class=mi>36</span> \
+</span></span><span class=line><span class=cl> <span class=mi>2001</span><span class=p>:</span><span class=mi>0</span><span class=p>:</span><span class=n>ffff</span><span class=p>:</span><span class=n>ffff</span><span class=p>::</span><span class=o>/</span><span class=mi>64</span> \
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=n>set</span> <span class=n>block</span><span class=o>-</span><span class=n>policy</span> <span class=k>return</span>
+</span></span><span class=line><span class=cl><span class=n>set</span> <span class=n>skip</span> <span class=n>on</span> <span class=n>lo</span>
+</span></span><span class=line><span class=cl><span class=n>set</span> <span class=n>reassemble</span> <span class=n>yes</span> <span class=n>no</span><span class=o>-</span><span class=n>df</span>
+</span></span><span class=line><span class=cl><span class=n>set</span> <span class=n>loginterface</span> <span class=n>egress</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=n>match</span> <span class=ow>in</span> <span class=n>all</span> <span class=n>scrub</span> <span class=p>(</span><span class=n>no</span><span class=o>-</span><span class=n>df</span> <span class=n>random</span><span class=o>-</span><span class=n>id</span> <span class=n>reassemble</span> <span class=n>tcp</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1># NOTE: If you need to make game consoles work, add static-port to the end of</span>
+</span></span><span class=line><span class=cl><span class=c1># this line.</span>
+</span></span><span class=line><span class=cl><span class=n>match</span> <span class=n>out</span> <span class=n>on</span> <span class=n>egress</span> <span class=n>inet</span> <span class=n>from</span> <span class=o>!</span><span class=p>(</span><span class=n>egress</span><span class=p>:</span><span class=n>network</span><span class=p>)</span> <span class=n>to</span> <span class=n>any</span> <span class=n>nat</span><span class=o>-</span><span class=n>to</span> <span class=p>(</span><span class=n>egress</span><span class=p>:</span><span class=mi>0</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1># Port build user does not need network. Though as a gateway/firewall, hopefully</span>
+</span></span><span class=line><span class=cl><span class=c1># you aren&#39;t compiling anything at all here.</span>
+</span></span><span class=line><span class=cl><span class=n>block</span> <span class=n>drop</span> <span class=n>out</span> <span class=nb>log</span> <span class=n>quick</span> <span class=n>proto</span> <span class=p>{</span><span class=n>tcp</span> <span class=n>udp</span><span class=p>}</span> <span class=n>user</span> <span class=n>_pbuild</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1># Allow traffic to the AT&amp;T gateway device. quick rules are used here because</span>
+</span></span><span class=line><span class=cl><span class=c1># the BGW320 IP address is in the list of bogons but traffic will need to</span>
+</span></span><span class=line><span class=cl><span class=c1># traverse the WAN interface.</span>
+</span></span><span class=line><span class=cl><span class=k>pass</span> <span class=ow>in</span> <span class=n>quick</span> <span class=n>on</span> <span class=o>$</span><span class=n>if_lan</span> <span class=n>from</span> <span class=p>(</span><span class=o>$</span><span class=n>if_lan</span><span class=p>:</span><span class=n>network</span><span class=p>)</span> <span class=n>to</span> <span class=mf>192.168</span><span class=o>.</span><span class=mf>1.254</span> <span class=n>modulate</span> <span class=n>state</span>
+</span></span><span class=line><span class=cl><span class=k>pass</span> <span class=n>out</span> <span class=n>quick</span> <span class=n>on</span> <span class=n>egress</span> <span class=n>from</span> <span class=n>any</span> <span class=n>to</span> <span class=mf>192.168</span><span class=o>.</span><span class=mf>1.254</span> <span class=n>modulate</span> <span class=n>state</span>
+</span></span><span class=line><span class=cl><span class=c1># This rule primarily covers DHCP and ICMP.</span>
+</span></span><span class=line><span class=cl><span class=k>pass</span> <span class=ow>in</span> <span class=n>quick</span> <span class=n>on</span> <span class=n>egress</span> <span class=n>from</span> <span class=mf>192.168</span><span class=o>.</span><span class=mf>1.254</span> <span class=n>to</span> <span class=n>any</span> <span class=n>modulate</span> <span class=n>state</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1># The WAN interface has no business sending traffic to or from addresses not</span>
+</span></span><span class=line><span class=cl><span class=c1># routable on the global public Internet.</span>
+</span></span><span class=line><span class=cl><span class=n>block</span> <span class=n>drop</span> <span class=ow>in</span> <span class=n>quick</span> <span class=n>on</span> <span class=n>egress</span> <span class=n>from</span> <span class=o>&lt;</span><span class=n>martians</span><span class=o>&gt;</span> <span class=n>to</span> <span class=n>any</span>
+</span></span><span class=line><span class=cl><span class=n>block</span> <span class=n>drop</span> <span class=n>out</span> <span class=n>quick</span> <span class=n>on</span> <span class=n>egress</span> <span class=n>from</span> <span class=n>any</span> <span class=n>to</span> <span class=o>&lt;</span><span class=n>martians</span><span class=o>&gt;</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1># Default deny all incoming traffic, default allow all outgoing traffic.</span>
+</span></span><span class=line><span class=cl><span class=n>block</span> <span class=k>return</span> <span class=n>all</span>
+</span></span><span class=line><span class=cl><span class=k>pass</span> <span class=n>out</span> <span class=n>modulate</span> <span class=n>state</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1># ICMP is critical for IPv6 networks, and on IPv4 networks there&#39;s rarely a</span>
+</span></span><span class=line><span class=cl><span class=c1># good reason to restrict it like people do. Especially on a home network. If</span>
+</span></span><span class=line><span class=cl><span class=c1># you insist on restricting ICMP, the minimum ICMP types are echoreq for ICMPv4</span>
+</span></span><span class=line><span class=cl><span class=c1># and echoreq, neighbrsol, neighbradv, routeradv, and routersol for ICMPv6.</span>
+</span></span><span class=line><span class=cl><span class=k>pass</span> <span class=ow>in</span> <span class=n>on</span> <span class=n>egress</span> <span class=n>inet</span> <span class=n>proto</span> <span class=n>icmp</span> <span class=n>to</span> <span class=p>(</span><span class=n>egress</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=k>pass</span> <span class=ow>in</span> <span class=n>on</span> <span class=n>egress</span> <span class=n>inet6</span> <span class=n>proto</span> <span class=n>icmp6</span> <span class=n>to</span> <span class=p>{</span> <span class=p>(</span><span class=n>egress</span><span class=p>)</span> <span class=n>ff02</span><span class=p>::</span><span class=mi>1</span><span class=o>/</span><span class=mi>16</span> <span class=n>fe80</span><span class=p>::</span><span class=o>/</span><span class=mi>10</span> <span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1># We&#39;re doing NAT and DHCP/SLAAC, so ICMP on the LAN side is also critical.</span>
+</span></span><span class=line><span class=cl><span class=k>pass</span> <span class=ow>in</span> <span class=n>on</span> <span class=o>!</span><span class=n>egress</span> <span class=n>inet</span> <span class=n>proto</span> <span class=n>icmp</span>
+</span></span><span class=line><span class=cl><span class=k>pass</span> <span class=ow>in</span> <span class=n>on</span> <span class=o>!</span><span class=n>egress</span> <span class=n>inet6</span> <span class=n>proto</span> <span class=n>icmp6</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1># Allow DHCP and DHCPv6 from WAN.</span>
+</span></span><span class=line><span class=cl><span class=k>pass</span> <span class=ow>in</span> <span class=n>on</span> <span class=n>egress</span> <span class=n>inet</span> <span class=n>proto</span> <span class=n>udp</span> <span class=n>from</span> <span class=n>port</span> <span class=n>bootps</span> <span class=n>to</span> <span class=n>port</span> <span class=n>bootpc</span>
+</span></span><span class=line><span class=cl><span class=k>pass</span> <span class=n>out</span> <span class=n>on</span> <span class=n>egress</span> <span class=n>inet</span> <span class=n>proto</span> <span class=n>udp</span> <span class=n>from</span> <span class=n>port</span> <span class=n>bootpc</span> <span class=n>to</span> <span class=n>port</span> <span class=n>bootps</span>
+</span></span><span class=line><span class=cl><span class=k>pass</span> <span class=ow>in</span> <span class=n>on</span> <span class=n>egress</span> <span class=n>inet6</span> <span class=n>proto</span> <span class=n>udp</span> <span class=n>from</span> <span class=n>fe80</span><span class=p>::</span><span class=o>/</span><span class=mi>10</span> <span class=n>port</span> <span class=n>dhcpv6</span><span class=o>-</span><span class=n>server</span> <span class=n>to</span> <span class=n>fe80</span><span class=p>::</span><span class=o>/</span><span class=mi>10</span> <span class=n>port</span> <span class=n>dhcpv6</span><span class=o>-</span><span class=n>client</span> <span class=n>no</span> <span class=n>state</span>
+</span></span><span class=line><span class=cl><span class=k>pass</span> <span class=n>out</span> <span class=n>on</span> <span class=n>egress</span> <span class=n>inet6</span> <span class=n>proto</span> <span class=n>udp</span> <span class=n>from</span> <span class=n>fe80</span><span class=p>::</span><span class=o>/</span><span class=mi>10</span> <span class=n>port</span> <span class=n>dhcpv6</span><span class=o>-</span><span class=n>client</span> <span class=n>to</span> <span class=n>fe80</span><span class=p>::</span><span class=o>/</span><span class=mi>10</span> <span class=n>port</span> <span class=n>dhcpv6</span><span class=o>-</span><span class=n>server</span> <span class=n>no</span> <span class=n>state</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1># Allow DHCP from LAN (SLAAC is ICMP-based).</span>
+</span></span><span class=line><span class=cl><span class=k>pass</span> <span class=ow>in</span> <span class=n>on</span> <span class=o>$</span><span class=n>if_lan</span> <span class=n>inet</span> <span class=n>proto</span> <span class=n>udp</span> <span class=n>from</span> <span class=n>port</span> <span class=n>bootpc</span> <span class=n>to</span> <span class=n>port</span> <span class=n>bootps</span>
+</span></span><span class=line><span class=cl><span class=k>pass</span> <span class=n>out</span> <span class=n>on</span> <span class=o>$</span><span class=n>if_lan</span> <span class=n>inet</span> <span class=n>proto</span> <span class=n>udp</span> <span class=n>from</span> <span class=n>port</span> <span class=n>bootps</span> <span class=n>to</span> <span class=n>port</span> <span class=n>bootpc</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1># Allow SSH in from LAN for later configuration and maintenance.</span>
+</span></span><span class=line><span class=cl><span class=k>pass</span> <span class=ow>in</span> <span class=n>on</span> <span class=o>$</span><span class=n>if_lan</span> <span class=n>proto</span> <span class=n>tcp</span> <span class=n>from</span> <span class=p>(</span><span class=o>$</span><span class=n>if_lan</span><span class=p>:</span><span class=n>network</span><span class=p>)</span> <span class=n>to</span> <span class=p>(</span><span class=o>$</span><span class=n>if_lan</span><span class=p>)</span> <span class=n>port</span> <span class=mi>22</span> <span class=n>modulate</span> <span class=n>state</span>
+</span></span></code></pre></div><p>Always verify your <a href=https://man.openbsd.org/pf.conf class=external-link target=_blank rel=noopener><code>pf.conf(5)</code></a> changes, then
+apply the new rules:</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-sh data-lang=sh><span class=line><span class=cl>% doas pfctl -nf /etc/pf.conf
+</span></span><span class=line><span class=cl>% doas pfctl -F rules -f /etc/pf.conf
+</span></span></code></pre></div><h3 id=enable-forwarding-packets>Enable forwarding packets
+<a class=heading-link href=#enable-forwarding-packets><i class="fa-solid fa-link" aria-hidden=true title="Link to heading"></i>
+<span class=sr-only>Link to heading</span></a></h3><p>Normally, packets can&rsquo;t be forwarded between interfaces. We need to do exactly
+that to use the Protectli as a gateway device though. Add these two lines to
+<a href=https://man.openbsd.org/sysctl.conf class=external-link target=_blank rel=noopener><code>sysctl.conf(5)</code></a>` to enable packet
+forwarding:</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-fallback data-lang=fallback><span class=line><span class=cl>net.inet.ip.forwarding=1
+</span></span><span class=line><span class=cl>net.inet6.ip6.forwarding=1
+</span></span></code></pre></div><p>This will take effect after the next reboot. To apply the changes immediately,
+run:</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-sh data-lang=sh><span class=line><span class=cl>% doas sysctl net.inet.ip.forwarding<span class=o>=</span><span class=m>1</span> net.inet6.ip6.forwarding<span class=o>=</span><span class=m>1</span>
+</span></span></code></pre></div><h3 id=network-interfaces>Network Interfaces
+<a class=heading-link href=#network-interfaces><i class="fa-solid fa-link" aria-hidden=true title="Link to heading"></i>
+<span class=sr-only>Link to heading</span></a></h3><p>Configure your Ethernet interfaces using the
+<a href=https://man.openbsd.org/hostname.if class=external-link target=_blank rel=noopener><code>hostname.if(5)</code></a> files. The WAN interface
+is <code>em0</code>, the LAN interface is <code>em1</code>. <code>/etc/hostname.em0</code> requires only two easy
+lines:</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-text data-lang=text><span class=line><span class=cl>% cat /etc/hostname.em0
+</span></span><span class=line><span class=cl>inet autoconf
+</span></span><span class=line><span class=cl>up
+</span></span></code></pre></div><p>You might be tempted to include <code>inet6 autoconf</code> here, but don&rsquo;t. IPv6 will be
+configured later, in a way that allows requesting an IPv6 prefix via Prefix
+Delegation and advertising that IPv6 prefix on the internal network.</p><p><code>/etc/hostname.em1</code> is similarly easy. This time, although IPv6 will be
+configured later, an <code>inet6 autoconf</code> line is required this time so
+<a href=https://man.openbsd.org/slaacd class=external-link target=_blank rel=noopener><code>slaacd(8)</code></a> will advertise on the interface.
+I also include an alias for the IPv6 Unique Local Addresses prefix I advertise
+on my LAN (pick anything within fd00::/8):</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-text data-lang=text><span class=line><span class=cl>% cat /etc/hostname.em1
+</span></span><span class=line><span class=cl>inet 10.0.0.1 255.255.255.0 10.0.0.255
+</span></span><span class=line><span class=cl>inet6 autoconf
+</span></span><span class=line><span class=cl>inet6 alias fd01:2345:6789:abcd::1 64
+</span></span><span class=line><span class=cl>up
+</span></span></code></pre></div><p>Change the <code>inet</code> and <code>inet6 alias</code> lines to match your own preferred network
+addressing.</p><h3 id=internal-ipv4-addressing-with-dhcpd8>Internal IPv4 addressing with <code>dhcpd(8)</code>
+<a class=heading-link href=#internal-ipv4-addressing-with-dhcpd8><i class="fa-solid fa-link" aria-hidden=true title="Link to heading"></i>
+<span class=sr-only>Link to heading</span></a></h3><p>Next, set up <a href=https://man.openbsd.org/dhcpd class=external-link target=_blank rel=noopener><code>dhcpd(8)</code></a> so clients on the LAN
+can get IPv4 addresses. A minimal
+<a href=https://man.openbsd.org/dhcpd.conf class=external-link target=_blank rel=noopener><code>dhcpd.conf(5)</code></a>:</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-fallback data-lang=fallback><span class=line><span class=cl>% cat /etc/dhcpd.conf
+</span></span><span class=line><span class=cl>option domain-name-servers 8.8.8.8 8.8.4.4;
+</span></span><span class=line><span class=cl>default-lease-time 86400;
+</span></span><span class=line><span class=cl>max-lease-time 86400;
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>subnet 10.0.0.0 netmask 255.255.255.0 {
+</span></span><span class=line><span class=cl>  option routers 10.0.0.1;
+</span></span><span class=line><span class=cl>  range 10.0.0.100 10.0.0.199;
+</span></span><span class=line><span class=cl>}
+</span></span></code></pre></div><p>This will allow up to 100 clients to request an IPv4 address, and leave room for
+any static IP address assignment you might need. Enable and start
+<a href=https://man.openbsd.org/dhcpd class=external-link target=_blank rel=noopener><code>dhcpd(8)</code></a>:</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-sh data-lang=sh><span class=line><span class=cl>% doas rcctl <span class=nb>enable</span> dhcpd
+</span></span><span class=line><span class=cl>% doas rcctl start dhcpd
+</span></span></code></pre></div><h3 id=configure-the-bgw320>Configure the BGW320
+<a class=heading-link href=#configure-the-bgw320><i class="fa-solid fa-link" aria-hidden=true title="Link to heading"></i>
+<span class=sr-only>Link to heading</span></a></h3><p>If you&rsquo;ve previously disabled them, you must first enable
+<a href=http://192.168.1.254/cgi-bin/dhcpserver.ha class=external-link target=_blank rel=noopener>DHCP</a> and
+<a href=http://192.168.1.254/cgi-bin/ip6lan.ha class=external-link target=_blank rel=noopener>DHCPv6</a>
+(all options).</p><p>With a minimal <a href=https://man.openbsd.org/pf.conf class=external-link target=_blank rel=noopener><code>pf.conf(5)</code></a> and internal DHCP
+working, it&rsquo;s time to connect to the BGW320. From a computer on the BGW320&rsquo;s
+network, go to <a href=http://192.168.1.254/cgi-bin/ippass.ha class=external-link target=_blank rel=noopener>http://192.168.1.254/cgi-bin/ippass.ha</a>. You will need the
+device passcode, which is printed on the back of the gateway. Make the following
+changes, remembering that some changes may reload the page to enable the next
+set:</p><ul><li>Change &ldquo;Allocation Mode&rdquo; to &ldquo;Passthrough&rdquo;</li><li>Change &ldquo;Passthrough Mode&rdquo; to &ldquo;DHCPS-fixed&rdquo;</li><li>For &ldquo;Passthrough Fixed MAC Address&rdquo;, enter the MAC address of the WAN
+interface you recorded earlier in &ldquo;Manual Entry&rdquo;.</li></ul><p>Click &ldquo;Save&rdquo; to make changes. At this point, you can disconnect all devices from
+the BGW320. Plug the Protectli&rsquo;s WAN port in to the BGW320&rsquo;s LAN port 1 and
+power it on. Plug your switch into the Protectli&rsquo;s LAN port and your computer
+into the switch. Log in to the Protectli via SSH. You should, at this point, see
+a public IPv4 address assigned to <code>em0</code> and be able to ping something external
+from both the Protectli gateway and your computer. This is why we set up
+<a href=https://man.openbsd.org/pf.conf class=external-link target=_blank rel=noopener><code>pf.conf(5)</code></a> so early, you do not want to
+have something exposed to the public Internet without proper protection!</p><h3 id=external-ipv6-addresses-with-dhcpcd>External IPv6 addresses with <code>dhcpcd</code>
+<a class=heading-link href=#external-ipv6-addresses-with-dhcpcd><i class="fa-solid fa-link" aria-hidden=true title="Link to heading"></i>
+<span class=sr-only>Link to heading</span></a></h3><p><code>dhcpcd</code> is what will handle IPv6 on the Internet side. It must first be
+installed:</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-sh data-lang=sh><span class=line><span class=cl>% doas pkg_add dhcpcd
+</span></span></code></pre></div><p>Then create <code>/etc/dhcpcd.conf</code>. What has worked for me is:</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-fallback data-lang=fallback><span class=line><span class=cl>% cat /etc/dhcpcd.conf
+</span></span><span class=line><span class=cl>nooption domain_name_servers
+</span></span><span class=line><span class=cl>nooption domain_name
+</span></span><span class=line><span class=cl>nooption domain_search
+</span></span><span class=line><span class=cl>nooption host_name
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>ipv6only
+</span></span><span class=line><span class=cl>noipv6rs
+</span></span><span class=line><span class=cl>duid
+</span></span><span class=line><span class=cl>persistent
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>option rapid_commit
+</span></span><span class=line><span class=cl>option interface_mtu
+</span></span><span class=line><span class=cl>require dhcp_server_identifier
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl># slaac private
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>script /usr/bin/true
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>vendorclassid
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>allowinterfaces em0 em1
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>interface em0
+</span></span><span class=line><span class=cl> ipv6rs
+</span></span><span class=line><span class=cl> ia_na 1
+</span></span><span class=line><span class=cl> ia_pd 2 em1/0
+</span></span></code></pre></div><p>Finally, enable and start <code>dhcpcd</code>:</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-sh data-lang=sh><span class=line><span class=cl>% doas rcctl <span class=nb>enable</span> dhcpcd
+</span></span><span class=line><span class=cl>% doas rcctl start dhcpcd
+</span></span></code></pre></div><p><a href=https://man.openbsd.org/slaacd class=external-link target=_blank rel=noopener><code>slaacd(8)</code></a> is also needed. AT&amp;T hands out
+addresses using DHCPv6, which is handled by <code>dhcpcd</code>, but routing information
+comes from Router Advertisements, which requires
+<a href=https://man.openbsd.org/slaacd class=external-link target=_blank rel=noopener><code>slaacd(8)</code></a>:</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-sh data-lang=sh><span class=line><span class=cl>% doas rcctl <span class=nb>enable</span> slaacd
+</span></span><span class=line><span class=cl>% doas rcctl start slaacd
+</span></span></code></pre></div><p>At this point, you should see at least one public IPv6 address on <code>em0</code> and
+<code>em1</code> should have both a public IPv6 address plus the address you defined in
+<code>hostname.em1</code>. You should be able to verify IPv6 connectivity from the OpenBSD
+gateway with <code>ping6 www.google.com</code>.</p><h3 id=internal-ipv6-addresses-with-rad8>Internal IPv6 addresses with <code>rad(8)</code>
+<a class=heading-link href=#internal-ipv6-addresses-with-rad8><i class="fa-solid fa-link" aria-hidden=true title="Link to heading"></i>
+<span class=sr-only>Link to heading</span></a></h3><p>Now that you have an IPv6 prefix delegated, you need to advertise that prefix on
+your internal network. <a href=https://man.openbsd.org/rad class=external-link target=_blank rel=noopener><code>rad(8)</code></a> allows clients on
+your internal network to request IPv6 addresses using SLAAC. A minimal
+<a href=https://man.openbsd.org/rad.conf class=external-link target=_blank rel=noopener><code>rad.conf(5)</code></a>:</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-fallback data-lang=fallback><span class=line><span class=cl>% cat /etc/rad.conf
+</span></span><span class=line><span class=cl>other configuration no
+</span></span><span class=line><span class=cl>interface em1
+</span></span></code></pre></div><p>Enable and start <a href=https://man.openbsd.org/rad class=external-link target=_blank rel=noopener><code>rad(8)</code></a>:</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-sh data-lang=sh><span class=line><span class=cl>% doas rcctl <span class=nb>enable</span> rad
+</span></span><span class=line><span class=cl>% doas rcctl start rad
+</span></span></code></pre></div><p><a href=https://man.openbsd.org/rad class=external-link target=_blank rel=noopener><code>rad(8)</code></a> will automatically advertise all
+prefixes on the interface it&rsquo;s listening on. Since you have a prefix from the
+public IPv6 Prefix Delegation as well as a ULA prefix, all clients requesting
+IPv6 addresses using SLAAC will get at least two addresses, one from each
+prefix. IPv6 clients should pick up their addresses automatically shortly after
+starting <a href=https://man.openbsd.org/rad class=external-link target=_blank rel=noopener><code>rad(8)</code></a>.</p><h2 id=trust-but-verify>Trust, but Verify
+<a class=heading-link href=#trust-but-verify><i class="fa-solid fa-link" aria-hidden=true title="Link to heading"></i>
+<span class=sr-only>Link to heading</span></a></h2><p>At this point, you should be able to:</p><ul><li>Run <code>ifconfig em0</code> on your new gateway and see one IPv4 address and at least
+two IPv6 addresses.</li><li>Run <code>ifconfig em1</code> on your new gateway and see a different IPv4 address and
+at least two different IPv6 addresses.</li><li>Run <code>ping6 www.google.com</code> from both your new gateway and a LAN client and see
+responses.</li><li>Check the IP addresses assigned to any internal LAN client and see both an
+IPv4 address and at least one IPv6 address in the same range as the address
+from the output of <code>ifconfig em1</code>.</li></ul><h2 id=whats-next>What&rsquo;s Next?
+<a class=heading-link href=#whats-next><i class="fa-solid fa-link" aria-hidden=true title="Link to heading"></i>
+<span class=sr-only>Link to heading</span></a></h2><p>At this point you have taken some load off your ISP&rsquo;s Internet gateway device
+and put your LAN behind a secure and trustworthy firewall. This is already
+a significant improvement in the security and flexibility of your home network,
+and is a fine place to stop if you&rsquo;re satisfied already. If so, great! If you
+want to try one more thing, my
+<a href=https://jgoguen.ca/posts/2024/07/20/openbsd-dns-server-with-unbound-and-statistics/>next post</a> will show how to configure
+<a href=https://man.openbsd.org/unbound class=external-link target=_blank rel=noopener><code>unbound(8)</code></a> as a local caching recursive DNS
+resolver.</p></div><footer></footer></article></section></div><footer class=footer><section class=container>©
+2013 -
+2024
+Joel Goguen
+·
+Powered by <a href=https://gohugo.io/ target=_blank rel=noopener>Hugo</a> & <a href=https://github.com/luizdepra/hugo-coder/ target=_blank rel=noopener>Coder</a>.</section></footer></main><script src=https://jgoguen.ca/js/coder.min.6ae284be93d2d19dad1f02b0039508d9aab3180a12a06dcc71b0b0ef7825a317.js integrity="sha256-auKEvpPS0Z2tHwKwA5UI2aqzGAoSoG3McbCw73gloxc="></script><script src=https://jgoguen.ca/js/scrollbar.min.1eea81363c83b9d090626bcfd7b529574d2f1b23ddd40a5c76aea3dfd8810712.js integrity="sha256-HuqBNjyDudCQYmvP17UpV00vGyPd1Apcdq6j39iBBxI="></script></body></html>
