@@ -181,6 +181,9 @@ pass out on egress inet6 proto udp from fe80::/10 port dhcpv6-client to fe80::/1
 pass in on $if_lan inet proto udp from port bootpc to port bootps
 pass out on $if_lan inet proto udp from port bootps to port bootpc
 
+# Allow LAN outbound to the public Internet
+pass in on $if_lan from any to !<martians> modulate state
+
 # Allow SSH in from LAN for later configuration and maintenance.
 pass in on $if_lan proto tcp from ($if_lan:network) to ($if_lan) port 22 modulate state
 ```
@@ -415,3 +418,8 @@ want to try one more thing, my
 [next post]({{<relref "openbsd-unbound-dns-server">}}) will show how to configure
 [`unbound(8)`](https://man.openbsd.org/unbound) as a local caching recursive DNS
 resolver.
+
+## Changelog
+
+- 2024-08-02: A helpful reader pointed out that I missed a PF rule to allow
+  outbound traffic from the LAN to the public Internet. That's been added.
