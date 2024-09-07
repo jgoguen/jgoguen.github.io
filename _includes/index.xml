@@ -1,3 +1,12 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>_Includes on Heap Overrun</title><link>https://jgoguen.ca/_includes/</link><description>Recent content in _Includes on Heap Overrun</description><generator>Hugo</generator><language>en-ca</language><atom:link href="https://jgoguen.ca/_includes/index.xml" rel="self" type="application/rss+xml"/><item><title/><link>https://jgoguen.ca/_includes/_about/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://jgoguen.ca/_includes/_about/</guid><description>I am an InfoSec generalist, software developer, and system administrator for CentOS and OpenBSD servers. I have a strong track record of effectively applying established standards and best practices to my work. I take pride in delivering high-quality results and consistently improving both back-end infrastructure and the end-user experience.
-I live in the United States where I&amp;rsquo;m employed as a Site Reliability Engineer with MongoDB.
-As a software developer, I am familiar with shell scripting, Python 3, and Golang.</description></item></channel></rss>
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>_Includes on Heap Overrun</title><link>https://jgoguen.ca/_includes/</link><description>Recent content in _Includes on Heap Overrun</description><generator>Hugo</generator><language>en-ca</language><atom:link href="https://jgoguen.ca/_includes/index.xml" rel="self" type="application/rss+xml"/><item><title/><link>https://jgoguen.ca/_includes/_about/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://jgoguen.ca/_includes/_about/</guid><description>&lt;p>I am an InfoSec generalist, software developer, and system administrator for
+CentOS and OpenBSD servers. I have a strong track record of effectively applying
+established standards and best practices to my work. I take pride in delivering
+high-quality results and consistently improving both back-end infrastructure and
+the end-user experience.&lt;/p>
+&lt;p>I live in the United States where I&amp;rsquo;m employed as a Site Reliability Engineer with
+MongoDB.&lt;/p>
+&lt;p>As a software developer, I am familiar with shell scripting, Python 3, and
+Golang. I can also work with C, Java, or Perl, and I can learn new languages as
+needed. Having a strong information security background allows me to identify
+potential security vulnerabilities and help teams solve the overall security
+issues they face in a consistent and reusable way.&lt;/p></description></item></channel></rss>
