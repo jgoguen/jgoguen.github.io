@@ -6,8 +6,6 @@ theme = "coder"
 
 canonifyurls = true
 
-paginate = 20
-
 pygmentsstyle = "bw"
 pygmentscodefences = true
 pygmentscodefencesguesssyntax = true
@@ -27,6 +25,9 @@ posts = '/posts/:year/:month/:day/:title/'
 [markup.highlight]
 noClasses = false
 
+[pagination]
+pagerSize = 20
+
 [params]
 author = "Joel Goguen"
 since = 2013
@@ -36,6 +37,7 @@ keywords = "blog,developer,sysadmin,system administrator,personal,firewall,OpenB
 
 colorScheme = "auto"
 logo = "/img/logo.jpg"
+images = ["/img/logo.jpg"]
 favicon_16 = "/img/favicon_16x16.png"
 favicon_32 = "/img/favicon_32x32.png"
 
