@@ -15,73 +15,74 @@ pygmentscodefencesguesssyntax = true
 enableGitInfo = true
 
 [frontmatter]
-	date = ['date', 'publishDate', 'lastmod']
-	expiryDate = ['expiryDate']
-	lastmod = [':git', 'lastmod', 'date', 'publishDate']
-	publishDate = ['publishDate', 'date']
+date = ['date', 'publishDate', 'lastmod']
+expiryDate = ['expiryDate']
+lastmod = [':git', 'lastmod', 'date', 'publishDate']
+publishDate = ['publishDate', 'date']
 
 [permalinks]
-	posts = '/posts/:year/:month/:day/:title/'
+posts = '/posts/:year/:month/:day/:title/'
 
 [markup]
-	[markup.highlight]
-		noClasses = false
+[markup.highlight]
+noClasses = false
 
 [params]
-	author = "Joel Goguen"
-	since = 2013
-	info = "Father, InfoSec, System Administrator, Software Developer"
-	description = "This is the personal website for Joel Goguen"
-	keywords = "blog,developer,sysadmin,system administrator,personal,firewall,OpenBSD,Linux"
+author = "Joel Goguen"
+since = 2013
+info = "Father, InfoSec, System Administrator, Software Developer"
+description = "This is the personal website for Joel Goguen"
+keywords = "blog,developer,sysadmin,system administrator,personal,firewall,OpenBSD,Linux"
 
-	colorScheme = "auto"
-	favicon_16 = "/img/favicon_16x16.png"
-	favicon_32 = "/img/favicon_32x32.png"
+colorScheme = "auto"
+logo = "/img/logo.jpg"
+favicon_16 = "/img/favicon_16x16.png"
+favicon_32 = "/img/favicon_32x32.png"
 
-	customSCSS = ["sass/style.scss"]
-	customJS = ["/js/scrollbar.js"]
+customSCSS = ["sass/style.scss"]
+customJS = ["/js/scrollbar.js"]
 
 [[params.social]]
-	name = "Github"
-	icon = "fa-brands fa-github fa-2x"
-	weight = 5
-	url = "https://github.com/jgoguen"
+name = "Github"
+icon = "fa-brands fa-github fa-2x"
+weight = 5
+url = "https://github.com/jgoguen"
 [[params.social]]
-	name = "Mastodon"
-	icon = "fa-brands fa-mastodon fa-2x"
-	weight = 2
-	url = "https://hachyderm.io/@jgoguen"
+name = "Mastodon"
+icon = "fa-brands fa-mastodon fa-2x"
+weight = 2
+url = "https://hachyderm.io/@jgoguen"
 [[params.social]]
-	name = "LinkedIn"
-	icon = "fa-brands fa-linkedin fa-2x"
-	weight = 50
-	url = "https://www.linkedin.com/in/joelgoguen"
+name = "LinkedIn"
+icon = "fa-brands fa-linkedin fa-2x"
+weight = 50
+url = "https://www.linkedin.com/in/joelgoguen"
 [[params.social]]
-	name = "PayPal"
-	icon = "fa-brands fa-paypal fa-2x"
-	weight = 99
-	url = "https://paypal.me/jtgoguen"
+name = "PayPal"
+icon = "fa-brands fa-paypal fa-2x"
+weight = 99
+url = "https://paypal.me/jtgoguen"
 
 [taxonomies]
-	tag = "tags"
-	author = "authors"
+tag = "tags"
+author = "authors"
 
 [[menu.main]]
-	name = "About Me"
-	weight = 1
-	url = "/about"
+name = "About Me"
+weight = 1
+url = "/about"
 
 [[menu.main]]
-	name = "Résumé"
-	weight = 2
-	url = "/docs/resume.pdf"
+name = "Résumé"
+weight = 2
+url = "/docs/resume.pdf"
 
 [[menu.main]]
-	name = "Posts"
-	weight = 3
-	url = "/posts"
+name = "Posts"
+weight = 3
+url = "/posts"
 
 [[menu.main]]
-	name = "Contact Me"
-	weight = 4
-	url = "/contact"
+name = "Contact Me"
+weight = 4
+url = "/contact"
