@@ -93,34 +93,37 @@ BGW320 Passthrough mode will need it. Get that now and write it down for later:
 01:23:45:67:89:ab
 ```
 
-### `pf(4)`
+### pf(5)
 
-Before configuring anything else, set up a minimal
+Before configuring anything else, set up
 [`pf.conf(5)`](https://man.openbsd.org/pf.conf). `egress` will be the WAN
-interface.
+interface. This is technically a "minimal" configuration; ICMPv6 is such
+a complicated beast it needs a lot of different rules. The comments I've added
+also make this a lot longer than it really is.
 
 ```pf
 % doas cat /etc/pf.conf
 if_lan = em1
 
-# List of martians from https://ipinfo.io/bogon
+# List of martians created from all tables in RFC 6890 sections 2.2.2 and 2.2.3
+# where the "Global" flag is FALSE. IPv4 bogons have also been mapped into the
+# 6to4 and Teredo address spaces.
+# Note that 192.0.0.0/24 and 2001::/23 may be given more specific assignments
+# that are allowed in the future. As of October 2024, no more specific
+# assignments with "Global" set to TRUE are defined.
 table <martians> const { \
  # IPv4 bogons
  0.0.0.0/8 10.0.0.0/8 100.64.0.0/10 127.0.0.0/8 169.254.0.0/16 \
- 172.16.0.0/12 192.0.0.0/24 192.0.2.0/24 192.88.99.0/24 192.168.0.0/16 \
- 198.18.0.0/15 198.51.100.0/24 203.0.113.0/24 224.0.0.0/4 \
- 240.0.0.0/4 \
+ 172.16.0.0/12 192.0.0.0/24 192.0.2.0/24 192.168.0.0/16 198.18.0.0/15 \
+ 198.51.100.0/24 203.0.113.0/24 224.0.0.0/4 240.0.0.0/4 \
  # IPv6 bogons
- # NOTE: fe80::/10 is an IPv6 bogon, but it must be accepted on egress to
- # allow for DHCPv6 and ICMPv6
- ::/128 ::/96 ::1/128 ::ffff:0:0/96 100::/64 2001:10::/28 2001:db8::/32 \
- fc00::/7 fec0::/10 \
- # IPv6-to-4 bogons
+ ::/128 ::1/128 ::ffff:0:0/96 100::/64 2001::/23 fc00::/7 fe80::/10 fec0::/10 \
+ # IPv6-to-4 IPv4-mapped bogons (6-to-4 is all under 2002::/16)
  2002::/24 2002:a00::/24 2002:7f00::/24 2002:a9fe::/32 2002:ac10::/28 \
  2002:c000::/40 2002:c000:200::/40 2002:c0a8::/32 2002:c612::/31 \
  2002:c633:6400::/40 2002:cb00:7100::/40 2002:e000::/20 \
  2002:f000::/20 2002:ffff:ffff::/48 \
- # Teredo bogons
+ # Teredo IPv4-mapped bogons (Teredo is all under 2001::/32)
  2001::/40 2001:0:a00::/40 2001:0:7f00::/40 2001:0:a9fe::/48 \
  2001:0:ac10::/44 2001:0:c000::/56 2001:0:c000:200::/56 \
  2001:0:c0a8::/48 2001:0:c612::/47 2001:0:c633:6400::/56 \
@@ -128,64 +131,233 @@ table <martians> const { \
  2001:0:ffff:ffff::/64 \
 }
 
+# This will cause pf to reply to blocked traffic with a TCP RST packet (for TCP)
+# or ICMP Unreachable (for other protocols) if nothing is specified on a block
+# rule. Some tweaks you may consider depending on your own needs on specific
+# rules:
+# - return-rst: Applies only to TCP packets, send RST
+# - return-icmp/return-icmp6: Reply with ICMP. By default this is ICMP
+#   Unreachable but you can specify the ICMP type to use. return-icmp can accept
+#   only an ICMPv4 type or both ICMPv4 and ICMPv6 (as `return-icmp (timex)` or
+#   `return-icmp (timex, paramprob)`).
+# - drop: Silently discard the packets.
+# A return policy is better for quickly tearing down connections on the other
+# side.
 set block-policy return
+# List interfaces where packet filtering should be skipped. It's almost never
+# necessary to filter the loopback interface.
 set skip on lo
+# "yes" is default, which reassembled fragmented packets before passing them
+# along. Adding "no-df" will also reassemble fragmented packets with the
+# dont-fragment flag set instead of dropping them.
 set reassemble yes no-df
+# Enable collecting packet and byte count statistics; view with `pfctl -s info`
 set loginterface egress
 
+# The AT&T BGW320 is... not exactly what you would call a capable piece of
+# hardware. It's limited to 8192 states, and honestly it would be great if it
+# could actually handle nearly that many states.
+# Also increase the number of table entries allowed. If you do bad-host
+# filtering, the number of table entries could get quite large, especially if
+# you don't coalesce IP ranges.
+set limit { states 8192, table-entries 5000000 }
+
+# Enabling syncookies causes pf to appear to accept a TCP connection even if it
+# might be dropped later on. When receiving a SYN, pf will reply with SYN/ACK;
+# when the ACK is received from the client, pf then evaluates the ruleset and
+# takes whatever action the ruleset evaluates to. This can be useful for
+# resiliance against synflood attacks that would exhaust the state table.
+# Normally I would say this is useful to enable in adaptive mode, but it's
+# unclear (unlikely) the BGW320 is that smart so there's not likely to be any
+# benefit to enabling it here. If you want to, what I've done other places is to
+# start using syncookies when the state table is 75% full and stop using it only
+# when the state table falls to 20% full.
+#set syncookies adaptive (start 75%, end 20%)
+
+# Sanitize packets to reduce ambiguity:
+# - no-df: Clear the dont-fragment bit. Helps with NFS implementations that like
+#   to generate fragmented packets with dont-fragment set, but needs to be used
+#   in combination with random-id because some operating systems also like to
+#   generate dont-fragment packets with a zero IP ID field. If an upstream
+#   router has to fragment the packet later, that will cause packets to end up
+#   being dropped.
+# - random-id: Replace the IPv4 ID field with a random identifier iff the packet
+#   is not fragmented after optional reassembly. This helps when using no-df,
+#   but also helps deal with predictable values generated by some hosts.
+# - reassemble tcp: Statefully normalizes TCP connections. See "TRAFFIC
+#   NORMALIZATION" in pf.conf(5) for all the details on what pf will do.
 match in all scrub (no-df random-id reassemble tcp)
 
 # NOTE: If you need to make game consoles work, add static-port to the end of
 # this line.
 match out on egress inet from !(egress:network) to any nat-to (egress:0)
 
+# We are going to set up default-deny for incoming traffic, but there's a few
+# things we want to take care of very early in the ruleset.
+
 # Port build user does not need network. Though as a gateway/firewall, hopefully
-# you aren't compiling anything at all here.
+# you aren't compiling anything at all here!
 block drop out log quick proto {tcp udp} user _pbuild
 
-# Allow traffic to the AT&T gateway device. quick rules are used here because
-# the BGW320 IP address is in the list of bogons but traffic will need to
-# traverse the WAN interface.
+# Allow traffic to the AT&T gateway device. The BGW320 IP address is in the
+# list of martians but traffic will need to traverse the WAN interface.
 pass in quick on $if_lan from ($if_lan:network) to 192.168.1.254 modulate state
 pass out quick on egress from any to 192.168.1.254 modulate state
-# This rule primarily covers DHCP and ICMP.
-pass in quick on egress from 192.168.1.254 to any modulate state
 
-# The WAN interface has no business sending traffic to or from addresses not
-# routable on the global public Internet.
-block drop in quick on egress from <martians> to any
-block drop out quick on egress from any to <martians>
+# Allow DHCPv4, DHCPv6 from WAN, and SLAAC
+# NOTE: fe80::/10 is an IPv6 bogon, but it must be accepted on egress to allow
+# for DHCPv6 and ICMPv6.
+pass in quick on egress inet proto udp from port bootps to port bootpc
+pass out quick on egress inet proto udp from port bootpc to port bootps
+pass in quick on $if_lan inet proto udp from port bootpc to port bootps
+pass out quick on $if_lan inet proto udp from port bootps to port bootpc
+pass in quick on egress inet6 proto udp from fe80::/10 port dhcpv6-server \
+  to fe80::/10 port dhcpv6-client no state
+pass out quick on egress inet6 proto udp from fe80::/10 port dhcpv6-client \
+  to fe80::/10 port dhcpv6-server no state
+# fe80::/10 is link-local and ff02::/16 is multicast, make sure we accept ICMP
+# network management packets on those ranges.
+pass in quick on egress inet6 proto icmp6 from any \
+  to { (egress), ff02::/16, fe80::/10 } \
+  icmp6-type { routeradv, neighbradv, neighbrsol }
+pass out quick on egress inet6 proto icmp6 from any \
+  to { ff02::/16, fe80::/10 } icmp6-type { routersol, neighbradv, neighbrsol }
+pass in quick on $if_lan inet6 proto icmp6 from any \
+  to { ($if_lan), ff02::/16, fe80::/10 } \
+  icmp6-type { routersol, neighbradv, neighbrsol }
+pass in quick on $if_lan inet6 proto icmp6 from any \
+  to { ff02::/16, fe80::/10 } icmp6-type { routeradv, neighbradv, neighbrsol }
+
+# The WAN interface has no business sending traffic not covered above to or
+# from addresses not routable on the global public Internet or with no return
+# path.
+block drop in quick on egress from { <martians>, no-route, urpf-failed } to any
+block drop out quick on egress from any to { <martians>, no-route }
 
 # Default deny all incoming traffic, default allow all outgoing traffic.
 block return all
 pass out modulate state
-
-# ICMP is critical for IPv6 networks, and on IPv4 networks there's rarely a
-# good reason to restrict it like people do. Especially on a home network. If
-# you insist on restricting ICMP, the minimum ICMP types are echoreq for ICMPv4
-# and echoreq, neighbrsol, neighbradv, routeradv, and routersol for ICMPv6.
-pass in on egress inet proto icmp to (egress)
-pass in on egress inet6 proto icmp6 to { (egress) ff02::1/16 fe80::/10 }
-
-# We're doing NAT and DHCP/SLAAC, so ICMP on the LAN side is also critical.
-pass in on !egress inet proto icmp
-pass in on !egress inet6 proto icmp6
-
-# Allow DHCP and DHCPv6 from WAN.
-pass in on egress inet proto udp from port bootps to port bootpc
-pass out on egress inet proto udp from port bootpc to port bootps
-pass in on egress inet6 proto udp from fe80::/10 port dhcpv6-server to fe80::/10 port dhcpv6-client no state
-pass out on egress inet6 proto udp from fe80::/10 port dhcpv6-client to fe80::/10 port dhcpv6-server no state
-
-# Allow DHCP from LAN (SLAAC is ICMP-based).
-pass in on $if_lan inet proto udp from port bootpc to port bootps
-pass out on $if_lan inet proto udp from port bootps to port bootpc
-
 # Allow LAN outbound to the public Internet
 pass in on $if_lan from any to !<martians> modulate state
 
+# ICMP is critical for IPv6 networks. On IPv4 networks there's rarely a
+# good reason to restrict it like people do, especially on a home network.
+# However, there is also no good reason not to and the relevant standards say
+# ICMP should be restricted without a good reason.
+# See icmp(4) and icmp6(4) and RFC4890 for more detail.
+block drop in inet proto icmp
+block drop in inet6 proto icmp6
+
+# ICMPv4 has no strictly required types, but a few that are good to allow anyway
+# are:
+# - echoreq - Ping is helpful for quick connectivity checks. There are
+#   other ways to check if your host is accessible if you block it though, so
+#   don't count on blocking echoreq to keep your hosts hidden.
+#   echorep is allowed back by the created state from echoreq.
+# - unreach with code needfrag - This is used in Path MTU Discovery, if the DF
+#   flag is set and unreach with code needfrag comes back your system knows it
+#   needs to send smaller packets.
+# - timex - Code 0 is returned by routers if the packet TTL has reached zero
+#   before reaching the destination. Code 1 is returned by hosts if the packet
+#   couldn't be fully assembled within its time limit.
+# ICMPv4, unlike ICMPv6, is entirely optional so you can simply remove any of
+# these rules you don't want. You may also need to adjust the maximum packet
+# rates if these limits are too low (expressed in num_packets/num_seconds).
+# LAN gets a much higher rate since it's reasonable to expect multiple
+# devices might be sending ICMP at the same time.
+pass in on egress inet proto icmp from any to (egress:0) icmp-type echoreq \
+  max-pkt-rate 100/15
+pass in on $if_lan inet proto icmp from ($if_lan:network) to any \
+  icmp-type echoreq max-pkt-rate 100/5
+pass in on egress inet proto icmp from any to (egress:0) icmp-type unreach \
+  code needfrag max-pkt-rate 10/10
+pass in on $if_lan inet proto icmp from ($if_lan:network) to any \
+  icmp-type unreach code needfrag max-pkt-rate 10/5
+pass in on egress inet proto icmp from any to (egress:0) icmp-type timex \
+  max-pkt-rate 1/2
+pass in on $if_lan inet proto icmp from ($if_lan:network) to any \
+  icmp-type timex max-pkt-rate 1/1
+
+# Unlike ICMPv4, ICMPv6 is critical to a network's operation. There are
+# different considerations for ICMP destined for the firewall and for ICMP
+# destined for something on the other side of the firewall.
+# Note: ($if_lan:network) is used here for packets coming in egress because the
+# routable IPv6 addresses for internal hosts are chosen from the delegated
+# prefix assigned to the LAN interface. Technically this does also include the
+# private addresses, but further up the ruleset is a 'block quick' rule
+# preventing egress from sending packets to or receiving packets from private
+# address space.
+# Transit ICMPv6 - must not be dropped!
+# Note: echorep is allowed implicitly by the state opened by an echoreq.
+pass in on egress inet6 proto icmp6 from any to ($if_lan:network) \
+  icmp6-type { unreach, toobig, echoreq } max-pkt-rate 10/10
+pass in on $if_lan inet6 proto icmp6 from ($if_lan:network) to \
+  !($if_lan:network) icmp6-type { unreach, toobig, echoreq } max-pkt-rate 10/1
+
+pass in on egress inet6 proto icmp6 from any to ($if_lan:network) \
+  icmp6-type timex code transit max-pkt-rate 5/5
+pass in on $if_lan inet6 proto icmp6 from ($if_lan:network) to \
+  !($if_lan:network) icmp6-type timex code transit max-pkt-rate 5/1
+pass in on egress inet6 proto icmp6 from any to ($if_lan:network) \
+  icmp6-type { paramprob code nxthdr, paramprob code 2 } max-pkt-rate 5/5
+pass in on $if_lan inet6 proto icmp6 from ($if_lan:network) to \
+  !($if_lan:network) icmp6-type { paramprob code nxthdr, parapmrob code 2 } \
+	max-pkt-rate 5/1
+
+# Transit ICMPv6 - normally should not be dropped
+pass in on egress inet6 proto icmp6 from any to ($if_lan:network) \
+  icmp6-type timex code reassemb max-pkt-rate 5/5
+pass in on $if_lan inet6 proto icmp6 from ($if_lan:network) to \
+  !($if_lan:network) icmp6-type timex code reassemb max-pkt-rate 5/1
+pass in on egress inet6 proto icmp6 from any to ($if_lan:network) \
+  icmp6-type paramprob code badhead max-pkt-rate 5/5
+pass in on $if_lan inet6 proto icmp6 from ($if_lan:network) to \
+  !($if_lan:network) icmp6-type paramprob code badhead max-pkt-rate 5/1
+# These handle ICMPv6 messages for mobile IP. If you happen to need this (which
+# is highly unlikely for a personal home network) uncomment these rules
+#pass in on egress inet6 proto icmp6 from any to ($if_lan:network) \
+#  icmp6-type { 144, 145, 146, 147 }
+#pass in on $if_lan inet6 proto icmp6 from ($if_lan:network) to \
+#  !($if_lan:network) icmp6-type { 144, 145, 146, 147 }
+
+# Local ICMPv6 - must not be dropped
+# Note that the desired behaviour may differ between the WAN and LAN interfaces.
+pass in on egress inet6 proto icmp6 from any to (egress) \
+  icmp6-type { echoreq, unreach, toobig, listqry, listenrep, listendone, \
+  143, 148, 149, 151, 152, 153 } \
+  max-pkt-rate 10/10
+pass in on $if_lan inet6 proto icmp6 from ($if_lan:network) to ($if_lan) \
+  icmp6-type { echoreq, unreach, toobig, listqry, listenrep, listendone, 143 } \
+  max-pkt-rate 10/1
+pass in on egress inet6 proto icmp6 from any to (egress) icmp6-type timex \
+  code transit max-pkt-rate 5/5
+pass in on $if_lan inet6 proto icmp6 from ($if_lan:network) to ($if_lan) \
+  icmp6-type timex max-pkt-rate 5/1
+pass in on egress inet6 proto icmp6 from any to (egress) \
+	icmp6-type { paramprob code nxthdr, paramprob code 2 } max-pkt-rate 5/5
+pass in on $if_lan inet6 proto icmp6 from ($if_lan:network) to ($if_lan) \
+  icmp6-type { paramprob code nxthdr, paramprob code 2 } max-pkt-rate 5/1
+
+# {router,neighbr}{adv,sol} are not included here because they've been handled
+# further up with 'pass quick' rules.
+pass in on egress inet6 proto icmp6 from any to (egress) \
+  icmp6-type { 141, 142 }
+pass in on $if_lan inet6 proto icmp6 from ($if_lan:network) to ($if_lan) \
+  icmp6-type { 141, 142 }
+
+# Local ICMPv6 - normally should not be dropped
+pass in on egress inet6 proto icmp6 from any to (egress) \
+	icmp6-type timex code reassemb max-pkt-rate 5/5
+pass in on $if_lan inet6 proto icmp6 from ($if_lan:network) to \
+  !($if_lan:network) icmp6-type timex code reassemb max-pkt-rate 5/1
+pass in on egress inet6 proto icmp6 from any to (egress) \
+  icmp6-type paramprob code badhead max-pkt-rate 5/5
+pass in on $if_lan inet6 proto icmp6 from ($if_lan:network) to \
+  !($if_lan:network) icmp6-type paramprob code badhead max-pkt-rate 5/1
+
 # Allow SSH in from LAN for later configuration and maintenance.
-pass in on $if_lan proto tcp from ($if_lan:network) to ($if_lan) port 22 modulate state
+pass in on $if_lan proto tcp from ($if_lan:network) to ($if_lan) port 22 \
+  modulate state
 ```
 
 Always verify your [`pf.conf(5)`](https://man.openbsd.org/pf.conf) changes, then
@@ -200,7 +372,7 @@ apply the new rules:
 
 Normally, packets can't be forwarded between interfaces. We need to do exactly
 that to use the Protectli as a gateway device though. Add these two lines to
-[`sysctl.conf(5)`](https://man.openbsd.org/sysctl.conf)` to enable packet
+[`sysctl.conf(5)`](https://man.openbsd.org/sysctl.conf) to enable packet
 forwarding:
 
 ```conf
@@ -423,3 +595,9 @@ resolver.
 
 - 2024-08-02: A helpful reader pointed out that I missed a PF rule to allow
   outbound traffic from the LAN to the public Internet. That's been added.
+- 2024-10-06: Another helpful reader pointed out that I was incorrectly allowing
+  all ICMP types. [RFC4890](https://www.rfc-editor.org/rfc/rfc4890.txt)
+  specifies that certain ICMPv6 types SHOULD be blocked, and according to the
+  definition of SHOULD in RFCs that means it is to be done without a good reason
+  not to. I do not have a good reason not to. The sample `pf.conf` has been
+  updated to only allow ICMP types needed for daily network operation.
