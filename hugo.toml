@@ -23,7 +23,7 @@ posts = '/posts/:year/:month/:day/:title/'
 
 [markup]
 [markup.highlight]
-noClasses = false
+style = "catppuccin-mocha"
 
 [pagination]
 pagerSize = 20
