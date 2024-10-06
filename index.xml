@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Heap Overrun</title><link>https://jgoguen.ca/</link><description>Recent content on Heap Overrun</description><generator>Hugo</generator><language>en-ca</language><lastBuildDate>Sat, 05 Oct 2024 20:12:53 -0400</lastBuildDate><atom:link href="https://jgoguen.ca/index.xml" rel="self" type="application/rss+xml"/><item><title>OpenBSD DNS Server with Unbound and Statistics</title><link>https://jgoguen.ca/posts/2024/07/20/openbsd-dns-server-with-unbound-and-statistics/</link><pubDate>Sat, 20 Jul 2024 00:00:00 +0000</pubDate><guid>https://jgoguen.ca/posts/2024/07/20/openbsd-dns-server-with-unbound-and-statistics/</guid><description>&lt;h2 id="dns-servers">
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Heap Overrun</title><link>https://jgoguen.ca/</link><description>Recent content on Heap Overrun</description><generator>Hugo</generator><language>en-ca</language><lastBuildDate>Sun, 06 Oct 2024 17:09:31 -0400</lastBuildDate><atom:link href="https://jgoguen.ca/index.xml" rel="self" type="application/rss+xml"/><item><title>OpenBSD DNS Server with Unbound and Statistics</title><link>https://jgoguen.ca/posts/2024/07/20/openbsd-dns-server-with-unbound-and-statistics/</link><pubDate>Sat, 20 Jul 2024 00:00:00 +0000</pubDate><guid>https://jgoguen.ca/posts/2024/07/20/openbsd-dns-server-with-unbound-and-statistics/</guid><description>&lt;h2 id="dns-servers">
  DNS Servers
  &lt;a class="heading-link" href="#dns-servers">
  &lt;i class="fa-solid fa-link" aria-hidden="true" title="Link to heading">&lt;/i>
@@ -26,9 +26,9 @@ Here we&amp;rsquo;ll look at how TCP flags (the original six plus &lt;code>ECE&l
 a conversation between two people.&lt;/p>
 &lt;p>Let&amp;rsquo;s say you want to start talking to someone. In TCP, you start with the
 three-way handshake:&lt;/p>
-&lt;div class="highlight">&lt;pre tabindex="0" class="chroma">&lt;code class="language-fallback" data-lang="fallback">&lt;span class="line">&lt;span class="cl">You --- SYN --&amp;gt; Them
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">You &amp;lt;--SYN/ACK--- Them
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">You --- ACK --&amp;gt; Them
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#cdd6f4;background-color:#1e1e2e;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-fallback" data-lang="fallback">&lt;span style="display:flex;">&lt;span>You --- SYN --&amp;gt; Them
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>You &amp;lt;--SYN/ACK--- Them
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>You --- ACK --&amp;gt; Them
 &lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>In human terms, a &lt;code>SYN&lt;/code> (synchronize) expresses that you&amp;rsquo;re asking to begin
 a conversation, and an &lt;code>ACK&lt;/code> (acknowledge) is how you acknowledge what the other
 person has said. Note that both sides must explicitly begin the conversation and
