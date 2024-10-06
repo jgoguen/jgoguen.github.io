@@ -1,6 +1,5 @@
 +++
 title = "Contact Me for Work"
-date = ""
 layout = "main"
 +++
 
@@ -28,7 +27,7 @@ show me you've read this far.
   description or a link to a full job description.
 - What is the base cash compensation range for the position? Does this range
   change based on my physical location?
-  + If the job posting allows hiring at multiple levels, please answer based on
+  - If the job posting allows hiring at multiple levels, please answer based on
     the lowest level I would be considered for.
 - Does your company commit to this role being permanently fully remote, with
   only occasional trips for in-person meetings?

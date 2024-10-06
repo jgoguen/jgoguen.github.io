@@ -1,6 +1,5 @@
 +++
 title = "Contact Me"
-date = ""
 layout = "main"
 aliases = [
 	"contact.html"
