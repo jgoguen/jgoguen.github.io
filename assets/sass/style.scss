@@ -261,6 +261,7 @@ form {
   article {
     p {
       text-align: inherit;
+      white-space-collapse: collapse;
     }
   }
 
