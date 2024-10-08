@@ -1,14 +1,14 @@
 <!doctype html><html lang=en><head><title>OpenBSD DNS Server with Unbound and Statistics · Heap Overrun
 </title><meta charset=utf-8><meta name=viewport content="width=device-width,initial-scale=1"><meta name=color-scheme content="light dark"><meta name=author content="Joel Goguen"><meta name=description content="Using OpenBSD as a caching recursive DNS resolver with statistics and log
-collection."><meta name=keywords content="blog,developer,sysadmin,system administrator,personal,firewall,OpenBSD,Linux"><meta property="og:url" content="https://jgoguen.ca/posts/2024/07/20/openbsd-dns-server-with-unbound-and-statistics/"><meta property="og:site_name" content="Heap Overrun"><meta property="og:title" content="OpenBSD DNS Server with Unbound and Statistics"><meta property="og:description" content="Using OpenBSD as a caching recursive DNS resolver with statistics and log collection."><meta property="og:locale" content="en_ca"><meta property="og:type" content="article"><meta property="article:section" content="posts"><meta property="article:published_time" content="2024-07-20T00:00:00+00:00"><meta property="article:modified_time" content="2024-07-21T13:36:26-04:00"><meta property="article:tag" content="OpenBSD"><meta property="article:tag" content="Network"><meta property="article:tag" content="Pf"><meta property="article:tag" content="Unbound"><meta property="article:tag" content="Dns"><meta property="og:image" content="https://jgoguen.ca/img/logo.jpg"><link rel=canonical href=https://jgoguen.ca/posts/2024/07/20/openbsd-dns-server-with-unbound-and-statistics/><link rel=preload href=https://jgoguen.ca/fonts/fa-brands-400.woff2 as=font type=font/woff2 crossorigin><link rel=preload href=https://jgoguen.ca/fonts/fa-regular-400.woff2 as=font type=font/woff2 crossorigin><link rel=preload href=https://jgoguen.ca/fonts/fa-solid-900.woff2 as=font type=font/woff2 crossorigin><link rel=stylesheet href=https://jgoguen.ca/css/coder.min.aa5ef26fa979d6793724ae2dbd71efa94fd16cb1c5c7db3b6651f21f9892a5fd.css integrity="sha256-ql7yb6l51nk3JK4tvXHvqU/RbLHFx9s7ZlHyH5iSpf0=" crossorigin=anonymous media=screen><link rel=stylesheet href=https://jgoguen.ca/css/coder-dark.min.a00e6364bacbc8266ad1cc81230774a1397198f8cfb7bcba29b7d6fcb54ce57f.css integrity="sha256-oA5jZLrLyCZq0cyBIwd0oTlxmPjPt7y6KbfW/LVM5X8=" crossorigin=anonymous media=screen><link rel=stylesheet href=https://jgoguen.ca/sass/style.min.51bc8d573bf8d868a603afccfde7fff4e5ca71d65cbc8ee77d8a514fcc208eba.css integrity="sha256-UbyNVzv42GimA6/M/ef/9OXKcdZcvI7nfYpRT8wgjro=" crossorigin=anonymous media=screen><link rel=icon type=image/svg+xml href=https://jgoguen.ca/images/favicon.svg sizes=any><link rel=icon type=image/png href=https://jgoguen.ca/img/favicon_32x32.png sizes=32x32><link rel=icon type=image/png href=https://jgoguen.ca/img/favicon_16x16.png sizes=16x16><link rel=apple-touch-icon href=https://jgoguen.ca/images/apple-touch-icon.png><link rel=apple-touch-icon sizes=180x180 href=https://jgoguen.ca/images/apple-touch-icon.png><link rel=manifest href=https://jgoguen.ca/site.webmanifest><link rel=mask-icon href=https://jgoguen.ca/images/safari-pinned-tab.svg color=#5bbad5><link rel=me href=https://hachyderm.io/@jgoguen><meta name=robots content="noai, noimageai"><meta name=CCBot content="nofollow"><meta name=tdm-reservation content="1"><script type=application/ld+json>{"@context":"http://schema.org","@type":"BlogPosting","articleSection":"posts","name":"OpenBSD DNS Server with Unbound and Statistics","headline":"OpenBSD DNS Server with Unbound and Statistics","alternativeHeadline":"","description":"Using OpenBSD as a caching recursive DNS resolver with statistics and log collection.","inLanguage":"en-ca","isFamilyFriendly":"true","mainEntityOfPage":{"@type":"WebPage","@id":"https://jgoguen.ca/posts/2024/07/20/openbsd-dns-server-with-unbound-and-statistics/"},"author":{"@type":"Person","name":"Joel Goguen","url":"https://jgoguen.ca/about"},"copyrightHolder":"Heap Overrun","copyrightYear":"2024","dateCreated":"2024-07-20T00:00:00.00Z","datePublished":"2024-07-20T00:00:00.00Z","dateModified":"2024-07-21T13:36:26.00Z","publisher":{"@type":"Organization","name":"Heap Overrun","url":"https://jgoguen.ca/","logo":{"@type":"ImageObject","url":"https://jgoguen.ca/img/logo.jpg","width":"32","height":"32"}},"image":"https://jgoguen.ca/img/logo.jpg","url":"https://jgoguen.ca/posts/2024/07/20/openbsd-dns-server-with-unbound-and-statistics/","wordCount":"2013","genre":["OpenBSD","network","pf","unbound","dns"],"keywords":[]}</script></head><body class="preload-transitions colorscheme-auto"><div class=float-container><a id=scroll-to-top class=hidden><i class="fa fa-arrow-up fa-fw" aria-hidden=true></i>
+collection."><meta name=keywords content="blog,developer,sysadmin,system administrator,personal,firewall,OpenBSD,Linux"><meta property="og:url" content="https://jgoguen.ca/posts/2024/07/20/openbsd-dns-server-with-unbound-and-statistics/"><meta property="og:site_name" content="Heap Overrun"><meta property="og:title" content="OpenBSD DNS Server with Unbound and Statistics"><meta property="og:description" content="Using OpenBSD as a caching recursive DNS resolver with statistics and log collection."><meta property="og:locale" content="en_ca"><meta property="og:type" content="article"><meta property="article:section" content="posts"><meta property="article:published_time" content="2024-07-20T00:00:00+00:00"><meta property="article:modified_time" content="2024-10-08T19:48:53-04:00"><meta property="article:tag" content="OpenBSD"><meta property="article:tag" content="Network"><meta property="article:tag" content="Pf"><meta property="article:tag" content="Unbound"><meta property="article:tag" content="Dns"><meta property="og:image" content="https://jgoguen.ca/img/logo.jpg"><link rel=canonical href=https://jgoguen.ca/posts/2024/07/20/openbsd-dns-server-with-unbound-and-statistics/><link rel=preload href=https://jgoguen.ca/fonts/fa-brands-400.woff2 as=font type=font/woff2 crossorigin><link rel=preload href=https://jgoguen.ca/fonts/fa-regular-400.woff2 as=font type=font/woff2 crossorigin><link rel=preload href=https://jgoguen.ca/fonts/fa-solid-900.woff2 as=font type=font/woff2 crossorigin><link rel=stylesheet href=https://jgoguen.ca/css/coder.min.aa5ef26fa979d6793724ae2dbd71efa94fd16cb1c5c7db3b6651f21f9892a5fd.css integrity="sha256-ql7yb6l51nk3JK4tvXHvqU/RbLHFx9s7ZlHyH5iSpf0=" crossorigin=anonymous media=screen><link rel=stylesheet href=https://jgoguen.ca/css/coder-dark.min.a00e6364bacbc8266ad1cc81230774a1397198f8cfb7bcba29b7d6fcb54ce57f.css integrity="sha256-oA5jZLrLyCZq0cyBIwd0oTlxmPjPt7y6KbfW/LVM5X8=" crossorigin=anonymous media=screen><link rel=stylesheet href=https://jgoguen.ca/css/style.min.51bc8d573bf8d868a603afccfde7fff4e5ca71d65cbc8ee77d8a514fcc208eba.css integrity="sha256-UbyNVzv42GimA6/M/ef/9OXKcdZcvI7nfYpRT8wgjro=" crossorigin=anonymous media=screen><link rel=icon type=image/svg+xml href=https://jgoguen.ca/images/favicon.svg sizes=any><link rel=icon type=image/png href=https://jgoguen.ca/img/favicon_32x32.png sizes=32x32><link rel=icon type=image/png href=https://jgoguen.ca/img/favicon_16x16.png sizes=16x16><link rel=apple-touch-icon href=https://jgoguen.ca/images/apple-touch-icon.png><link rel=apple-touch-icon sizes=180x180 href=https://jgoguen.ca/images/apple-touch-icon.png><link rel=manifest href=https://jgoguen.ca/site.webmanifest><link rel=mask-icon href=https://jgoguen.ca/images/safari-pinned-tab.svg color=#5bbad5><link rel=me href=https://hachyderm.io/@jgoguen><meta name=robots content="noai, noimageai"><meta name=CCBot content="nofollow"><meta name=tdm-reservation content="1"><script type=application/ld+json>{"@context":"http://schema.org","@type":"BlogPosting","articleSection":"posts","name":"OpenBSD DNS Server with Unbound and Statistics","headline":"OpenBSD DNS Server with Unbound and Statistics","alternativeHeadline":"","description":"Using OpenBSD as a caching recursive DNS resolver with statistics and log collection.","inLanguage":"en-ca","isFamilyFriendly":"true","mainEntityOfPage":{"@type":"WebPage","@id":"https://jgoguen.ca/posts/2024/07/20/openbsd-dns-server-with-unbound-and-statistics/"},"author":{"@type":"Person","name":"Joel Goguen","url":"https://jgoguen.ca/about"},"copyrightHolder":"Heap Overrun","copyrightYear":"2024","dateCreated":"2024-07-20T00:00:00.00Z","datePublished":"2024-07-20T00:00:00.00Z","dateModified":"2024-10-08T19:48:53.00Z","publisher":{"@type":"Organization","name":"Heap Overrun","url":"https://jgoguen.ca/","logo":{"@type":"ImageObject","url":"https://jgoguen.ca/img/logo.jpg","width":"32","height":"32"}},"image":"https://jgoguen.ca/img/logo.jpg","url":"https://jgoguen.ca/posts/2024/07/20/openbsd-dns-server-with-unbound-and-statistics/","wordCount":"3470","genre":["OpenBSD","network","pf","unbound","dns"],"keywords":[]}</script></head><body class="preload-transitions colorscheme-auto"><div class=float-container><a id=scroll-to-top class=hidden><i class="fa fa-arrow-up fa-fw" aria-hidden=true></i>
 </a><a id=dark-mode-toggle class=colorscheme-toggle><i class="fa fa-adjust fa-fw" aria-hidden=true></i></a></div><main class=wrapper><nav class=navigation><section class=container><a class=navigation-title href=https://jgoguen.ca/>Heap Overrun
 </a><input type=checkbox id=menu-toggle>
 <label class="menu-button float-right" for=menu-toggle><i class="fa-solid fa-bars fa-fw" aria-hidden=true></i></label><ul class=navigation-list><li class=navigation-item><a class=navigation-link href=https://jgoguen.ca/about>About Me</a></li><li class=navigation-item><a class=navigation-link href=https://jgoguen.ca/docs/resume.pdf>Résumé</a></li><li class=navigation-item><a class=navigation-link href=https://jgoguen.ca/posts>Posts</a></li><li class=navigation-item><a class=navigation-link href=https://jgoguen.ca/contact>Contact Me</a></li></ul></section></nav><div class=content><div id=progress-bar class=hidden aria-hidden=true></div><section class="container post"><article><header><div class=post-title><h1 class=title><a class=title-link href=https://jgoguen.ca/posts/2024/07/20/openbsd-dns-server-with-unbound-and-statistics/>OpenBSD DNS Server with Unbound and Statistics</a></h1></div><div class=post-meta><div class=date><span class=posted-on><i class="fa fa-calendar" aria-hidden=true></i>
 <time datetime=2024-07-20T00:00:00Z>July 20, 2024
 </time></span><span class=posted-on><i class="fa fa-calendar" aria-hidden=true></i>
-<time datetime=2024-07-21T13:36:26-04:00>Updated: July 21, 2024
+<time datetime=2024-10-08T19:48:53-04:00>Updated: October 8, 2024
 </time></span><span class=reading-time><i class="fa fa-clock-o" aria-hidden=true></i>
-10-minute read</span></div><div class=tags><i class="fa-solid fa-tag" aria-hidden=true></i>
+17-minute read</span></div><div class=tags><i class="fa-solid fa-tag" aria-hidden=true></i>
 <span class=tag><a href=https://jgoguen.ca/tags/openbsd/>OpenBSD</a>
 </span><span class=separator>•</span>
 <span class=tag><a href=https://jgoguen.ca/tags/network/>Network</a>
@@ -33,13 +33,47 @@ well.</p><p>Once again, OpenBSD offers a great solution. The
 <a href=https://man.openbsd.org/unbound class=external-link target=_blank rel=noopener><code>unbound(8)</code></a> DNS server is provided with
 OpenBSD, is fairly simple to configure, and can function as both an internal
 name server and a caching recursive resolver for public Internet DNS. I&rsquo;ll also
-enable DNSSEC validation.</p><p>Note that you could also use <a href=https://man.openbsd.org/unbound class=external-link target=_blank rel=noopener><code>nsd(8)</code></a> as the
-authoritative nameserver for your network. This works well for some people. I&rsquo;ve
-chosen not to do this because I want the same DNS names internally and
-externally for accessing self-hosted services and that&rsquo;s much easier to do
-with only <a href=https://man.openbsd.org/unbound class=external-link target=_blank rel=noopener><code>unbound(8)</code></a>.</p><h3 id=dns-server-preparation>DNS Server Preparation
+enable DNSSEC validation.</p><p>Note that you could also use <a href=https://man.openbsd.org/nsd class=external-link target=_blank rel=noopener><code>nsd(8)</code></a> as
+the authoritative name server for your network. This works well for some people.
+I&rsquo;ve chosen not to do this because I want the same DNS names internally and
+externally for accessing self-hosted services and that&rsquo;s much easier to do with
+only <a href=https://man.openbsd.org/unbound class=external-link target=_blank rel=noopener><code>unbound(8)</code></a>.</p><h3 id=why-run-your-own-dns-server>Why run your own DNS server?
+<a class=heading-link href=#why-run-your-own-dns-server><i class="fa-solid fa-link" aria-hidden=true title="Link to heading"></i>
+<span class=sr-only>Link to heading</span></a></h3><p>It&rsquo;s reasonable to ask why would you want to run your own DNS server anyway. The
+most immediate benefit you&rsquo;ll notice is query speed. Consider the flow for
+resolving the IP address for <code>jgoguen.ca</code>:</p><ul><li>Your client sends a query to the locally configured DNS server asking for the
+IP address of <code>jgoguen.ca</code>.</li><li>If the local DNS server has that IP address cached, the IP address is returned
+immediately. Otherwise, it has to go get that information.</li><li>The local DNS server sends a query for the IP address for <code>jgoguen.ca</code> to one
+of the root name servers in <code>root.hints</code>.</li><li>The root server replies with a referral to the TLD name servers for <code>.ca</code>.</li><li>The local DNS server sends a query for the IP address for <code>jgoguen.ca</code> to one
+of the <code>.ca</code> TLD name servers.</li><li>The TLD name server replies with a referral to the name servers authoritative
+for <code>jgoguen.ca</code>.</li><li>The local DNS server sends a query for the IP address for <code>jgoguen.ca</code> to the
+authoritative name server.</li><li>The authoritative name server replies with the IP address for <code>jgoguen.ca</code>.</li><li>The local DNS server replies with the IP address for <code>jgoguen.ca</code>.</li></ul><p>That&rsquo;s a fair bit of work just to resolve one domain name, and your devices will
+send out many thousands of DNS queries during a normal day. Every single query
+has to go out to the public Internet and back. It&rsquo;s reasonable to expect
+a single packet to take tens, or possibly even hundreds, of milliseconds to
+travel to a public Internet server, and a similar time for the reply to come
+back. That&rsquo;s not considering the time taken to actually resolve the query, which
+itself can be tens or hundreds of milliseconds. On your local network, it&rsquo;s
+reasonable to expect packet travel times to be low single digit milliseconds
+instead. Although it may not seem like much, saving a whole order of magnitude
+on each query can actually make anything depending on DNS name resolution feel
+faster. A local DNS server can spend the time to resolve queries once and serve
+results from the cache in typically under a millisecond.</p><p>There&rsquo;s also a security benefit. With a local DNS server, you can intercept
+queries for known malicious or advertising domains and reply with "no such
+server exists". Considering how many ad servers are repeatedly compromised to
+serve malicious software, or are tricked into linking to malicious URLs, ad
+blocking has become a critical part of basic Internet security.</p><p>Please keep in mind that advertising is how many sites pay their bills. Although
+much less common these days, there are still some advertising companies that can
+serve ads in a privacy-preserving way. Blocking ads by default is always the
+best option, but if you find a site you enjoy using please do some research into
+how they run their ads. If you&rsquo;re satisfied that they&rsquo;re serving ads in a manner
+sufficiently private for you, and that they take adequate measures to prevent
+and remove any malicious advertising, please consider excluding that site from
+your ad blocking. For sites that you enjoy using invasive advertising or ad
+servers that don&rsquo;t adequately protect against malicious ads, contact the
+webmaster to encourage them to seek out a better alternative.</p><h2 id=dns-server-preparation>DNS Server Preparation
 <a class=heading-link href=#dns-server-preparation><i class="fa-solid fa-link" aria-hidden=true title="Link to heading"></i>
-<span class=sr-only>Link to heading</span></a></h3><p>Every good server begins with a good firewall configuration. A minimal
+<span class=sr-only>Link to heading</span></a></h2><p>Every good server begins with a good firewall configuration. A minimal
 <a href=https://man.openbsd.org/pf.conf class=external-link target=_blank rel=noopener><code>pf.conf(5)</code></a> suitable for a DNS server:</p><div class=highlight><pre tabindex=0 style=color:#cdd6f4;background-color:#1e1e2e;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-fallback data-lang=fallback><span style=display:flex><span>if_lan = &#34;bse0&#34;
 </span></span><span style=display:flex><span>
 </span></span><span style=display:flex><span>set block-policy return
@@ -56,36 +90,42 @@ with only <a href=https://man.openbsd.org/unbound class=external-link target=_bl
 </span></span><span style=display:flex><span>block return all
 </span></span><span style=display:flex><span>pass out modulate state
 </span></span><span style=display:flex><span>
-</span></span><span style=display:flex><span># Allow inbound DHCP
+</span></span><span style=display:flex><span># Allow inbound DHCPv4
 </span></span><span style=display:flex><span>pass in on $if_lan inet proto udp from port bootps to port bootpc
 </span></span><span style=display:flex><span>pass out on $if_lan inet proto udp from port bootpc to port bootps
-</span></span><span style=display:flex><span>pass in on $if_lan inet6 proto udp from fe80::/10 port dhcpv6-server to fe80::/10 port dhcpv6-client no state
-</span></span><span style=display:flex><span>pass out on $if_lan inet6 proto udp from fe80::/10 port dhcpv6-client to fe80::/10 port dhcpv6-server no state
 </span></span><span style=display:flex><span>
 </span></span><span style=display:flex><span># Allow inbound ICMP
 </span></span><span style=display:flex><span>pass in on $if_lan inet proto icmp to ($if_lan)
 </span></span><span style=display:flex><span>pass in on $if_lan inet6 proto icmp6 to { ($if_lan) ff02::1/16 fe80::/10 }
 </span></span><span style=display:flex><span>
 </span></span><span style=display:flex><span># Allow inbound SSH
-</span></span><span style=display:flex><span>pass in on $if_lan proto tcp from $if_lan:network to ($if_lan) port 22 modulate state
+</span></span><span style=display:flex><span>pass in on $if_lan proto tcp from ($if_lan:network) to ($if_lan) port 22 \
+</span></span><span style=display:flex><span>	modulate state
 </span></span><span style=display:flex><span>
 </span></span><span style=display:flex><span># Allow inbound DNS
-</span></span><span style=display:flex><span>pass in on $if_lan proto { tcp udp } from $if_lan:network to ($if_lan) port 53 modulate state
-</span></span><span style=display:flex><span>pass in on $if_lan inet6 proto { tcp udp } from fe80::/10 to port 53 modulate state
-</span></span></code></pre></div><p>Validate and enable the new ruleset:</p><div class=highlight><pre tabindex=0 style=color:#cdd6f4;background-color:#1e1e2e;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-sh data-lang=sh><span style=display:flex><span>% doas pfctl -nf /etc/pf.conf
+</span></span><span style=display:flex><span>pass in on $if_lan proto { tcp udp } from ($if_lan:network) to ($if_lan) \
+</span></span><span style=display:flex><span>	port 53 modulate state
+</span></span><span style=display:flex><span>pass in on $if_lan inet6 proto { tcp udp } from fe80::/10 to port 53 \
+</span></span><span style=display:flex><span>	modulate state
+</span></span></code></pre></div><p>Note that this <code>pf.conf</code> allows all ICMP and ICMP6. According to RFC 4890
+you are supposed to filter ICMP unless there&rsquo;s a good reason not to. For this
+DNS server setup, it will be on a controlled network where ICMP is already being
+properly filtered at the edge. To see what filtering is being done, or to copy
+the full set of proper filtering rules to include here, see my
+<a href=https://jgoguen.ca/posts/2024/07/20/openbsd-ipv6-home-internet-gateway-with-att-fibre/>home network gateway post</a>.</p><p>Validate and enable the new ruleset:</p><div class=highlight><pre tabindex=0 style=color:#cdd6f4;background-color:#1e1e2e;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-sh data-lang=sh><span style=display:flex><span>% doas pfctl -nf /etc/pf.conf
 </span></span><span style=display:flex><span>% doas pfctl -F rules -f /etc/pf.conf
 </span></span></code></pre></div><h3 id=ip-address-setup>IP Address Setup
 <a class=heading-link href=#ip-address-setup><i class="fa-solid fa-link" aria-hidden=true title="Link to heading"></i>
 <span class=sr-only>Link to heading</span></a></h3><p>DNS servers, by their nature, require a static IP address. You can edit the
 relevant <a href=https://man.openbsd.org/hostname.if class=external-link target=_blank rel=noopener><code>hostname.if(5)</code></a> file to set a
 static IP address for the DNS server, or edit
-<a href=https://man.openbsd.org/dhcpd.conf class=external-link target=_blank rel=noopener><code>dhcpd.conf(5)</code></a> to set a <code>fixed-address</code>
-for the DNS server&rsquo;s MAC address.</p><p>If you use <a href=https://man.openbsd.org/hostname.if class=external-link target=_blank rel=noopener><code>hostname.if(5)</code></a>:</p><div class=highlight><pre tabindex=0 style=color:#cdd6f4;background-color:#1e1e2e;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-sh data-lang=sh><span style=display:flex><span>% cat /etc/hostname.bse0
+<a href=https://man.openbsd.org/dhcpd.conf class=external-link target=_blank rel=noopener><code>dhcpd.conf(5)</code></a> on the DHCP server to set
+a <code>fixed-address</code> for the DNS server&rsquo;s MAC address.</p><p>If you decide to use <a href=https://man.openbsd.org/hostname.if class=external-link target=_blank rel=noopener><code>hostname.if(5)</code></a>:</p><div class=highlight><pre tabindex=0 style=color:#cdd6f4;background-color:#1e1e2e;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-sh data-lang=sh><span style=display:flex><span>% cat /etc/hostname.bse0
 </span></span><span style=display:flex><span>inet 10.0.0.5 255.255.255.0 10.0.0.255
 </span></span><span style=display:flex><span>inet6 fd01:2345:6789:abcd::5 <span style=color:#fab387>64</span>
 </span></span><span style=display:flex><span>up
-</span></span></code></pre></div><p>If you use DHCP, add these lines (one block per DNS server) to the <code>subnet</code>
-block in <a href=https://man.openbsd.org/dhcpd.conf class=external-link target=_blank rel=noopener><code>dhcpd.conf(5)</code></a>:</p><div class=highlight><pre tabindex=0 style=color:#cdd6f4;background-color:#1e1e2e;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-fallback data-lang=fallback><span style=display:flex><span>host dns1 {
+</span></span></code></pre></div><p>If you decide to use DHCP, add these lines (one block per DNS server) to the
+<code>subnet</code> block in <a href=https://man.openbsd.org/dhcpd.conf class=external-link target=_blank rel=noopener><code>dhcpd.conf(5)</code></a>:</p><div class=highlight><pre tabindex=0 style=color:#cdd6f4;background-color:#1e1e2e;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-fallback data-lang=fallback><span style=display:flex><span>host dns1 {
 </span></span><span style=display:flex><span>  hardware ethernet 12:34:56:78:9a:bc;
 </span></span><span style=display:flex><span>  fixed-address 10.0.0.0.5;
 </span></span><span style=display:flex><span>}
@@ -93,9 +133,9 @@ block in <a href=https://man.openbsd.org/dhcpd.conf class=external-link target=_
 </span></span></code></pre></div><p>You will still need to set a static IPv6 address in the relevant
 <a href=https://man.openbsd.org/hostname.if class=external-link target=_blank rel=noopener><code>hostname.if(5)</code></a> file if you plan to
 advertise the DNS servers over IPv6. Make sure your DNS servers are accessible
-at their static addresses before proceeding!</p><h3 id=unbound8-configuration><code>unbound(8)</code> Configuration
+at their static addresses before proceeding!</p><h2 id=unbound8-configuration><code>unbound(8)</code> Configuration
 <a class=heading-link href=#unbound8-configuration><i class="fa-solid fa-link" aria-hidden=true title="Link to heading"></i>
-<span class=sr-only>Link to heading</span></a></h3><p>Set up <a href=https://man.openbsd.org/unbound.conf class=external-link target=_blank rel=noopener><code>unbound.conf(5)</code></a>:</p><div class=highlight><pre tabindex=0 style=color:#cdd6f4;background-color:#1e1e2e;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-sh data-lang=sh><span style=display:flex><span>% cat /var/unbound/etc/unbound.conf
+<span class=sr-only>Link to heading</span></a></h2><p>Set up <a href=https://man.openbsd.org/unbound.conf class=external-link target=_blank rel=noopener><code>unbound.conf(5)</code></a>:</p><div class=highlight><pre tabindex=0 style=color:#cdd6f4;background-color:#1e1e2e;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-sh data-lang=sh><span style=display:flex><span>% cat /var/unbound/etc/unbound.conf
 </span></span><span style=display:flex><span>server:
 </span></span><span style=display:flex><span>  <span style=color:#6c7086;font-style:italic># Default is to deny queries. Use `access-control` to allow clients (defined</span>
 </span></span><span style=display:flex><span>  <span style=color:#6c7086;font-style:italic># by CIDR or specific address) to send DNS queries.</span>
@@ -127,7 +167,8 @@ at their static addresses before proceeding!</p><h3 id=unbound8-configuration><c
 </span></span><span style=display:flex><span>  num-threads: <span style=color:#fab387>4</span>
 </span></span><span style=display:flex><span>
 </span></span><span style=display:flex><span>  <span style=color:#6c7086;font-style:italic># Configure the DNS cache, to speed up requests for frequently requested</span>
-</span></span><span style=display:flex><span>  <span style=color:#6c7086;font-style:italic># domains. Cache slabs should be no more than the number of threads.</span>
+</span></span><span style=display:flex><span>  <span style=color:#6c7086;font-style:italic># domains. Cache slabs should be a power of 2 and no more than the number of</span>
+</span></span><span style=display:flex><span>  <span style=color:#6c7086;font-style:italic># threads.</span>
 </span></span><span style=display:flex><span>  <span style=color:#6c7086;font-style:italic># rrset-cache-size should be about double msg-cache-size.</span>
 </span></span><span style=display:flex><span>  cache-max-ttl: <span style=color:#fab387>604800</span>
 </span></span><span style=display:flex><span>  cache-min-ttl: <span style=color:#fab387>1800</span>
@@ -143,7 +184,9 @@ at their static addresses before proceeding!</p><h3 id=unbound8-configuration><c
 </span></span><span style=display:flex><span>
 </span></span><span style=display:flex><span>  <span style=color:#6c7086;font-style:italic># Configure port and socket options</span>
 </span></span><span style=display:flex><span>  outgoing-range: <span style=color:#fab387>200</span>
-</span></span><span style=display:flex><span>  so-reuseport: yes
+</span></span><span style=display:flex><span>  <span style=color:#6c7086;font-style:italic># On a Linux system, you want so-reuseport set to yes. On OpenBSD, that will</span>
+</span></span><span style=display:flex><span>  <span style=color:#6c7086;font-style:italic># actually prevent more than one thread from being used.</span>
+</span></span><span style=display:flex><span>  so-reuseport: no
 </span></span><span style=display:flex><span>  so-rcvbuf: 2m
 </span></span><span style=display:flex><span>  so-sndbuf: 2m
 </span></span><span style=display:flex><span>
@@ -166,9 +209,88 @@ a separate file and include it. Add this line to the <code>server</code> section
 </span></span><span style=display:flex><span>% doas rcctl <span style=color:#89dceb>enable</span> unbound
 </span></span><span style=display:flex><span>% doas rcctl start unbound
 </span></span></code></pre></div><p>You should be able to query a public DNS name and get a response:</p><div class=highlight><pre tabindex=0 style=color:#cdd6f4;background-color:#1e1e2e;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-sh data-lang=sh><span style=display:flex><span>% dig www.google.com @::1
-</span></span></code></pre></div><h3 id=make-the-rest-of-the-lan-use-it>Make the rest of the LAN use it
-<a class=heading-link href=#make-the-rest-of-the-lan-use-it><i class="fa-solid fa-link" aria-hidden=true title="Link to heading"></i>
-<span class=sr-only>Link to heading</span></a></h3><p>To make LAN clients use your new DNS servers, edit
+</span></span></code></pre></div><h3 id=get-the-root-hints-file>Get the root hints file
+<a class=heading-link href=#get-the-root-hints-file><i class="fa-solid fa-link" aria-hidden=true title="Link to heading"></i>
+<span class=sr-only>Link to heading</span></a></h3><p>To resolve DNS queries, unbound needs to know where the root name servers are.
+Unbound does have a list in its code, but things can change so we want to keep
+an updated list available. First, get the root hints file and put in in place:</p><div class=highlight><pre tabindex=0 style=color:#cdd6f4;background-color:#1e1e2e;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-sh data-lang=sh><span style=display:flex><span>% doas ftp -o /var/unbound/etc/root.hints https://www.internic.net/domain/named.root
+</span></span></code></pre></div><p>Then add this line to the <code>server</code> section in
+<a href=https://man.openbsd.org/unbound.conf class=external-link target=_blank rel=noopener><code>unbound.conf(5)</code></a>:</p><div class=highlight><pre tabindex=0 style=color:#cdd6f4;background-color:#1e1e2e;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-gdscript3 data-lang=gdscript3><span style=display:flex><span>root<span style=color:#89dceb;font-weight:700>-</span>hints: <span style=color:#a6e3a1>&#34;/var/unbound/etc/root.hints&#34;</span>
+</span></span></code></pre></div><p>Validate and restart <a href=https://man.openbsd.org/unbound class=external-link target=_blank rel=noopener><code>unbound(8)</code></a>:</p><div class=highlight><pre tabindex=0 style=color:#cdd6f4;background-color:#1e1e2e;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-sh data-lang=sh><span style=display:flex><span>% doas unbound-checkconf
+</span></span><span style=display:flex><span>% doas rcctl restart unbound
+</span></span></code></pre></div><h3 id=enable-dnssec>Enable DNSSEC
+<a class=heading-link href=#enable-dnssec><i class="fa-solid fa-link" aria-hidden=true title="Link to heading"></i>
+<span class=sr-only>Link to heading</span></a></h3><p>Now that you can resolve host names using your new DNS server, it&rsquo;s time to add
+DNSSEC validation. This gives you confidence that, for domains that use DNSSEC,
+the query results have not been tampered with. Few sites are using DNSSEC today,
+but by configuring DNSSEC validation now you&rsquo;ll automatically take advantage of
+it when more sites do start using it.</p><p>First, create <code>/var/unbound/etc/root.key</code> and allow the <code>_unbound</code> user to
+write to it:</p><div class=highlight><pre tabindex=0 style=color:#cdd6f4;background-color:#1e1e2e;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-sh data-lang=sh><span style=display:flex><span>% doas install -o _unbound -g _unbound -m <span style=color:#fab387>0644</span> /var/unbound/etc/root.key
+</span></span></code></pre></div><p>Edit the file to add this line:</p><div class=highlight><pre tabindex=0 style=color:#cdd6f4;background-color:#1e1e2e;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bind data-lang=bind><span style=display:flex><span><span style=color:#f38ba8>.</span> <span style=color:#cba6f7>IN</span> <span style=color:#cba6f7>DS</span> <span style=color:#a6e3a1>38696</span> <span style=color:#a6e3a1>8</span> <span style=color:#a6e3a1>2</span> <span style=color:#a6e3a1>683</span><span style=color:#f38ba8>D2D0ACB8C9B712A1948B27F741219298D0A450D612C483AF444A4C0FB2B16</span>
+</span></span></code></pre></div><p>This is the correct hash for the 2024-07-18 root key. Unbound will update this
+file later with the right <code>DNSKEY</code> record. You can check
+<a href=https://data.iana.org/root-anchors/root-anchors.xml class=external-link target=_blank rel=noopener><code>root-anchors.xml</code></a> to get
+the most recent hash and key tag. You only have to do this the first time you
+set up DNSSEC, unbound will keep this file up to date as part of its normal
+operation. Just tell unbound where to find it by adding this line to the
+<code>server</code> section of <a href=https://man.openbsd.org/unbound.conf class=external-link target=_blank rel=noopener><code>unbound.conf(5)</code></a>:</p><div class=highlight><pre tabindex=0 style=color:#cdd6f4;background-color:#1e1e2e;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-gdscript3 data-lang=gdscript3><span style=display:flex><span>auto<span style=color:#89dceb;font-weight:700>-</span>trust<span style=color:#89dceb;font-weight:700>-</span>anchor<span style=color:#89dceb;font-weight:700>-</span>file: <span style=color:#a6e3a1>&#34;/var/unbound/etc/root.key&#34;</span>
+</span></span></code></pre></div><p>Validate and restart <a href=https://man.openbsd.org/unbound class=external-link target=_blank rel=noopener><code>unbound(8)</code></a>:</p><div class=highlight><pre tabindex=0 style=color:#cdd6f4;background-color:#1e1e2e;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-sh data-lang=sh><span style=display:flex><span>% doas unbound-checkconf
+</span></span><span style=display:flex><span>% doas rcctl restart unbound
+</span></span></code></pre></div><p>Now check if you can resolve a domain using DNSSEC and validate it. Using
+<a href=https://man.openbsd.org/dig class=external-link target=_blank rel=noopener><code>dig(1)</code></a>, the <code>flags:</code> line will include flag
+<code>ad</code> if DNSSEC is present and valid, and <code>+dnssec</code> will cause a <code>RRSIG</code> record
+to be included in the reply:</p><div class=highlight><pre tabindex=0 style=color:#cdd6f4;background-color:#1e1e2e;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-sh data-lang=sh><span style=display:flex><span>% dig jgoguen.ca +dnssec @::1
+</span></span><span style=display:flex><span>; &lt;&lt;&gt;&gt; dig 9.10.8-P1 &lt;&lt;&gt;&gt; jgoguen.ca +dnssec @::1
+</span></span><span style=display:flex><span>;; global options: +cmd
+</span></span><span style=display:flex><span>;; Got answer:
+</span></span><span style=display:flex><span>;; -&gt;&gt;HEADER<span style=color:#a6e3a1>&lt;&lt;- opco</span>de: QUERY, status: NOERROR, id: <span style=color:#fab387>65483</span>
+</span></span><span style=display:flex><span>;; flags: qr rd ra ad; QUERY: 1, ANSWER: 5, AUTHORITY: 0, ADDITIONAL: <span style=color:#fab387>1</span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>;; OPT PSEUDOSECTION:
+</span></span><span style=display:flex><span>; EDNS: version: 0, flags: <span style=color:#cba6f7>do</span>; udp: <span style=color:#fab387>1232</span>
+</span></span><span style=display:flex><span>;; QUESTION SECTION:
+</span></span><span style=display:flex><span>;jgoguen.ca.                    IN      A
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>;; ANSWER SECTION:
+</span></span><span style=display:flex><span>jgoguen.ca.             <span style=color:#fab387>1461</span>    IN      A       185.199.110.153
+</span></span><span style=display:flex><span>jgoguen.ca.             <span style=color:#fab387>1461</span>    IN      A       185.199.111.153
+</span></span><span style=display:flex><span>jgoguen.ca.             <span style=color:#fab387>1461</span>    IN      A       185.199.109.153
+</span></span><span style=display:flex><span>jgoguen.ca.             <span style=color:#fab387>1461</span>    IN      A       185.199.108.153
+</span></span><span style=display:flex><span>jgoguen.ca.             <span style=color:#fab387>1461</span>    IN      RRSIG   A <span style=color:#fab387>13</span> <span style=color:#fab387>2</span> <span style=color:#fab387>300</span> <span style=color:#fab387>20241008004809</span> <span style=color:#fab387>20241005224809</span> <span style=color:#fab387>34505</span> jgoguen.ca. m8ACnfzVqiOkyKb3ubRDhTqMIj/2TvrUxjgVKbCiCI/GY5tqrh8Daldq r5SUwrUd+qHQK4yyyJFfpaTdCsffag<span style=color:#89dceb;font-weight:700>==</span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>;; Query time: <span style=color:#fab387>0</span> msec
+</span></span><span style=display:flex><span>;; SERVER: ::1#53<span style=color:#89dceb;font-weight:700>(</span>::1<span style=color:#89dceb;font-weight:700>)</span>
+</span></span><span style=display:flex><span>;; WHEN: Sun Oct <span style=color:#fab387>06</span> 19:53:48 EDT <span style=color:#fab387>2024</span>
+</span></span><span style=display:flex><span>;; MSG SIZE  rcvd: <span style=color:#fab387>209</span>
+</span></span></code></pre></div><p>Note the last line, which contains the value of the <code>RRSIG</code> record. Compare to
+a domain not using DNSSEC:</p><div class=highlight><pre tabindex=0 style=color:#cdd6f4;background-color:#1e1e2e;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-sh data-lang=sh><span style=display:flex><span>% dig google.com +dnssec @::1
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>; &lt;&lt;&gt;&gt; dig 9.10.8-P1 &lt;&lt;&gt;&gt; google.com +dnssec @::1
+</span></span><span style=display:flex><span>;; global options: +cmd
+</span></span><span style=display:flex><span>;; Got answer:
+</span></span><span style=display:flex><span>;; -&gt;&gt;HEADER<span style=color:#a6e3a1>&lt;&lt;- opco</span>de: QUERY, status: NOERROR, id: <span style=color:#fab387>61465</span>
+</span></span><span style=display:flex><span>;; flags: qr rd ra; QUERY: 1, ANSWER: 6, AUTHORITY: 0, ADDITIONAL: <span style=color:#fab387>1</span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>;; OPT PSEUDOSECTION:
+</span></span><span style=display:flex><span>; EDNS: version: 0, flags: <span style=color:#cba6f7>do</span>; udp: <span style=color:#fab387>1232</span>
+</span></span><span style=display:flex><span>;; QUESTION SECTION:
+</span></span><span style=display:flex><span>;google.com.                    IN      A
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>;; ANSWER SECTION:
+</span></span><span style=display:flex><span>google.com.             <span style=color:#fab387>1800</span>    IN      A       172.253.124.101
+</span></span><span style=display:flex><span>google.com.             <span style=color:#fab387>1800</span>    IN      A       172.253.124.139
+</span></span><span style=display:flex><span>google.com.             <span style=color:#fab387>1800</span>    IN      A       172.253.124.138
+</span></span><span style=display:flex><span>google.com.             <span style=color:#fab387>1800</span>    IN      A       172.253.124.100
+</span></span><span style=display:flex><span>google.com.             <span style=color:#fab387>1800</span>    IN      A       172.253.124.113
+</span></span><span style=display:flex><span>google.com.             <span style=color:#fab387>1800</span>    IN      A       172.253.124.102
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>;; Query time: <span style=color:#fab387>32</span> msec
+</span></span><span style=display:flex><span>;; SERVER: ::1#53<span style=color:#89dceb;font-weight:700>(</span>::1<span style=color:#89dceb;font-weight:700>)</span>
+</span></span><span style=display:flex><span>;; WHEN: Sun Oct <span style=color:#fab387>06</span> 20:00:36 EDT <span style=color:#fab387>2024</span>
+</span></span><span style=display:flex><span>;; MSG SIZE  rcvd: <span style=color:#fab387>135</span>
+</span></span></code></pre></div><h2 id=make-the-rest-of-the-lan-use-unbound>Make the rest of the LAN use unbound
+<a class=heading-link href=#make-the-rest-of-the-lan-use-unbound><i class="fa-solid fa-link" aria-hidden=true title="Link to heading"></i>
+<span class=sr-only>Link to heading</span></a></h2><p>To make LAN clients use your new DNS servers, edit
 <a href=https://man.openbsd.org/dhcpd.conf class=external-link target=_blank rel=noopener><code>dhcpd.conf(5)</code></a> and change the
 <code>domain-name-servers</code> option to the IP addresses of your DNS servers. Restart
 <a href=https://man.openbsd.org/dhcpd class=external-link target=_blank rel=noopener><code>dhcpd(8)</code></a> after validating its configuration
@@ -189,7 +311,7 @@ already. If so, you can safely stop reading here, or carry on to see if you want
 to continue. For this next section, we&rsquo;ll add monitoring of the DNS service.</p><h3 id=pre-requisites-monitoring-software>Pre-requisites: Monitoring software
 <a class=heading-link href=#pre-requisites-monitoring-software><i class="fa-solid fa-link" aria-hidden=true title="Link to heading"></i>
 <span class=sr-only>Link to heading</span></a></h3><p>This section assumes you have <a href=https://grafana.com/ class=external-link target=_blank rel=noopener>Grafana</a>,
-<a href=https://www.influxdata.com/ class=external-link target=_blank rel=noopener>InfluxxDB 2</a>, and
+<a href=https://www.influxdata.com/ class=external-link target=_blank rel=noopener>InfluxDB 2</a>, and
 <a href=https://www.influxdata.com/time-series-platform/telegraf/ class=external-link target=_blank rel=noopener>Telegraf</a> already
 installed and working. A few configuration details you&rsquo;ll want to include
 (or have equivalents set up):</p><p>For InfluxDB, make sure you already have an organization, bucket, and a token
@@ -209,94 +331,130 @@ with write access to the bucket.</p><p>For Telegraf, a minimal <code>telegraf.co
 </span></span></code></pre></div><h3 id=unboundconf5-changes><code>unbound.conf(5)</code> changes
 <a class=heading-link href=#unboundconf5-changes><i class="fa-solid fa-link" aria-hidden=true title="Link to heading"></i>
 <span class=sr-only>Link to heading</span></a></h3><p>Add these configuration items to the <code>server</code> block in your existing
-<a href=https://man.openbsd.org/unbound.conf class=external-link target=_blank rel=noopener><code>unbound.conf(5)</code></a>:</p><div class=highlight><pre tabindex=0 style=color:#cdd6f4;background-color:#1e1e2e;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-fallback data-lang=fallback><span style=display:flex><span>extended-statistics: yes
-</span></span><span style=display:flex><span>log-local-actions: yes
+<a href=https://man.openbsd.org/unbound.conf class=external-link target=_blank rel=noopener><code>unbound.conf(5)</code></a>:</p><div class=highlight><pre tabindex=0 style=color:#cdd6f4;background-color:#1e1e2e;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-fallback data-lang=fallback><span style=display:flex><span>log-local-actions: yes
 </span></span><span style=display:flex><span>log-queries: no
 </span></span><span style=display:flex><span>log-replies: yes
 </span></span><span style=display:flex><span>statistics-cumulative: yes
+</span></span><span style=display:flex><span>statistics-inhibit-zero: no
+</span></span><span style=display:flex><span>statistics-interval: 30
 </span></span><span style=display:flex><span>val-log-level: 2
-</span></span></code></pre></div><p>Validate and restart <a href=https://man.openbsd.org/unbound class=external-link target=_blank rel=noopener><code>unbound(8)</code></a>:</p><div class=highlight><pre tabindex=0 style=color:#cdd6f4;background-color:#1e1e2e;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-sh data-lang=sh><span style=display:flex><span>% doas unbound-checkconf <span style=color:#89dceb;font-weight:700>&amp;&amp;</span> doas rcctl restart unbound
-</span></span></code></pre></div><h3 id=dns-statistics>DNS Statistics
+</span></span></code></pre></div><p>Validate and restart <a href=https://man.openbsd.org/unbound class=external-link target=_blank rel=noopener><code>unbound(8)</code></a>:</p><div class=highlight><pre tabindex=0 style=color:#cdd6f4;background-color:#1e1e2e;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-sh data-lang=sh><span style=display:flex><span>% doas unbound-checkconf
+</span></span><span style=display:flex><span>% doas rcctl restart unbound
+</span></span></code></pre></div><p>Unbound will now print statistics to the output log every 30 seconds.</p><h3 id=dns-statistics>DNS Statistics
 <a class=heading-link href=#dns-statistics><i class="fa-solid fa-link" aria-hidden=true title="Link to heading"></i>
 <span class=sr-only>Link to heading</span></a></h3><p><a href=https://man.openbsd.org/unbound class=external-link target=_blank rel=noopener><code>unbound(8)</code></a> is now recording statistics,
-which you can view at any time:</p><div class=highlight><pre tabindex=0 style=color:#cdd6f4;background-color:#1e1e2e;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-sh data-lang=sh><span style=display:flex><span>% doas unbound-control stats_noreset
-</span></span></code></pre></div><p>To be useful, we need to get those statistics to InfluxDB. To do so, we&rsquo;ll use
-<code>collectd</code>. Install it first:</p><div class=highlight><pre tabindex=0 style=color:#cdd6f4;background-color:#1e1e2e;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-sh data-lang=sh><span style=display:flex><span>% doas pkg_add collectd
-</span></span></code></pre></div><p>A minimal <code>collectd.conf</code>:</p><div class=highlight><pre tabindex=0 style=color:#cdd6f4;background-color:#1e1e2e;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-fallback data-lang=fallback><span style=display:flex><span>Hostname    &#34;dns2&#34;
-</span></span><span style=display:flex><span>LoadPlugin syslog
-</span></span><span style=display:flex><span>&lt;Plugin syslog&gt;
-</span></span><span style=display:flex><span>  LogLevel info
-</span></span><span style=display:flex><span>&lt;/Plugin&gt;
-</span></span><span style=display:flex><span>LoadPlugin exec
-</span></span><span style=display:flex><span>LoadPlugin network
-</span></span><span style=display:flex><span>&lt;Plugin exec&gt;
-</span></span><span style=display:flex><span>  Exec _collectd &#34;/usr/local/bin/collectd-unbound&#34;
-</span></span><span style=display:flex><span>&lt;/Plugin&gt;
-</span></span><span style=display:flex><span>&lt;Plugin network&gt;
-</span></span><span style=display:flex><span>  Server &#34;10.0.0.4&#34; &#34;9456&#34;
-</span></span><span style=display:flex><span>&lt;/Plugin&gt;
-</span></span></code></pre></div><p>To allow <code>collectd</code> to run <code>unbound-control</code> to get statistics, add this line to
-<a href=https://man.openbsd.org/doas.conf class=external-link target=_blank rel=noopener><code>doas.conf(5)</code></a>:</p><div class=highlight><pre tabindex=0 style=color:#cdd6f4;background-color:#1e1e2e;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-fallback data-lang=fallback><span style=display:flex><span>permit nopass _collectd as _unbound cmd unbound-control args stats_noreset
-</span></span></code></pre></div><p>Finally, copy this script to <code>/usr/local/bin/collectd-unbound</code>:</p><div class=highlight><pre tabindex=0 style=color:#cdd6f4;background-color:#1e1e2e;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-sh data-lang=sh><span style=display:flex><span><span style=color:#6c7086;font-style:italic>#!/bin/sh
-</span></span></span><span style=display:flex><span><span style=color:#6c7086;font-style:italic></span>
-</span></span><span style=display:flex><span><span style=color:#f5e0dc>PATH</span><span style=color:#89dceb;font-weight:700>=</span><span style=color:#a6e3a1>&#34;/bin:/sbin:/usr/bin:/usr/sbin&#34;</span>
-</span></span><span style=display:flex><span>
-</span></span><span style=display:flex><span><span style=color:#f5e0dc>HOSTNAME</span><span style=color:#89dceb;font-weight:700>=</span><span style=color:#a6e3a1>&#34;</span><span style=color:#a6e3a1>${</span><span style=color:#f5e0dc>COLLECTD_HOSTNAME</span><span style=color:#cba6f7>:-$(</span>hostname -s<span style=color:#cba6f7>)</span><span style=color:#a6e3a1>}</span><span style=color:#a6e3a1>&#34;</span>
-</span></span><span style=display:flex><span><span style=color:#f5e0dc>INTERVAL</span><span style=color:#89dceb;font-weight:700>=</span><span style=color:#a6e3a1>&#34;</span><span style=color:#a6e3a1>${</span><span style=color:#f5e0dc>COLLECTD_INTERVAL</span><span style=color:#cba6f7>:-</span><span style=color:#f5e0dc>30</span><span style=color:#a6e3a1>}</span><span style=color:#a6e3a1>&#34;</span>
-</span></span><span style=display:flex><span>
-</span></span><span style=display:flex><span><span style=color:#cba6f7>while</span> sleep <span style=color:#a6e3a1>&#34;</span><span style=color:#f5e0dc>$INTERVAL</span><span style=color:#a6e3a1>&#34;</span>; <span style=color:#cba6f7>do</span>
-</span></span><span style=display:flex><span>  doas -u _unbound unbound-control stats_noreset | egrep -v <span style=color:#a6e3a1>&#34;^(histogram\.|time\.now|time\.elapsed)&#34;</span> | sed -re <span style=color:#a6e3a1>&#34;s;^([^=]+)=([0-9\.]+);PUTVAL </span><span style=color:#f5e0dc>$HOSTNAME</span><span style=color:#a6e3a1>/exec-unbound/gauge-\1 interval=</span><span style=color:#f5e0dc>$INTERVAL</span><span style=color:#a6e3a1> N:\2;&#34;</span>
-</span></span><span style=display:flex><span>
-</span></span><span style=display:flex><span>  awk -v <span style=color:#f5e0dc>h</span><span style=color:#89dceb;font-weight:700>=</span><span style=color:#f5e0dc>$HOSTNAME</span> -v <span style=color:#f5e0dc>i</span><span style=color:#89dceb;font-weight:700>=</span><span style=color:#f5e0dc>$INTERVAL</span> <span style=color:#a6e3a1>&#39;END { print &#34;PUTVAL &#34; h &#34;/exec-unbound/gauge-num.adhosts interval=&#34; i &#34; N:&#34; FNR }&#39;</span> /var/unbound/etc/unbound-adhosts.conf
-</span></span><span style=display:flex><span>  awk -v <span style=color:#f5e0dc>h</span><span style=color:#89dceb;font-weight:700>=</span><span style=color:#f5e0dc>$HOSTNAME</span> -v <span style=color:#f5e0dc>i</span><span style=color:#89dceb;font-weight:700>=</span><span style=color:#f5e0dc>$INTERVAL</span> <span style=color:#a6e3a1>&#39;!/^($|[:space:]*#)/ { hosts++ } END { print &#34;PUTVAL &#34; h &#34;/exec-unbound/gauge-num.allowlist interval=&#34; i &#34; N:&#34; hosts+0 }&#39;</span> /var/unbound/allowlist.txt
-</span></span><span style=display:flex><span>  awk -v <span style=color:#f5e0dc>h</span><span style=color:#89dceb;font-weight:700>=</span><span style=color:#f5e0dc>$HOSTNAME</span> -v <span style=color:#f5e0dc>i</span><span style=color:#89dceb;font-weight:700>=</span><span style=color:#f5e0dc>$INTERVAL</span> <span style=color:#a6e3a1>&#39;!/^($|[:space:]*#)/ { hosts++ } END { print &#34;PUTVAL &#34; h &#34;/exec-unbound/gauge-num.manual-blocks interval=&#34; i &#34; N:&#34; hosts+0 }&#39;</span> /var/unbound/blocklist.txt
-</span></span><span style=display:flex><span><span style=color:#cba6f7>done</span>
-</span></span><span style=display:flex><span>
-</span></span><span style=display:flex><span><span style=color:#89dceb>exit</span> <span style=color:#fab387>0</span>
-</span></span></code></pre></div><p>Make sure the script is owned by <code>root:_collectd</code> and give it permissions
-<code>0750</code>.</p><p>Enable and start <code>collectd</code>, it will shortly start sending statistics to
-InfluxDB:</p><div class=highlight><pre tabindex=0 style=color:#cdd6f4;background-color:#1e1e2e;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-sh data-lang=sh><span style=display:flex><span>% doas rcctl <span style=color:#89dceb>enable</span> collectd
-</span></span><span style=display:flex><span>% doas rcctl start collectd
-</span></span></code></pre></div><p>DNS queries are being logged to <a href=https://man.openbsd.org/syslogd class=external-link target=_blank rel=noopener><code>syslogd(8)</code></a>.
-We need to send them to an external program for processing and forwarding to
-InfluxDB. I wrote a simple Go program to read, queue, process, and send the
-logs. Download <a href=https://jgoguen.ca/static/go/unbound2influx.go>unbound2influx.go</a> and build it:</p><div class=highlight><pre tabindex=0 style=color:#cdd6f4;background-color:#1e1e2e;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-sh data-lang=sh><span style=display:flex><span>% go build -o unbound2influx unbound2influx.go
-</span></span></code></pre></div><p>Set permissions and move it into place:</p><div class=highlight><pre tabindex=0 style=color:#cdd6f4;background-color:#1e1e2e;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-sh data-lang=sh><span style=display:flex><span>% doas chown root:_syslogd unbound2influx
-</span></span><span style=display:flex><span>% doas chmod <span style=color:#fab387>0750</span> unbound2influx
-</span></span><span style=display:flex><span>% doas mv unbound2influx /usr/local/bin/unbound2influx
-</span></span></code></pre></div><p>You also need to create <code>/etc/unbound2influx.cfg</code> and fill in details. <code>hosts</code>
-points to the file you use to define LAN addresses, if you haven&rsquo;t done that
-give it a path to an empty file:</p><div class=highlight><pre tabindex=0 style=color:#cdd6f4;background-color:#1e1e2e;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-sh data-lang=sh><span style=display:flex><span>% doas cat /etc/unbound2influx.cfg
-</span></span><span style=display:flex><span><span style=color:#f5e0dc>token</span> <span style=color:#89dceb;font-weight:700>=</span> &lt;API token from InfluxDB&gt;
-</span></span><span style=display:flex><span><span style=color:#f5e0dc>bucket</span> <span style=color:#89dceb;font-weight:700>=</span> &lt;bucket name from InfluxDB&gt;
-</span></span><span style=display:flex><span><span style=color:#f5e0dc>org</span> <span style=color:#89dceb;font-weight:700>=</span> &lt;org name from InfluxDB&gt;
-</span></span><span style=display:flex><span><span style=color:#f5e0dc>hosts</span> <span style=color:#89dceb;font-weight:700>=</span> /var/unbound/etc/lan-hosts.conf
-</span></span><span style=display:flex><span><span style=color:#f5e0dc>influx_host</span> <span style=color:#89dceb;font-weight:700>=</span> http://10.0.0.4:8086
-</span></span></code></pre></div><p>Edit <a href=https://man.openbsd.org/syslog.conf class=external-link target=_blank rel=noopener><code>syslog.conf(5)</code></a> to add these lines
-to the bottom of the file:</p><div class=highlight><pre tabindex=0 style=color:#cdd6f4;background-color:#1e1e2e;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-fallback data-lang=fallback><span style=display:flex><span>!unbound
+which are sent to <code>/var/log/daemon</code> every 30 seconds. To be useful, we need to
+get those statistics to InfluxDB. To do so, we&rsquo;ll use a Go binary to listen to
+syslog generated by unbound. On an OpenBSD host with a Go compiler (ideally not
+a server, but if that&rsquo;s needed just remove the compiler later) fetch and compile
+the binary, moving it into place after building:</p><div class=highlight><pre tabindex=0 style=color:#cdd6f4;background-color:#1e1e2e;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-sh data-lang=sh><span style=display:flex><span>% ftp -o unbound2influx.tar.gz https://vcs.jgoguen.ca/jgoguen/unbound2influx/archive/main.tar.gz
+</span></span><span style=display:flex><span>% tar zxf unbound2influx.tar.gz
+</span></span><span style=display:flex><span>% <span style=color:#89dceb>cd</span> unbound2influx
+</span></span><span style=display:flex><span>% go build -o bin/unbound2influx
+</span></span><span style=display:flex><span>% doas install -o root -g _syslogd -m <span style=color:#fab387>0510</span> bin/unbound2influx /usr/local/bin/unbound2influx
+</span></span></code></pre></div><p>You need to create <code>/etc/unbound2influx.json</code> to tell the program where to send
+data. Because this file will contain a token, it needs to be adequately
+protected. Create a file:</p><div class=highlight><pre tabindex=0 style=color:#cdd6f4;background-color:#1e1e2e;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-sh data-lang=sh><span style=display:flex><span>doas install -o root -g _syslogd -m <span style=color:#fab387>0640</span> /dev/null /etc/unbound2influx.json
+</span></span></code></pre></div><p>Follow <a href=https://vcs.jgoguen.ca/jgoguen/unbound2influx#configuration class=external-link target=_blank rel=noopener>https://vcs.jgoguen.ca/jgoguen/unbound2influx#configuration</a> to fill in
+the file correctly. Once done, update
+<a href=https://man.openbsd.org/syslog.conf class=external-link target=_blank rel=noopener><code>syslog.conf(5)</code></a> to add these lines to
+the bottom of the file:</p><div class=highlight><pre tabindex=0 style=color:#cdd6f4;background-color:#1e1e2e;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-fallback data-lang=fallback><span style=display:flex><span>!unbound
 </span></span><span style=display:flex><span>*.* |/usr/local/bin/unbound2influx
-</span></span></code></pre></div><p>Restart <a href=https://man.openbsd.org/syslogd class=external-link target=_blank rel=noopener><code>syslogd(8)</code></a> and logs will start
-streaming to InfluxDB as DNS requests are made:</p><div class=highlight><pre tabindex=0 style=color:#cdd6f4;background-color:#1e1e2e;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-sh data-lang=sh><span style=display:flex><span>% doas rcctl restart syslogd
-</span></span></code></pre></div><h3 id=ad-blocking>Ad Blocking
-<a class=heading-link href=#ad-blocking><i class="fa-solid fa-link" aria-hidden=true title="Link to heading"></i>
-<span class=sr-only>Link to heading</span></a></h3><p>The way the Internet is today, ad blocking is practically a fundamental security
+</span></span></code></pre></div><p>Restart <a href=https://man.openbsd.org/syslogd class=external-link target=_blank rel=noopener><code>syslogd(8)</code></a>:</p><div class=highlight><pre tabindex=0 style=color:#cdd6f4;background-color:#1e1e2e;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-sh data-lang=sh><span style=display:flex><span>% doas rcctl restart syslogd
+</span></span></code></pre></div><p>DNS logs and statistics will be sent to InfluxDB as they&rsquo;re written to syslog.</p><h2 id=maliciousad-host-blocking>Malicious/Ad Host Blocking
+<a class=heading-link href=#maliciousad-host-blocking><i class="fa-solid fa-link" aria-hidden=true title="Link to heading"></i>
+<span class=sr-only>Link to heading</span></a></h2><p>The way the Internet is today, ad blocking is practically a fundamental security
 requirement. Many third-party ad services (and some first-party ad services) are
 regularly used to serve malicious ads or malicious content along with legitimate
 ads. There&rsquo;s also a lot to be concerned about regarding privacy online the way
 ad networks operate. You can&rsquo;t stop all ads everywhere, but let&rsquo;s set up
 <a href=https://man.openbsd.org/unbound class=external-link target=_blank rel=noopener><code>unbound(8)</code></a> to block what we can while
-you&rsquo;re at home.</p><p>Start by creating two empty files, <code>allowlist.txt</code> and <code>blocklist.txt</code>. They can
-be anywhere, but the script I wrote defaults to <code>allowlist.txt</code> and
-<code>blocklist.txt</code> in the same directory as the script. The script, which I&rsquo;ve
-installed at <code>/var/unbound/unbound-adhosts.py</code> can be
-<a href=https://jgoguen.ca/py/unbound-adhosts.py>downloaded here</a>. Set permissions on the files:</p><div class=highlight><pre tabindex=0 style=color:#cdd6f4;background-color:#1e1e2e;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-sh data-lang=sh><span style=display:flex><span>% doas chown root:_unbound unbound-adhosts.py allowlist.txt blocklist.txt
-</span></span><span style=display:flex><span>% doas chmod <span style=color:#fab387>0755</span> unbound-adhosts.py
-</span></span></code></pre></div><p>You can run it now to verify everything works. By default the script will write
-out the domain list at <code>/var/unbound/unbound-adhosts.conf</code>.</p><div class=highlight><pre tabindex=0 style=color:#cdd6f4;background-color:#1e1e2e;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-sh data-lang=sh><span style=display:flex><span>% doas /var/unbound/unbound-adhosts.py -v
-</span></span></code></pre></div><p>Add a line to the end of the <code>server</code> section in
-<a href=https://man.openbsd.org/unbound class=external-link target=_blank rel=noopener><code>unbound(8)</code></a>:</p><div class=highlight><pre tabindex=0 style=color:#cdd6f4;background-color:#1e1e2e;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-gdscript3 data-lang=gdscript3><span style=display:flex><span>include: <span style=color:#89dceb;font-weight:700>/</span><span style=color:#cba6f7>var</span><span style=color:#89dceb;font-weight:700>/</span>unbound<span style=color:#89dceb;font-weight:700>/</span>etc<span style=color:#89dceb;font-weight:700>/</span>unbound<span style=color:#89dceb;font-weight:700>-</span>adhosts<span style=color:#89dceb;font-weight:700>.</span>conf
-</span></span></code></pre></div><p>You can validate and restart <a href=https://man.openbsd.org/unbound class=external-link target=_blank rel=noopener><code>unbound(8)</code></a> to
-verify everything works so far:</p><div class=highlight><pre tabindex=0 style=color:#cdd6f4;background-color:#1e1e2e;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-sh data-lang=sh><span style=display:flex><span>% doas unbound-control reload_keep_cache
+you&rsquo;re at home. Far from blocking only ads, the same techniques used to block
+ads are used to prevent communication with known malicious domains.</p><p>To handle blocking malicious domains, we&rsquo;ll use a Go binary to periodically
+fetch lists of known malicious and ad servers. A configuration file for
+<a href=https://man.openbsd.org/unbound class=external-link target=_blank rel=noopener><code>unbound(8)</code></a> will be updated as needed.</p><p>First, fetch and compile the <code>unbound-adhosts</code> binary:</p><div class=highlight><pre tabindex=0 style=color:#cdd6f4;background-color:#1e1e2e;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-sh data-lang=sh><span style=display:flex><span>% ftp -o unbound-adhosts.tar.gz https://vcs.jgoguen.ca/jgoguen/unbound-adhosts/archive/main.tar.gz
+</span></span><span style=display:flex><span>% tar zxf unbound-adhosts.tar.gz
+</span></span><span style=display:flex><span>% <span style=color:#89dceb>cd</span> unbound-adhosts
+</span></span><span style=display:flex><span>% go build -o bin/unbound-adhosts
+</span></span><span style=display:flex><span>% doas install -o root -g _unbound -m <span style=color:#fab387>0510</span> bin/unbound-adhosts /usr/local/bin/unbound-adhosts
+</span></span></code></pre></div><p>You need to create a cache directory, allowlist and blocklist files, and a
+configuration file:</p><div class=highlight><pre tabindex=0 style=color:#cdd6f4;background-color:#1e1e2e;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-sh data-lang=sh><span style=display:flex><span>% doas install -o root -g _unbound -m <span style=color:#fab387>0770</span> -d /var/cache/unbound-adhosts
+</span></span><span style=display:flex><span>% doas install -o root -g _unbound -m <span style=color:#fab387>0640</span> /dev/null /etc/unbound-adhosts.json
+</span></span><span style=display:flex><span>% doas install -o root -g wheel -m <span style=color:#fab387>0664</span> /dev/null /var/unbound/allowlist.txt
+</span></span><span style=display:flex><span>% doas install -o root -g wheel -m <span style=color:#fab387>0664</span> /dev/null /var/unbound/blocklist.txt
+</span></span></code></pre></div><p><code>allowlist.txt</code> holds domain names, one per line, that are to be excluded from
+blocking. Any domain and all subdomains will not be added to the final
+blocking configuration. <code>blocklist.txt</code> holds domain names, also one per line,
+that will always be added to the set of domains to block. In case of a conflict
+at the same or higher domain level, <code>allowlist.txt</code> will prevail.</p><p>Follow <a href=https://vcs.jgoguen.ca/jgoguen/unbound-adhosts#configuration class=external-link target=_blank rel=noopener>https://vcs.jgoguen.ca/jgoguen/unbound-adhosts#configuration</a> to fill in
+the configuration file correctly. Four different filter formats are accepted, so
+you can make use of almost any server list you find on the Internet. For
+reference, or a starting point, my configuration has these entries for blocking
+and allowlist:</p><div class=highlight><pre tabindex=0 style=color:#cdd6f4;background-color:#1e1e2e;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-json data-lang=json><span style=display:flex><span>{
+</span></span><span style=display:flex><span>  <span style=color:#cba6f7>&#34;allowlist&#34;</span>: {
+</span></span><span style=display:flex><span>    <span style=color:#cba6f7>&#34;adguard_filters&#34;</span>: [],
+</span></span><span style=display:flex><span>    <span style=color:#cba6f7>&#34;bare_domain_filters&#34;</span>: [
+</span></span><span style=display:flex><span>      <span style=color:#a6e3a1>&#34;https://raw.githubusercontent.com/hagezi/dns-blocklists/main/domains/whitelist-referral.txt&#34;</span>,
+</span></span><span style=display:flex><span>      <span style=color:#a6e3a1>&#34;https://raw.githubusercontent.com/anudeepND/whitelist/master/domains/whitelist.txt&#34;</span>,
+</span></span><span style=display:flex><span>      <span style=color:#a6e3a1>&#34;https://raw.githubusercontent.com/anudeepND/whitelist/master/domains/referral-sites.txt&#34;</span>
+</span></span><span style=display:flex><span>    ],
+</span></span><span style=display:flex><span>    <span style=color:#cba6f7>&#34;hostfile_filters&#34;</span>: [],
+</span></span><span style=display:flex><span>    <span style=color:#cba6f7>&#34;unbound_filters&#34;</span>: []
+</span></span><span style=display:flex><span>  },
+</span></span><span style=display:flex><span>  <span style=color:#cba6f7>&#34;blocklist&#34;</span>: {
+</span></span><span style=display:flex><span>    <span style=color:#cba6f7>&#34;adguard_filters&#34;</span>: [
+</span></span><span style=display:flex><span>      <span style=color:#a6e3a1>&#34;https://adguardteam.github.io/AdGuardSDNSFilter/Filters/filter.txt&#34;</span>,
+</span></span><span style=display:flex><span>      <span style=color:#a6e3a1>&#34;https://adguardteam.github.io/HostlistsRegistry/assets/filter_6.txt&#34;</span>,
+</span></span><span style=display:flex><span>      <span style=color:#a6e3a1>&#34;https://adguardteam.github.io/HostlistsRegistry/assets/filter_7.txt&#34;</span>,
+</span></span><span style=display:flex><span>      <span style=color:#a6e3a1>&#34;https://adguardteam.github.io/HostlistsRegistry/assets/filter_10.txt&#34;</span>,
+</span></span><span style=display:flex><span>      <span style=color:#a6e3a1>&#34;https://adguardteam.github.io/HostlistsRegistry/assets/filter_11.txt&#34;</span>,
+</span></span><span style=display:flex><span>      <span style=color:#a6e3a1>&#34;https://adguardteam.github.io/HostlistsRegistry/assets/filter_30.txt&#34;</span>,
+</span></span><span style=display:flex><span>      <span style=color:#a6e3a1>&#34;https://adguardteam.github.io/HostlistsRegistry/assets/filter_31.txt&#34;</span>,
+</span></span><span style=display:flex><span>      <span style=color:#a6e3a1>&#34;https://adguardteam.github.io/HostlistsRegistry/assets/filter_47.txt&#34;</span>,
+</span></span><span style=display:flex><span>      <span style=color:#a6e3a1>&#34;https://raw.githubusercontent.com/AdguardTeam/AdguardFilters/master/FrenchFilter/sections/adservers.txt&#34;</span>,
+</span></span><span style=display:flex><span>      <span style=color:#a6e3a1>&#34;https://raw.githubusercontent.com/AdguardTeam/AdGuardSDNSFilter/gh-pages/Filters/adguard_popup_filter.txt&#34;</span>,
+</span></span><span style=display:flex><span>      <span style=color:#a6e3a1>&#34;https://raw.githubusercontent.com/hagezi/dns-blocklists/main/adblock/gambling.txt&#34;</span>,
+</span></span><span style=display:flex><span>      <span style=color:#a6e3a1>&#34;https://raw.githubusercontent.com/hagezi/dns-blocklists/main/adblock/fake.txt&#34;</span>,
+</span></span><span style=display:flex><span>      <span style=color:#a6e3a1>&#34;https://raw.githubusercontent.com/hagezi/dns-blocklists/main/adblock/spam-tlds-adblock.txt&#34;</span>,
+</span></span><span style=display:flex><span>      <span style=color:#a6e3a1>&#34;https://raw.githubusercontent.com/hagezi/dns-blocklists/main/adblock/hoster.txt&#34;</span>
+</span></span><span style=display:flex><span>    ],
+</span></span><span style=display:flex><span>    <span style=color:#cba6f7>&#34;bare_domain_filters&#34;</span>: [
+</span></span><span style=display:flex><span>      <span style=color:#a6e3a1>&#34;https://www.stopforumspam.com/downloads/toxic_domains_whole.txt&#34;</span>,
+</span></span><span style=display:flex><span>      <span style=color:#a6e3a1>&#34;https://raw.githubusercontent.com/hagezi/dns-blocklists/main/domains/doh.txt&#34;</span>,
+</span></span><span style=display:flex><span>      <span style=color:#a6e3a1>&#34;https://raw.githubusercontent.com/hagezi/dns-blocklists/main/domains/tif.txt&#34;</span>,
+</span></span><span style=display:flex><span>      <span style=color:#a6e3a1>&#34;https://raw.githubusercontent.com/hagezi/dns-blocklists/main/domains/native.winoffice.txt&#34;</span>,
+</span></span><span style=display:flex><span>      <span style=color:#a6e3a1>&#34;https://raw.githubusercontent.com/hagezi/dns-blocklists/main/domains/native.amazon.txt&#34;</span>,
+</span></span><span style=display:flex><span>      <span style=color:#a6e3a1>&#34;https://raw.githubusercontent.com/hagezi/dns-blocklists/main/domains/native.apple.txt&#34;</span>,
+</span></span><span style=display:flex><span>      <span style=color:#a6e3a1>&#34;https://raw.githubusercontent.com/hagezi/dns-blocklists/main/domains/native.lgwebos.txt&#34;</span>,
+</span></span><span style=display:flex><span>      <span style=color:#a6e3a1>&#34;https://raw.githubusercontent.com/hagezi/dns-blocklists/main/domains/native.tiktok.txt&#34;</span>,
+</span></span><span style=display:flex><span>      <span style=color:#a6e3a1>&#34;https://raw.githubusercontent.com/JGeek00/adguard-home-lists/main/lists/lg-webos-ads.txt&#34;</span>
+</span></span><span style=display:flex><span>    ],
+</span></span><span style=display:flex><span>    <span style=color:#cba6f7>&#34;hostfile_filters&#34;</span>: [
+</span></span><span style=display:flex><span>      <span style=color:#a6e3a1>&#34;https://adaway.org/hosts.txt&#34;</span>,
+</span></span><span style=display:flex><span>      <span style=color:#a6e3a1>&#34;https://raw.githubusercontent.com/StevenBlack/hosts/master/hosts&#34;</span>,
+</span></span><span style=display:flex><span>      <span style=color:#a6e3a1>&#34;https://pgl.yoyo.org/adservers/serverlist.php?showintro=0;hostformat=hosts&#34;</span>,
+</span></span><span style=display:flex><span>      <span style=color:#a6e3a1>&#34;https://raw.githubusercontent.com/Sekhan/TheGreatWall/master/TheGreatWall.txt&#34;</span>,
+</span></span><span style=display:flex><span>      <span style=color:#a6e3a1>&#34;https://www.github.developerdan.com/hosts/lists/dating-services-extended.txt&#34;</span>,
+</span></span><span style=display:flex><span>      <span style=color:#a6e3a1>&#34;https://www.github.developerdan.com/hosts/lists/hate-and-junk-extended.txt&#34;</span>,
+</span></span><span style=display:flex><span>      <span style=color:#a6e3a1>&#34;https://raw.githubusercontent.com/davidonzo/Threat-Intel/master/lists/latestdomains.piHole.txt&#34;</span>,
+</span></span><span style=display:flex><span>      <span style=color:#a6e3a1>&#34;https://adguardteam.github.io/HostlistsRegistry/assets/filter_9.txt&#34;</span>,
+</span></span><span style=display:flex><span>      <span style=color:#a6e3a1>&#34;https://adguardteam.github.io/HostlistsRegistry/assets/filter_23.txt&#34;</span>,
+</span></span><span style=display:flex><span>      <span style=color:#a6e3a1>&#34;https://someonewhocares.org/hosts/hosts&#34;</span>
+</span></span><span style=display:flex><span>    ],
+</span></span><span style=display:flex><span>    <span style=color:#cba6f7>&#34;unbound_filters&#34;</span>: [
+</span></span><span style=display:flex><span>      <span style=color:#a6e3a1>&#34;https://malware-filter.gitlab.io/malware-filter/phishing-filter-unbound.conf&#34;</span>,
+</span></span><span style=display:flex><span>      <span style=color:#a6e3a1>&#34;https://malware-filter.gitlab.io/malware-filter/urlhaus-filter-unbound.conf&#34;</span>
+</span></span><span style=display:flex><span>    ]
+</span></span><span style=display:flex><span>  }
+</span></span><span style=display:flex><span>}
+</span></span></code></pre></div><p>You can run it now to verify everything works. By default, the script will write
+out the domain list at <code>/var/unbound/etc/unbound-adhosts.conf</code>.</p><div class=highlight><pre tabindex=0 style=color:#cdd6f4;background-color:#1e1e2e;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-sh data-lang=sh><span style=display:flex><span>% doas /usr/local/bin/unbound-adhosts update
+</span></span></code></pre></div><p>Inspect <code>/var/unbound/etc/unbound-adhosts.conf</code> to see the final result. Once
+you&rsquo;re satisfied, add a line to the end of the <code>server</code> section in
+<a href=https://man.openbsd.org/unbound.conf class=external-link target=_blank rel=noopener><code>unbound.conf(5)</code></a>:</p><div class=highlight><pre tabindex=0 style=color:#cdd6f4;background-color:#1e1e2e;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-gdscript3 data-lang=gdscript3><span style=display:flex><span>include: <span style=color:#89dceb;font-weight:700>/</span><span style=color:#cba6f7>var</span><span style=color:#89dceb;font-weight:700>/</span>unbound<span style=color:#89dceb;font-weight:700>/</span>etc<span style=color:#89dceb;font-weight:700>/</span>unbound<span style=color:#89dceb;font-weight:700>-</span>adhosts<span style=color:#89dceb;font-weight:700>.</span>conf
+</span></span></code></pre></div><p>Validate and restart <a href=https://man.openbsd.org/unbound class=external-link target=_blank rel=noopener><code>unbound(8)</code></a> to
+verify everything works so far:</p><div class=highlight><pre tabindex=0 style=color:#cdd6f4;background-color:#1e1e2e;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-sh data-lang=sh><span style=display:flex><span>% doas unbounb-checkconfig
+</span></span><span style=display:flex><span>% doas -u _unbound unbound-control reload_keep_cache
 </span></span><span style=display:flex><span>% host ad-feeds.com ::1
 </span></span><span style=display:flex><span>Using domain server:
 </span></span><span style=display:flex><span>Name: ::1
@@ -304,17 +462,24 @@ verify everything works so far:</p><div class=highlight><pre tabindex=0 style=co
 </span></span><span style=display:flex><span>Aliases:
 </span></span><span style=display:flex><span>
 </span></span><span style=display:flex><span>Host ad-feeds.com not found: 3<span style=color:#89dceb;font-weight:700>(</span>NXDOMAIN<span style=color:#89dceb;font-weight:700>)</span>
-</span></span></code></pre></div><p>Finally, add an entry to <code>root</code>&rsquo;s crontab to run this periodically:</p><div class=highlight><pre tabindex=0 style=color:#cdd6f4;background-color:#1e1e2e;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-sh data-lang=sh><span style=display:flex><span>% doas crontab -e
-</span></span></code></pre></div><p>Add this line:</p><div class=highlight><pre tabindex=0 style=color:#cdd6f4;background-color:#1e1e2e;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-gdscript3 data-lang=gdscript3><span style=display:flex><span><span style=color:#fab387>11</span><span style=color:#89dceb;font-weight:700>~</span><span style=color:#fab387>20</span>	<span style=color:#89dceb;font-weight:700>*/</span><span style=color:#fab387>6</span>	<span style=color:#89dceb;font-weight:700>*</span>	<span style=color:#89dceb;font-weight:700>*</span>	<span style=color:#89dceb;font-weight:700>*</span>	<span style=color:#89dceb;font-weight:700>/</span><span style=color:#cba6f7>var</span><span style=color:#89dceb;font-weight:700>/</span>unbound<span style=color:#89dceb;font-weight:700>/</span>unbound<span style=color:#89dceb;font-weight:700>-</span>adhosts<span style=color:#89dceb;font-weight:700>.</span>py
-</span></span></code></pre></div><p>Every 6 hours, somewhere between minutes 11-20, your adblock list will be
-updated and <a href=https://man.openbsd.org/unbound class=external-link target=_blank rel=noopener><code>unbound(8)</code></a> reloaded.</p><h3 id=pretty-graphs>Pretty Graphs
+</span></span></code></pre></div><p>Finally, add an entry to <code>_unbound</code>&rsquo;s crontab to run this periodically:</p><div class=highlight><pre tabindex=0 style=color:#cdd6f4;background-color:#1e1e2e;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-sh data-lang=sh><span style=display:flex><span>% doas -u _unbound crontab -e
+</span></span></code></pre></div><p>Add this line:</p><div class=highlight><pre tabindex=0 style=color:#cdd6f4;background-color:#1e1e2e;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-fallback data-lang=fallback><span style=display:flex><span>11~20	*/6	*	*	*	/usr/local/bin/unbound-adhosts update
+</span></span></code></pre></div><p>Every 6 hours, somewhere between minutes 11-20, your block config will be
+updated. If you want <a href=https://man.openbsd.org/unbound class=external-link target=_blank rel=noopener><code>unbound(8)</code></a> reloaded
+automatically, you can either add <code>--reload</code> to the cron entry or set <code>reload</code>
+to <code>true</code> in <code>/etc/unbound-adhosts.json</code>.</p><p>This will also give you stats on blocked domains. Because blocked domains reply
+with <code>NXDOMAIN</code>, the Grafana dashboard assumes that any <code>NXDOMAIN</code> is a blocked
+request. While not strictly correct, the number of false positives is most
+likely extremely low compared to the number of blocked requests and probably
+won&rsquo;t impact the percentage values noticeably.</p><h2 id=pretty-graphs>Pretty Graphs
 <a class=heading-link href=#pretty-graphs><i class="fa-solid fa-link" aria-hidden=true title="Link to heading"></i>
-<span class=sr-only>Link to heading</span></a></h3><p>Now that you have DNS data going to InfluxDB, it&rsquo;s time to do something useful
+<span class=sr-only>Link to heading</span></a></h2><p>Now that you have DNS data going to InfluxDB, it&rsquo;s time to do something useful
 with it. You can <a href=https://jgoguen.ca/grafana/unbound-dashboard.json>download the JSON</a> for
-a Grafana dashboard, or use the screenshots below for reference.</p><p><figure class=inline><a href=https://jgoguen.ca/img/grafana/unbound-grafana-1.png target=_blank><img src=https://jgoguen.ca/img/grafana/unbound-grafana-1.png alt="Grafana dashboard showing information about queries, response time, and cache status" width=33%></a></figure><figure class=inline><a href=https://jgoguen.ca/img/grafana/unbound-grafana-2.png target=_blank><img src=https://jgoguen.ca/img/grafana/unbound-grafana-2.png alt="Grafana dashboard showing details about top queried and blocked domains and query types" width=33%></a></figure><figure class=inline><a href=https://jgoguen.ca/img/grafana/unbound-grafana-3.png target=_blank><img src=https://jgoguen.ca/img/grafana/unbound-grafana-3.png alt="Grafana dashboard showing a log of recent queries and top clients by query count" width=33%></a></figure></p><h2 id=whats-next>What&rsquo;s Next?
+a Grafana dashboard, or use the screenshots below for reference.</p><p><figure class=inline><a href=https://jgoguen.ca/img/grafana/unbound-grafana-1.png target=_blank><img src=https://jgoguen.ca/img/grafana/unbound-grafana-1.png alt="Grafana dashboard showing information about queries, response time, and cache status" width=33%></a></figure><figure class=inline><a href=https://jgoguen.ca/img/grafana/unbound-grafana-2.png target=_blank><img src=https://jgoguen.ca/img/grafana/unbound-grafana-2.png alt="Grafana dashboard showing details about top queried and blocked domains and query types" width=33%></a></figure></p><p>Having graphs for your data helps you see at a glance how your DNS servers are
+performing and where any problems might be.</p><h2 id=whats-next>What&rsquo;s Next?
 <a class=heading-link href=#whats-next><i class="fa-solid fa-link" aria-hidden=true title="Link to heading"></i>
 <span class=sr-only>Link to heading</span></a></h2><p>At this point, take a look at
-<a href=https://awesome-selfhosted.net/ class=external-link target=_blank rel=noopener>Awesome Self-hosted</a> and see if there&rsquo;s any
+<a href=https://awesome-selfhosted.net/ class=external-link target=_blank rel=noopener>Awesome Self-hosted</a> and see if there are any
 services you want to host on your LAN. You have internal DNS to reach them by
 local IP, and your
 <a href=https://jgoguen.ca/posts/2024/07/16/openbsd-ipv6-home-internet-gateway-with-att-fibre/>OpenBSD gateway</a>
@@ -322,7 +487,10 @@ allows you to easily forward traffic to an internal web server (or you can run
 <a href=https://man.openbsd.org/relayd class=external-link target=_blank rel=noopener><code>relayd(8)</code></a> to forward to different places
 based on different criteria). Just be careful about what you host and how you
 configure the servers and services, your OpenBSD firewall can protect you from
-a lot but it can&rsquo;t protect you from a misconfiguration.</p></div><footer></footer></article></section></div><footer class=footer><section class=container>©
+a lot, but it can&rsquo;t protect you from a misconfiguration.</p><h2 id=changelog>Changelog
+<a class=heading-link href=#changelog><i class="fa-solid fa-link" aria-hidden=true title="Link to heading"></i>
+<span class=sr-only>Link to heading</span></a></h2><ul><li>2024-10-08:<ul><li>The Grafana dashboard has been updated to the latest version in use.</li><li>Script links have been replaced with links to Go source to compile binaries.</li><li>Added a section on why you might want to run your own DNS server.</li><li>Added directions to enable DNSSEC validation and initializing the root key.</li><li>Added directions for getting the root hints file from upstream.</li><li><a href=https://man.openbsd.org/pf.conf class=external-link target=_blank rel=noopener><code>pf.conf</code></a> has been tweaked slightly,
+mostly for display.</li><li>Minor wording updates for clarity throughout.</li></ul></li></ul></div><footer></footer></article></section></div><footer class=footer><section class=container>©
 2013 -
 2024
 Joel Goguen
