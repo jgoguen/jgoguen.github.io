@@ -55,7 +55,7 @@ images = ["/img/logo.jpg"]
 favicon_16 = "/img/favicon_16x16.png"
 favicon_32 = "/img/favicon_32x32.png"
 
-customSCSS = ["sass/style.scss"]
+customSCSS = ["css/style.scss"]
 customJS = ["/js/scrollbar.js"]
 
 [[params.social]]
