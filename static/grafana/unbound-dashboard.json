@@ -34,7 +34,7 @@
       "type": "grafana",
       "id": "grafana",
       "name": "Grafana",
-      "version": "11.0.1"
+      "version": "11.2.1"
     },
     {
       "type": "datasource",
@@ -83,11 +83,11 @@
       }
     ]
   },
-  "description": "Unbound with AD block usage",
+  "description": "Unbound DNS server queries and statistics",
   "editable": true,
   "fiscalYearStartMonth": 0,
   "gnetId": 18053,
-  "graphTooltip": 0,
+  "graphTooltip": 2,
   "id": null,
   "links": [],
   "liveNow": false,
@@ -142,8 +142,11 @@
         "graphMode": "area",
         "justifyMode": "auto",
         "orientation": "horizontal",
+        "percentChangeColorMode": "standard",
         "reduceOptions": {
-          "calcs": ["lastNotNull"],
+          "calcs": [
+            "lastNotNull"
+          ],
           "fields": "",
           "values": false
         },
@@ -152,7 +155,7 @@
         "textMode": "auto",
         "wideLayout": true
       },
-      "pluginVersion": "11.0.1",
+      "pluginVersion": "11.2.1",
       "targets": [
         {
           "datasource": {
@@ -169,7 +172,9 @@
           "select": [
             [
               {
-                "params": ["response_size"],
+                "params": [
+                  "response_size"
+                ],
                 "type": "field"
               },
               {
@@ -227,8 +232,11 @@
         "graphMode": "area",
         "justifyMode": "auto",
         "orientation": "horizontal",
+        "percentChangeColorMode": "standard",
         "reduceOptions": {
-          "calcs": ["lastNotNull"],
+          "calcs": [
+            "lastNotNull"
+          ],
           "fields": "",
           "values": false
         },
@@ -237,7 +245,7 @@
         "textMode": "auto",
         "wideLayout": true
       },
-      "pluginVersion": "11.0.1",
+      "pluginVersion": "11.2.1",
       "targets": [
         {
           "datasource": {
@@ -255,7 +263,9 @@
           "select": [
             [
               {
-                "params": ["matched"],
+                "params": [
+                  "matched"
+                ],
                 "type": "field"
               },
               {
@@ -316,8 +326,11 @@
         "graphMode": "area",
         "justifyMode": "auto",
         "orientation": "auto",
+        "percentChangeColorMode": "standard",
         "reduceOptions": {
-          "calcs": ["lastNotNull"],
+          "calcs": [
+            "lastNotNull"
+          ],
           "fields": "",
           "values": false
         },
@@ -326,7 +339,7 @@
         "textMode": "auto",
         "wideLayout": true
       },
-      "pluginVersion": "11.0.1",
+      "pluginVersion": "11.2.1",
       "targets": [
         {
           "alias": "",
@@ -336,10 +349,13 @@
           },
           "groupBy": [
             {
-              "params": ["$forever"],
+              "params": [
+                "$forever"
+              ],
               "type": "time"
             }
           ],
+          "hide": true,
           "measurement": "unbound_queries",
           "orderByTime": "ASC",
           "policy": "default",
@@ -350,7 +366,9 @@
           "select": [
             [
               {
-                "params": ["response_size"],
+                "params": [
+                  "response_size"
+                ],
                 "type": "field"
               },
               {
@@ -375,11 +393,13 @@
           },
           "groupBy": [
             {
-              "params": ["$forever"],
+              "params": [
+                "$forever"
+              ],
               "type": "time"
             }
           ],
-          "hide": false,
+          "hide": true,
           "measurement": "unbound_adblock",
           "orderByTime": "ASC",
           "policy": "default",
@@ -390,7 +410,9 @@
           "select": [
             [
               {
-                "params": ["matched"],
+                "params": [
+                  "matched"
+                ],
                 "type": "field"
               },
               {
@@ -406,28 +428,19 @@
               "value": "/^$hostname$/"
             }
           ]
+        },
+        {
+          "datasource": {
+            "type": "__expr__",
+            "uid": "${DS_EXPRESSION}"
+          },
+          "expression": "$B / $A",
+          "hide": false,
+          "refId": "C",
+          "type": "math"
         }
       ],
       "title": "Percent Blocked",
-      "transformations": [
-        {
-          "id": "calculateField",
-          "options": {
-            "binary": {
-              "left": "unbound_adblock.count",
-              "operator": "/",
-              "reducer": "sum",
-              "right": "unbound_queries.count"
-            },
-            "mode": "binary",
-            "reduce": {
-              "include": ["unbound_queries.count", "unbound_adblock.count"],
-              "reducer": "diffperc"
-            },
-            "replaceFields": true
-          }
-        }
-      ],
       "type": "stat"
     },
     {
@@ -467,8 +480,11 @@
         "graphMode": "area",
         "justifyMode": "auto",
         "orientation": "horizontal",
+        "percentChangeColorMode": "standard",
         "reduceOptions": {
-          "calcs": ["lastNotNull"],
+          "calcs": [
+            "lastNotNull"
+          ],
           "fields": "",
           "values": false
         },
@@ -477,55 +493,54 @@
         "textMode": "auto",
         "wideLayout": true
       },
-      "pluginVersion": "11.0.1",
+      "pluginVersion": "11.2.1",
       "targets": [
         {
+          "alias": "$tag_host",
           "datasource": {
             "type": "influxdb",
             "uid": "${DS_DNS_LOGS}"
           },
           "groupBy": [],
           "hide": false,
-          "measurement": "exec_value",
+          "measurement": "unbound_queries",
           "orderByTime": "ASC",
           "policy": "default",
+          "query": "SELECT count(\"response_size\") FROM \"unbound_queries\" WHERE (\"host\"::tag =~ /^$hostname$/ AND (\"return_code\"::tag = 'REFUSED' OR \"return_code\"::tag = 'SERVFAIL')) AND $timeFilter GROUP BY \"host\"::tag",
+          "rawQuery": false,
           "refId": "A",
           "resultFormat": "time_series",
           "select": [
             [
               {
-                "params": ["value"],
+                "params": [
+                  "response_size"
+                ],
                 "type": "field"
               },
               {
                 "params": [],
-                "type": "last"
+                "type": "count"
               }
             ]
           ],
           "tags": [
             {
               "condition": "AND",
-              "key": "instance",
-              "operator": "=",
-              "value": "unbound"
-            },
-            {
-              "condition": "AND",
-              "key": "type_instance",
-              "operator": "=",
-              "value": "num.adhosts"
-            },
-            {
-              "condition": "AND",
               "key": "host::tag",
               "operator": "=~",
               "value": "/^$hostname$/"
+            },
+            {
+              "condition": "AND",
+              "key": "return_code::tag",
+              "operator": "=~",
+              "value": "/^(REFUSED|SERVFAIL)$/"
             }
           ]
         }
       ],
-      "title": "Domains on blocklist",
+      "title": "Failed/Rejected Queries",
       "type": "stat"
     },
     {
@@ -546,11 +561,10 @@
         "type": "influxdb",
         "uid": "${DS_DNS_LOGS}"
       },
-      "description": "",
+      "description": "Cache hit rate over the previous 5 minutes",
       "fieldConfig": {
         "defaults": {
           "color": {
-            "fixedColor": "rgb(199, 208, 217)",
             "mode": "palette-classic"
           },
           "custom": {
@@ -560,6 +574,7 @@
             "axisLabel": "",
             "axisPlacement": "auto",
             "barAlignment": 0,
+            "barWidthFactor": 0.6,
             "drawStyle": "line",
             "fillOpacity": 0,
             "gradientMode": "none",
@@ -576,155 +591,7 @@
               "type": "linear"
             },
             "showPoints": "auto",
-            "spanNulls": false,
-            "stacking": {
-              "group": "A",
-              "mode": "none"
-            },
-            "thresholdsStyle": {
-              "mode": "off"
-            }
-          },
-          "decimals": 0,
-          "mappings": [],
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
-              {
-                "color": "green",
-                "value": null
-              }
-            ]
-          },
-          "unit": "decbytes"
-        },
-        "overrides": []
-      },
-      "gridPos": {
-        "h": 7,
-        "w": 6,
-        "x": 0,
-        "y": 5
-      },
-      "id": 30,
-      "options": {
-        "legend": {
-          "calcs": [],
-          "displayMode": "list",
-          "placement": "bottom",
-          "showLegend": true
-        },
-        "timezone": ["browser"],
-        "tooltip": {
-          "maxHeight": 600,
-          "mode": "multi",
-          "sort": "none"
-        }
-      },
-      "pluginVersion": "11.0.1",
-      "targets": [
-        {
-          "datasource": {
-            "type": "influxdb",
-            "uid": "${DS_DNS_LOGS}"
-          },
-          "groupBy": [
-            {
-              "params": ["1m"],
-              "type": "time"
-            },
-            {
-              "params": ["host::tag"],
-              "type": "tag"
-            }
-          ],
-          "measurement": "exec_value",
-          "orderByTime": "ASC",
-          "policy": "default",
-          "query": "SELECT sum(\"value\") FROM \"exec_value\" WHERE (\"instance\" = 'unbound' AND \"type_instance\" =~ /^mem.cache.*/) AND $timeFilter GROUP BY time(5m), \"host\"::tag",
-          "rawQuery": false,
-          "refId": "A",
-          "resultFormat": "time_series",
-          "select": [
-            [
-              {
-                "params": ["value"],
-                "type": "field"
-              },
-              {
-                "params": [],
-                "type": "last"
-              }
-            ]
-          ],
-          "tags": [
-            {
-              "condition": "AND",
-              "key": "instance",
-              "operator": "=",
-              "value": "unbound"
-            },
-            {
-              "condition": "AND",
-              "key": "type_instance",
-              "operator": "=~",
-              "value": "/^mem.cache.*/"
-            },
-            {
-              "condition": "AND",
-              "key": "host::tag",
-              "operator": "=~",
-              "value": "/^$hostname$/"
-            }
-          ]
-        }
-      ],
-      "title": "Memory Cache Size",
-      "transformations": [
-        {
-          "id": "renameByRegex",
-          "options": {
-            "regex": "exec_.+ { host: (.*) }",
-            "renamePattern": "$1"
-          }
-        }
-      ],
-      "type": "timeseries"
-    },
-    {
-      "datasource": {
-        "type": "influxdb",
-        "uid": "${DS_DNS_LOGS}"
-      },
-      "fieldConfig": {
-        "defaults": {
-          "color": {
-            "mode": "palette-classic"
-          },
-          "custom": {
-            "axisBorderShow": false,
-            "axisCenteredZero": false,
-            "axisColorMode": "text",
-            "axisLabel": "",
-            "axisPlacement": "auto",
-            "barAlignment": 0,
-            "drawStyle": "line",
-            "fillOpacity": 0,
-            "gradientMode": "none",
-            "hideFrom": {
-              "legend": false,
-              "tooltip": false,
-              "viz": false
-            },
-            "insertNulls": false,
-            "lineInterpolation": "linear",
-            "lineWidth": 1,
-            "pointSize": 5,
-            "scaleDistribution": {
-              "type": "linear"
-            },
-            "showPoints": "auto",
-            "spanNulls": false,
+            "spanNulls": true,
             "stacking": {
               "group": "A",
               "mode": "none"
@@ -753,12 +620,12 @@
         "overrides": []
       },
       "gridPos": {
-        "h": 7,
-        "w": 6,
-        "x": 6,
+        "h": 8,
+        "w": 12,
+        "x": 0,
         "y": 5
       },
-      "id": 55,
+      "id": 74,
       "options": {
         "legend": {
           "calcs": [],
@@ -774,27 +641,33 @@
       },
       "targets": [
         {
-          "alias": "Cache Operations",
+          "alias": "$tag_host",
           "datasource": {
             "type": "influxdb",
             "uid": "${DS_DNS_LOGS}"
           },
           "groupBy": [
             {
-              "params": ["1m"],
+              "params": [
+                "5m"
+              ],
               "type": "time"
             },
             {
-              "params": ["host::tag"],
+              "params": [
+                "host::tag"
+              ],
               "type": "tag"
             },
             {
-              "params": ["null"],
+              "params": [
+                "0"
+              ],
               "type": "fill"
             }
           ],
           "hide": true,
-          "measurement": "exec_value",
+          "measurement": "unbound_queries",
           "orderByTime": "ASC",
           "policy": "default",
           "refId": "A",
@@ -802,63 +675,60 @@
           "select": [
             [
               {
-                "params": ["value"],
+                "params": [
+                  "response_size"
+                ],
                 "type": "field"
               },
               {
                 "params": [],
-                "type": "sum"
+                "type": "count"
               }
             ]
           ],
           "tags": [
             {
-              "key": "instance::tag",
-              "operator": "=",
-              "value": "unbound"
-            },
-            {
-              "condition": "AND",
-              "key": "type_instance::tag",
-              "operator": "=",
-              "value": "total.num.cachehits"
-            },
-            {
-              "condition": "OR",
-              "key": "type_instance::tag",
-              "operator": "=",
-              "value": "total.num.cachemiss"
-            },
-            {
               "condition": "AND",
               "key": "host::tag",
               "operator": "=~",
               "value": "/^$hostname$/"
+            },
+            {
+              "condition": "AND",
+              "key": "client::tag",
+              "operator": "=~",
+              "value": "/^$client$/"
             }
           ]
         },
         {
-          "alias": "Cache Misses",
+          "alias": "$tag_host",
           "datasource": {
             "type": "influxdb",
             "uid": "${DS_DNS_LOGS}"
           },
           "groupBy": [
             {
-              "params": ["1m"],
+              "params": [
+                "5m"
+              ],
               "type": "time"
             },
             {
-              "params": ["host::tag"],
+              "params": [
+                "host::tag"
+              ],
               "type": "tag"
             },
             {
-              "params": ["null"],
+              "params": [
+                "null"
+              ],
               "type": "fill"
             }
           ],
           "hide": true,
-          "measurement": "exec_value",
+          "measurement": "unbound_queries",
           "orderByTime": "ASC",
           "policy": "default",
           "refId": "B",
@@ -866,32 +736,35 @@
           "select": [
             [
               {
-                "params": ["value"],
+                "params": [
+                  "response_size"
+                ],
                 "type": "field"
               },
               {
                 "params": [],
-                "type": "sum"
+                "type": "count"
               }
             ]
           ],
           "tags": [
             {
-              "key": "instance::tag",
-              "operator": "=",
-              "value": "unbound"
-            },
-            {
-              "condition": "AND",
-              "key": "type_instance::tag",
-              "operator": "=",
-              "value": "total.num.cachehits"
-            },
-            {
               "condition": "AND",
               "key": "host::tag",
               "operator": "=~",
               "value": "/^$hostname$/"
+            },
+            {
+              "condition": "AND",
+              "key": "client::tag",
+              "operator": "=~",
+              "value": "/^$client$/"
+            },
+            {
+              "condition": "AND",
+              "key": "from_cache::tag",
+              "operator": "=",
+              "value": "1"
             }
           ]
         },
@@ -923,155 +796,7 @@
         "type": "influxdb",
         "uid": "${DS_DNS_LOGS}"
       },
-      "description": "",
-      "fieldConfig": {
-        "defaults": {
-          "color": {
-            "fixedColor": "rgb(199, 208, 217)",
-            "mode": "palette-classic"
-          },
-          "custom": {
-            "axisBorderShow": false,
-            "axisCenteredZero": false,
-            "axisColorMode": "text",
-            "axisLabel": "",
-            "axisPlacement": "auto",
-            "barAlignment": 0,
-            "drawStyle": "line",
-            "fillOpacity": 0,
-            "gradientMode": "none",
-            "hideFrom": {
-              "legend": false,
-              "tooltip": false,
-              "viz": false
-            },
-            "insertNulls": false,
-            "lineInterpolation": "linear",
-            "lineWidth": 1,
-            "pointSize": 5,
-            "scaleDistribution": {
-              "type": "linear"
-            },
-            "showPoints": "auto",
-            "spanNulls": false,
-            "stacking": {
-              "group": "A",
-              "mode": "none"
-            },
-            "thresholdsStyle": {
-              "mode": "off"
-            }
-          },
-          "decimals": 0,
-          "mappings": [],
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
-              {
-                "color": "green",
-                "value": null
-              }
-            ]
-          },
-          "unit": "sishort"
-        },
-        "overrides": []
-      },
-      "gridPos": {
-        "h": 7,
-        "w": 6,
-        "x": 12,
-        "y": 5
-      },
-      "id": 31,
-      "options": {
-        "legend": {
-          "calcs": [],
-          "displayMode": "list",
-          "placement": "bottom",
-          "showLegend": true
-        },
-        "tooltip": {
-          "maxHeight": 600,
-          "mode": "multi",
-          "sort": "none"
-        }
-      },
-      "pluginVersion": "11.0.1",
-      "targets": [
-        {
-          "datasource": {
-            "type": "influxdb",
-            "uid": "${DS_DNS_LOGS}"
-          },
-          "groupBy": [
-            {
-              "params": ["1m"],
-              "type": "time"
-            },
-            {
-              "params": ["host::tag"],
-              "type": "tag"
-            }
-          ],
-          "measurement": "exec_value",
-          "orderByTime": "ASC",
-          "policy": "default",
-          "query": "SELECT sum(\"value\") FROM \"exec_value\" WHERE (\"instance\" = 'unbound' AND \"type_instance\" = 'msg.cache.count') AND $timeFilter GROUP BY time(5m), \"host\"::tag",
-          "rawQuery": false,
-          "refId": "A",
-          "resultFormat": "time_series",
-          "select": [
-            [
-              {
-                "params": ["value"],
-                "type": "field"
-              },
-              {
-                "params": [],
-                "type": "last"
-              }
-            ]
-          ],
-          "tags": [
-            {
-              "condition": "AND",
-              "key": "instance",
-              "operator": "=",
-              "value": "unbound"
-            },
-            {
-              "condition": "AND",
-              "key": "type_instance",
-              "operator": "=",
-              "value": "mem.cache.message"
-            },
-            {
-              "condition": "AND",
-              "key": "host::tag",
-              "operator": "=~",
-              "value": "/^$hostname$/"
-            }
-          ]
-        }
-      ],
-      "title": "Cached Messages",
-      "transformations": [
-        {
-          "id": "renameByRegex",
-          "options": {
-            "regex": "exec_.+ { host: (.*) }",
-            "renamePattern": "$1"
-          }
-        }
-      ],
-      "type": "timeseries"
-    },
-    {
-      "datasource": {
-        "type": "influxdb",
-        "uid": "${DS_DNS_LOGS}"
-      },
+      "description": "Cache prefetches per second over a 1 minute window",
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -1084,6 +809,7 @@
             "axisLabel": "",
             "axisPlacement": "auto",
             "barAlignment": 0,
+            "barWidthFactor": 0.6,
             "drawStyle": "line",
             "fillOpacity": 0,
             "gradientMode": "none",
@@ -1122,14 +848,15 @@
                 "value": 80
               }
             ]
-          }
+          },
+          "unit": "reqps"
         },
         "overrides": []
       },
       "gridPos": {
-        "h": 7,
-        "w": 6,
-        "x": 18,
+        "h": 8,
+        "w": 12,
+        "x": 12,
         "y": 5
       },
       "id": 49,
@@ -1140,7 +867,9 @@
           "placement": "bottom",
           "showLegend": true
         },
-        "timezone": ["browser"],
+        "timezone": [
+          "browser"
+        ],
         "tooltip": {
           "maxHeight": 600,
           "mode": "multi",
@@ -1149,21 +878,26 @@
       },
       "targets": [
         {
+          "alias": "$tag_host",
           "datasource": {
             "type": "influxdb",
             "uid": "${DS_DNS_LOGS}"
           },
           "groupBy": [
             {
-              "params": ["1m"],
+              "params": [
+                "1m"
+              ],
               "type": "time"
             },
             {
-              "params": ["host::tag"],
+              "params": [
+                "host::tag"
+              ],
               "type": "tag"
             }
           ],
-          "measurement": "exec_value",
+          "measurement": "unbound_stats",
           "orderByTime": "ASC",
           "policy": "default",
           "query": "SELECT \"value\" FROM \"exec_value\" WHERE (\"type_instance\"::tag = 'total.num.prefetch') AND $timeFilter GROUP BY \"host\"::tag",
@@ -1173,25 +907,24 @@
           "select": [
             [
               {
-                "params": ["value"],
+                "params": [
+                  "prefetches"
+                ],
                 "type": "field"
               },
               {
                 "params": [],
-                "type": "last"
+                "type": "sum"
               },
               {
-                "params": ["1m"],
+                "params": [
+                  "1s"
+                ],
                 "type": "non_negative_derivative"
               }
             ]
           ],
           "tags": [
-            {
-              "key": "type_instance::tag",
-              "operator": "=",
-              "value": "total.num.prefetch"
-            },
             {
               "condition": "AND",
               "key": "host::tag",
@@ -1202,15 +935,6 @@
         }
       ],
       "title": "Cache Prefetches /sec",
-      "transformations": [
-        {
-          "id": "renameByRegex",
-          "options": {
-            "regex": "exec_.+ { host: (.+) }",
-            "renamePattern": "$1"
-          }
-        }
-      ],
       "type": "timeseries"
     },
     {
@@ -1223,7 +947,7 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 12
+        "y": 13
       },
       "id": 26,
       "panels": [],
@@ -1244,11 +968,10 @@
         "type": "influxdb",
         "uid": "${DS_DNS_LOGS}"
       },
-      "description": "",
+      "description": "DNS queries from clients per second over a 1 minute window ",
       "fieldConfig": {
         "defaults": {
           "color": {
-            "fixedColor": "rgb(199, 208, 217)",
             "mode": "palette-classic"
           },
           "custom": {
@@ -1258,6 +981,7 @@
             "axisLabel": "",
             "axisPlacement": "auto",
             "barAlignment": 0,
+            "barWidthFactor": 0.6,
             "drawStyle": "line",
             "fillOpacity": 0,
             "gradientMode": "none",
@@ -1267,156 +991,7 @@
               "viz": false
             },
             "insertNulls": false,
-            "lineInterpolation": "linear",
-            "lineWidth": 1,
-            "pointSize": 5,
-            "scaleDistribution": {
-              "type": "linear"
-            },
-            "showPoints": "auto",
-            "spanNulls": false,
-            "stacking": {
-              "group": "A",
-              "mode": "none"
-            },
-            "thresholdsStyle": {
-              "mode": "off"
-            }
-          },
-          "decimals": 0,
-          "fieldMinMax": false,
-          "mappings": [],
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
-              {
-                "color": "green",
-                "value": null
-              }
-            ]
-          },
-          "unit": "clocks"
-        },
-        "overrides": []
-      },
-      "gridPos": {
-        "h": 7,
-        "w": 6,
-        "x": 0,
-        "y": 13
-      },
-      "id": 28,
-      "options": {
-        "legend": {
-          "calcs": [],
-          "displayMode": "list",
-          "placement": "bottom",
-          "showLegend": true
-        },
-        "timezone": ["browser"],
-        "tooltip": {
-          "maxHeight": 600,
-          "mode": "multi",
-          "sort": "none"
-        }
-      },
-      "pluginVersion": "11.0.1",
-      "targets": [
-        {
-          "datasource": {
-            "type": "influxdb",
-            "uid": "${DS_DNS_LOGS}"
-          },
-          "groupBy": [
-            {
-              "params": ["5m"],
-              "type": "time"
-            },
-            {
-              "params": ["host::tag"],
-              "type": "tag"
-            }
-          ],
-          "measurement": "exec_value",
-          "orderByTime": "ASC",
-          "policy": "default",
-          "refId": "A",
-          "resultFormat": "time_series",
-          "select": [
-            [
-              {
-                "params": ["value"],
-                "type": "field"
-              },
-              {
-                "params": [],
-                "type": "last"
-              }
-            ]
-          ],
-          "tags": [
-            {
-              "condition": "AND",
-              "key": "instance",
-              "operator": "=",
-              "value": "unbound"
-            },
-            {
-              "condition": "AND",
-              "key": "type_instance",
-              "operator": "=",
-              "value": "time.up"
-            },
-            {
-              "condition": "AND",
-              "key": "host::tag",
-              "operator": "=~",
-              "value": "/^$hostname$/"
-            }
-          ]
-        }
-      ],
-      "title": "Uptime",
-      "transformations": [
-        {
-          "id": "renameByRegex",
-          "options": {
-            "regex": "exec_.+ { host: (.*) }",
-            "renamePattern": "$1"
-          }
-        }
-      ],
-      "type": "timeseries"
-    },
-    {
-      "datasource": {
-        "type": "influxdb",
-        "uid": "${DS_DNS_LOGS}"
-      },
-      "description": "",
-      "fieldConfig": {
-        "defaults": {
-          "color": {
-            "fixedColor": "rgb(199, 208, 217)",
-            "mode": "palette-classic"
-          },
-          "custom": {
-            "axisBorderShow": false,
-            "axisCenteredZero": false,
-            "axisColorMode": "text",
-            "axisLabel": "",
-            "axisPlacement": "auto",
-            "barAlignment": 0,
-            "drawStyle": "line",
-            "fillOpacity": 0,
-            "gradientMode": "none",
-            "hideFrom": {
-              "legend": false,
-              "tooltip": false,
-              "viz": false
-            },
-            "insertNulls": false,
-            "lineInterpolation": "linear",
+            "lineInterpolation": "smooth",
             "lineStyle": {
               "fill": "solid"
             },
@@ -1426,149 +1001,7 @@
               "type": "linear"
             },
             "showPoints": "auto",
-            "spanNulls": false,
-            "stacking": {
-              "group": "A",
-              "mode": "none"
-            },
-            "thresholdsStyle": {
-              "mode": "off"
-            }
-          },
-          "decimals": 0,
-          "mappings": [],
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
-              {
-                "color": "green",
-                "value": null
-              }
-            ]
-          },
-          "unit": "reqps"
-        },
-        "overrides": []
-      },
-      "gridPos": {
-        "h": 7,
-        "w": 6,
-        "x": 6,
-        "y": 13
-      },
-      "id": 29,
-      "options": {
-        "legend": {
-          "calcs": [],
-          "displayMode": "list",
-          "placement": "bottom",
-          "showLegend": true
-        },
-        "timezone": ["browser"],
-        "tooltip": {
-          "maxHeight": 600,
-          "mode": "multi",
-          "sort": "none"
-        }
-      },
-      "pluginVersion": "11.0.1",
-      "targets": [
-        {
-          "datasource": {
-            "type": "influxdb",
-            "uid": "${DS_DNS_LOGS}"
-          },
-          "groupBy": [
-            {
-              "params": ["30s"],
-              "type": "time"
-            },
-            {
-              "params": ["host::tag"],
-              "type": "tag"
-            }
-          ],
-          "hide": false,
-          "measurement": "unbound_queries",
-          "orderByTime": "ASC",
-          "policy": "default",
-          "query": "SELECT non_negative_derivative(last(\"value\"), 1s) FROM \"exec_value\" WHERE (\"instance\" = 'unbound' AND \"type_instance\" = 'total.num.queries') AND $timeFilter GROUP BY time(1s), \"host\"::tag",
-          "rawQuery": false,
-          "refId": "A",
-          "resultFormat": "time_series",
-          "select": [
-            [
-              {
-                "params": ["response_size"],
-                "type": "field"
-              },
-              {
-                "params": [],
-                "type": "count"
-              },
-              {
-                "params": ["1s"],
-                "type": "non_negative_derivative"
-              }
-            ]
-          ],
-          "tags": [
-            {
-              "condition": "AND",
-              "key": "host::tag",
-              "operator": "=~",
-              "value": "/^$hostname$/"
-            }
-          ]
-        }
-      ],
-      "title": "Queries / sec",
-      "transformations": [
-        {
-          "id": "renameByRegex",
-          "options": {
-            "regex": "exec_.+ { host: (.*) }",
-            "renamePattern": "$1"
-          }
-        }
-      ],
-      "type": "timeseries"
-    },
-    {
-      "datasource": {
-        "type": "influxdb",
-        "uid": "${DS_DNS_LOGS}"
-      },
-      "description": "",
-      "fieldConfig": {
-        "defaults": {
-          "color": {
-            "mode": "palette-classic"
-          },
-          "custom": {
-            "axisBorderShow": false,
-            "axisCenteredZero": false,
-            "axisColorMode": "text",
-            "axisLabel": "",
-            "axisPlacement": "auto",
-            "barAlignment": 0,
-            "drawStyle": "line",
-            "fillOpacity": 0,
-            "gradientMode": "none",
-            "hideFrom": {
-              "legend": false,
-              "tooltip": false,
-              "viz": false
-            },
-            "insertNulls": false,
-            "lineInterpolation": "linear",
-            "lineWidth": 1,
-            "pointSize": 5,
-            "scaleDistribution": {
-              "type": "linear"
-            },
-            "showPoints": "auto",
-            "spanNulls": false,
+            "spanNulls": true,
             "stacking": {
               "group": "A",
               "mode": "none"
@@ -1578,7 +1011,6 @@
             }
           },
           "mappings": [],
-          "max": 1,
           "thresholds": {
             "mode": "absolute",
             "steps": [
@@ -1592,17 +1024,17 @@
               }
             ]
           },
-          "unit": "percentunit"
+          "unit": "reqps"
         },
         "overrides": []
       },
       "gridPos": {
-        "h": 7,
-        "w": 6,
-        "x": 12,
-        "y": 13
+        "h": 8,
+        "w": 12,
+        "x": 0,
+        "y": 14
       },
-      "id": 43,
+      "id": 73,
       "options": {
         "legend": {
           "calcs": [],
@@ -1610,6 +1042,9 @@
           "placement": "bottom",
           "showLegend": true
         },
+        "timezone": [
+          "browser"
+        ],
         "tooltip": {
           "maxHeight": 600,
           "mode": "multi",
@@ -1624,16 +1059,26 @@
           },
           "groupBy": [
             {
-              "params": ["5m"],
+              "params": [
+                "1m"
+              ],
               "type": "time"
             },
             {
-              "params": ["host::tag"],
+              "params": [
+                "host::tag"
+              ],
               "type": "tag"
+            },
+            {
+              "params": [
+                "0"
+              ],
+              "type": "fill"
             }
           ],
           "hide": true,
-          "measurement": "exec_value",
+          "measurement": "unbound_queries",
           "orderByTime": "ASC",
           "policy": "default",
           "refId": "A",
@@ -1641,32 +1086,28 @@
           "select": [
             [
               {
-                "params": ["value"],
+                "params": [
+                  "response_size"
+                ],
                 "type": "field"
               },
               {
                 "params": [],
-                "type": "last"
+                "type": "count"
               }
             ]
           ],
           "tags": [
             {
-              "key": "instance::tag",
-              "operator": "=",
-              "value": "unbound"
-            },
-            {
-              "condition": "AND",
-              "key": "type_instance::tag",
-              "operator": "=",
-              "value": "num.answer.secure"
-            },
-            {
-              "condition": "AND",
               "key": "host::tag",
               "operator": "=~",
               "value": "/^$hostname$/"
+            },
+            {
+              "condition": "AND",
+              "key": "client::tag",
+              "operator": "=~",
+              "value": "/^$client$/"
             }
           ]
         },
@@ -1677,49 +1118,114 @@
           },
           "groupBy": [
             {
-              "params": ["5m"],
+              "params": [
+                "1m"
+              ],
               "type": "time"
             },
             {
-              "params": ["host::tag"],
+              "params": [
+                "host::tag"
+              ],
               "type": "tag"
+            },
+            {
+              "params": [
+                "0"
+              ],
+              "type": "fill"
             }
           ],
           "hide": true,
-          "measurement": "exec_value",
+          "measurement": "unbound_adblock",
           "orderByTime": "ASC",
           "policy": "default",
-          "refId": "D",
+          "refId": "B",
           "resultFormat": "time_series",
           "select": [
             [
               {
-                "params": ["value"],
+                "params": [
+                  "matched"
+                ],
                 "type": "field"
               },
               {
                 "params": [],
-                "type": "last"
+                "type": "count"
               }
             ]
           ],
           "tags": [
             {
-              "key": "instance::tag",
-              "operator": "=",
-              "value": "unbound"
-            },
-            {
-              "condition": "AND",
-              "key": "type_instance::tag",
-              "operator": "=",
-              "value": "num.answer.rcode.NOERROR"
-            },
-            {
-              "condition": "AND",
               "key": "host::tag",
               "operator": "=~",
               "value": "/^$hostname$/"
+            },
+            {
+              "condition": "AND",
+              "key": "client::tag",
+              "operator": "=~",
+              "value": "/^$client$/"
+            }
+          ]
+        },
+        {
+          "datasource": {
+            "type": "influxdb",
+            "uid": "${DS_DNS_LOGS}"
+          },
+          "groupBy": [
+            {
+              "params": [
+                "1m"
+              ],
+              "type": "time"
+            },
+            {
+              "params": [
+                "host::tag"
+              ],
+              "type": "tag"
+            },
+            {
+              "params": [
+                "0"
+              ],
+              "type": "fill"
+            }
+          ],
+          "hide": true,
+          "measurement": "unbound_static",
+          "orderByTime": "ASC",
+          "policy": "default",
+          "refId": "C",
+          "resultFormat": "time_series",
+          "select": [
+            [
+              {
+                "params": [
+                  "matched"
+                ],
+                "type": "field"
+              },
+              {
+                "params": [],
+                "type": "count"
+              }
+            ]
+          ],
+          "tags": [
+            {
+              "key": "host::tag",
+              "operator": "=~",
+              "value": "/^$hostname$/"
+            },
+            {
+              "condition": "AND",
+              "key": "client::tag",
+              "operator": "=~",
+              "value": "/^$client$/"
             }
           ]
         },
@@ -1728,25 +1234,23 @@
             "type": "__expr__",
             "uid": "${DS_EXPRESSION}"
           },
-          "expression": "$A / $D",
+          "expression": "($A+$B+$C)/60",
           "hide": false,
-          "refId": "C",
+          "reducer": "sum",
+          "refId": "D",
+          "settings": {
+            "mode": "replaceNN",
+            "replaceWithValue": 0
+          },
           "type": "math"
         }
       ],
-      "title": "Secure Responses %",
+      "title": "Queries /sec",
       "transformations": [
         {
           "id": "renameByRegex",
           "options": {
-            "regex": "^.+ { host: (.+?) }$",
-            "renamePattern": "$1"
-          }
-        },
-        {
-          "id": "renameByRegex",
-          "options": {
-            "regex": "\\w (.+)$",
+            "regex": "\\w (.*)",
             "renamePattern": "$1"
           }
         }
@@ -1771,6 +1275,7 @@
             "axisLabel": "",
             "axisPlacement": "auto",
             "barAlignment": 0,
+            "barWidthFactor": 0.6,
             "drawStyle": "line",
             "fillOpacity": 0,
             "gradientMode": "none",
@@ -1787,7 +1292,7 @@
               "type": "linear"
             },
             "showPoints": "auto",
-            "spanNulls": false,
+            "spanNulls": true,
             "stacking": {
               "group": "A",
               "mode": "none"
@@ -1811,12 +1316,12 @@
         "overrides": []
       },
       "gridPos": {
-        "h": 7,
+        "h": 8,
         "w": 6,
-        "x": 18,
-        "y": 13
+        "x": 12,
+        "y": 14
       },
-      "id": 40,
+      "id": 65,
       "options": {
         "legend": {
           "calcs": [],
@@ -1824,7 +1329,9 @@
           "placement": "bottom",
           "showLegend": true
         },
-        "timezone": ["browser"],
+        "timezone": [
+          "browser"
+        ],
         "tooltip": {
           "maxHeight": 600,
           "mode": "multi",
@@ -1839,16 +1346,16 @@
           },
           "groupBy": [
             {
-              "params": ["5m"],
+              "params": [
+                "1m"
+              ],
               "type": "time"
             },
             {
-              "params": ["host::tag"],
+              "params": [
+                "host::tag"
+              ],
               "type": "tag"
-            },
-            {
-              "params": ["null"],
-              "type": "fill"
             }
           ],
           "hide": false,
@@ -1860,12 +1367,14 @@
           "select": [
             [
               {
-                "params": ["time_to_resolve"],
+                "params": [
+                  "time_to_resolve"
+                ],
                 "type": "field"
               },
               {
-                "params": ["$pct"],
-                "type": "percentile"
+                "params": [],
+                "type": "mean"
               }
             ]
           ],
@@ -1874,57 +1383,17 @@
               "key": "host::tag",
               "operator": "=~",
               "value": "/^$hostname$/"
-            }
-          ]
-        },
-        {
-          "alias": "p50",
-          "datasource": {
-            "type": "influxdb",
-            "uid": "${DS_DNS_LOGS}"
-          },
-          "groupBy": [
-            {
-              "params": ["5m"],
-              "type": "time"
             },
             {
-              "params": ["host::tag"],
-              "type": "tag"
-            },
-            {
-              "params": ["null"],
-              "type": "fill"
-            }
-          ],
-          "hide": true,
-          "measurement": "unbound_queries",
-          "orderByTime": "ASC",
-          "policy": "default",
-          "refId": "B",
-          "resultFormat": "time_series",
-          "select": [
-            [
-              {
-                "params": ["time_to_resolve"],
-                "type": "field"
-              },
-              {
-                "params": ["50"],
-                "type": "percentile"
-              }
-            ]
-          ],
-          "tags": [
-            {
-              "key": "host::tag",
+              "condition": "AND",
+              "key": "client::tag",
               "operator": "=~",
-              "value": "/^$hostname$/"
+              "value": "/^$client$/"
             }
           ]
         }
       ],
-      "title": "p$pct Query Response Time",
+      "title": "Mean Query Response Time",
       "transformations": [
         {
           "id": "renameByRegex",
@@ -1954,6 +1423,307 @@
             "axisLabel": "",
             "axisPlacement": "auto",
             "barAlignment": 0,
+            "barWidthFactor": 0.6,
+            "drawStyle": "line",
+            "fillOpacity": 0,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "insertNulls": false,
+            "lineInterpolation": "linear",
+            "lineWidth": 1,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "auto",
+            "spanNulls": true,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              }
+            ]
+          },
+          "unit": "s"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 6,
+        "x": 18,
+        "y": 14
+      },
+      "id": 66,
+      "options": {
+        "legend": {
+          "calcs": [],
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "timezone": [
+          "browser"
+        ],
+        "tooltip": {
+          "maxHeight": 600,
+          "mode": "multi",
+          "sort": "none"
+        }
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "influxdb",
+            "uid": "${DS_DNS_LOGS}"
+          },
+          "groupBy": [
+            {
+              "params": [
+                "1m"
+              ],
+              "type": "time"
+            },
+            {
+              "params": [
+                "host::tag"
+              ],
+              "type": "tag"
+            }
+          ],
+          "hide": false,
+          "measurement": "unbound_queries",
+          "orderByTime": "ASC",
+          "policy": "default",
+          "refId": "A",
+          "resultFormat": "time_series",
+          "select": [
+            [
+              {
+                "params": [
+                  "time_to_resolve"
+                ],
+                "type": "field"
+              },
+              {
+                "params": [],
+                "type": "median"
+              }
+            ]
+          ],
+          "tags": [
+            {
+              "key": "host::tag",
+              "operator": "=~",
+              "value": "/^$hostname$/"
+            },
+            {
+              "condition": "AND",
+              "key": "client::tag",
+              "operator": "=~",
+              "value": "/^$client$/"
+            }
+          ]
+        }
+      ],
+      "title": "Median Query Response Time",
+      "transformations": [
+        {
+          "id": "renameByRegex",
+          "options": {
+            "regex": ".+ { host: (.*) }",
+            "renamePattern": "$1"
+          }
+        }
+      ],
+      "type": "timeseries"
+    },
+    {
+      "datasource": {
+        "type": "influxdb",
+        "uid": "${DS_DNS_LOGS}"
+      },
+      "description": "Number of replies per second from upstream DNS servers over a 1 minute window",
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisBorderShow": false,
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "barWidthFactor": 0.6,
+            "drawStyle": "line",
+            "fillOpacity": 0,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "insertNulls": false,
+            "lineInterpolation": "linear",
+            "lineWidth": 1,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "auto",
+            "spanNulls": true,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          },
+          "unit": "reqps"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 0,
+        "y": 22
+      },
+      "id": 61,
+      "options": {
+        "legend": {
+          "calcs": [],
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "timezone": [
+          "browser"
+        ],
+        "tooltip": {
+          "maxHeight": 600,
+          "mode": "multi",
+          "sort": "none"
+        }
+      },
+      "targets": [
+        {
+          "alias": "$tag_host",
+          "datasource": {
+            "type": "influxdb",
+            "uid": "${DS_DNS_LOGS}"
+          },
+          "groupBy": [
+            {
+              "params": [
+                "1m"
+              ],
+              "type": "time"
+            },
+            {
+              "params": [
+                "host::tag"
+              ],
+              "type": "tag"
+            }
+          ],
+          "measurement": "unbound_stats",
+          "orderByTime": "ASC",
+          "policy": "default",
+          "refId": "A",
+          "resultFormat": "time_series",
+          "select": [
+            [
+              {
+                "params": [
+                  "recursions"
+                ],
+                "type": "field"
+              },
+              {
+                "params": [],
+                "type": "sum"
+              },
+              {
+                "params": [
+                  "1s"
+                ],
+                "type": "non_negative_derivative"
+              }
+            ]
+          ],
+          "tags": [
+            {
+              "key": "host::tag",
+              "operator": "=~",
+              "value": "/^$hostname$/"
+            }
+          ]
+        }
+      ],
+      "title": "Recursive Replies /sec",
+      "transformations": [
+        {
+          "id": "renameByRegex",
+          "options": {
+            "regex": ".+ { host: (.*) }",
+            "renamePattern": "$1"
+          }
+        }
+      ],
+      "type": "timeseries"
+    },
+    {
+      "datasource": {
+        "type": "influxdb",
+        "uid": "${DS_DNS_LOGS}"
+      },
+      "description": "",
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisBorderShow": false,
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "barWidthFactor": 0.6,
             "drawStyle": "line",
             "fillOpacity": 0,
             "gradientMode": "none",
@@ -1994,10 +1764,10 @@
         "overrides": []
       },
       "gridPos": {
-        "h": 7,
+        "h": 8,
         "w": 6,
-        "x": 0,
-        "y": 20
+        "x": 12,
+        "y": 22
       },
       "id": 59,
       "options": {
@@ -2007,7 +1777,9 @@
           "placement": "bottom",
           "showLegend": true
         },
-        "timezone": ["browser"],
+        "timezone": [
+          "browser"
+        ],
         "tooltip": {
           "maxHeight": 600,
           "mode": "multi",
@@ -2023,23 +1795,19 @@
           },
           "groupBy": [
             {
-              "params": ["5m"],
+              "params": [
+                "5m"
+              ],
               "type": "time"
             },
             {
-              "params": ["host::tag"],
+              "params": [
+                "host::tag"
+              ],
               "type": "tag"
-            },
-            {
-              "params": ["type_instance::tag"],
-              "type": "tag"
-            },
-            {
-              "params": ["null"],
-              "type": "fill"
             }
           ],
-          "measurement": "exec_value",
+          "measurement": "unbound_stats",
           "orderByTime": "ASC",
           "policy": "default",
           "refId": "A",
@@ -2047,12 +1815,14 @@
           "select": [
             [
               {
-                "params": ["value"],
+                "params": [
+                  "recursion_mean"
+                ],
                 "type": "field"
               },
               {
-                "params": ["$pct"],
-                "type": "percentile"
+                "params": [],
+                "type": "max"
               }
             ]
           ],
@@ -2061,23 +1831,11 @@
               "key": "host::tag",
               "operator": "=~",
               "value": "/^$hostname$/"
-            },
-            {
-              "condition": "AND",
-              "key": "instance::tag",
-              "operator": "=",
-              "value": "unbound"
-            },
-            {
-              "condition": "AND",
-              "key": "type_instance::tag",
-              "operator": "=",
-              "value": "total.recursion.time.avg"
             }
           ]
         }
       ],
-      "title": "p$pct Recursive Response Mean Time",
+      "title": "Recursive Response Mean Time",
       "type": "timeseries"
     },
     {
@@ -2098,6 +1856,7 @@
             "axisLabel": "",
             "axisPlacement": "auto",
             "barAlignment": 0,
+            "barWidthFactor": 0.6,
             "drawStyle": "line",
             "fillOpacity": 0,
             "gradientMode": "none",
@@ -2138,10 +1897,10 @@
         "overrides": []
       },
       "gridPos": {
-        "h": 7,
+        "h": 8,
         "w": 6,
-        "x": 6,
-        "y": 20
+        "x": 18,
+        "y": 22
       },
       "id": 60,
       "options": {
@@ -2151,7 +1910,9 @@
           "placement": "bottom",
           "showLegend": true
         },
-        "timezone": ["browser"],
+        "timezone": [
+          "browser"
+        ],
         "tooltip": {
           "maxHeight": 600,
           "mode": "multi",
@@ -2167,23 +1928,19 @@
           },
           "groupBy": [
             {
-              "params": ["5m"],
+              "params": [
+                "5m"
+              ],
               "type": "time"
             },
             {
-              "params": ["host::tag"],
+              "params": [
+                "host::tag"
+              ],
               "type": "tag"
-            },
-            {
-              "params": ["type_instance::tag"],
-              "type": "tag"
-            },
-            {
-              "params": ["null"],
-              "type": "fill"
             }
           ],
-          "measurement": "exec_value",
+          "measurement": "unbound_stats",
           "orderByTime": "ASC",
           "policy": "default",
           "refId": "A",
@@ -2191,149 +1948,14 @@
           "select": [
             [
               {
-                "params": ["value"],
-                "type": "field"
-              },
-              {
-                "params": ["$pct"],
-                "type": "percentile"
-              }
-            ]
-          ],
-          "tags": [
-            {
-              "key": "host::tag",
-              "operator": "=~",
-              "value": "/^$hostname$/"
-            },
-            {
-              "condition": "AND",
-              "key": "instance::tag",
-              "operator": "=",
-              "value": "unbound"
-            },
-            {
-              "condition": "AND",
-              "key": "type_instance::tag",
-              "operator": "=",
-              "value": "total.recursion.time.median"
-            }
-          ]
-        }
-      ],
-      "title": "p$pct Recursive Response Median Time",
-      "type": "timeseries"
-    },
-    {
-      "datasource": {
-        "type": "influxdb",
-        "uid": "${DS_DNS_LOGS}"
-      },
-      "fieldConfig": {
-        "defaults": {
-          "color": {
-            "mode": "palette-classic"
-          },
-          "custom": {
-            "axisBorderShow": false,
-            "axisCenteredZero": false,
-            "axisColorMode": "text",
-            "axisLabel": "",
-            "axisPlacement": "auto",
-            "barAlignment": 0,
-            "drawStyle": "line",
-            "fillOpacity": 0,
-            "gradientMode": "none",
-            "hideFrom": {
-              "legend": false,
-              "tooltip": false,
-              "viz": false
-            },
-            "insertNulls": false,
-            "lineInterpolation": "linear",
-            "lineWidth": 1,
-            "pointSize": 5,
-            "scaleDistribution": {
-              "type": "linear"
-            },
-            "showPoints": "auto",
-            "spanNulls": false,
-            "stacking": {
-              "group": "A",
-              "mode": "none"
-            },
-            "thresholdsStyle": {
-              "mode": "off"
-            }
-          },
-          "mappings": [],
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
-              {
-                "color": "green",
-                "value": null
-              }
-            ]
-          }
-        },
-        "overrides": []
-      },
-      "gridPos": {
-        "h": 7,
-        "w": 6,
-        "x": 12,
-        "y": 20
-      },
-      "id": 57,
-      "options": {
-        "legend": {
-          "calcs": [],
-          "displayMode": "list",
-          "placement": "bottom",
-          "showLegend": true
-        },
-        "timezone": ["browser"],
-        "tooltip": {
-          "maxHeight": 600,
-          "mode": "multi",
-          "sort": "none"
-        }
-      },
-      "targets": [
-        {
-          "datasource": {
-            "type": "influxdb",
-            "uid": "${DS_DNS_LOGS}"
-          },
-          "groupBy": [
-            {
-              "params": ["5m"],
-              "type": "time"
-            },
-            {
-              "params": ["host::tag"],
-              "type": "tag"
-            }
-          ],
-          "measurement": "exec_value",
-          "orderByTime": "ASC",
-          "policy": "default",
-          "refId": "A",
-          "resultFormat": "time_series",
-          "select": [
-            [
-              {
-                "params": ["value"],
+                "params": [
+                  "recursion_p50"
+                ],
                 "type": "field"
               },
               {
                 "params": [],
-                "type": "sum"
-              },
-              {
-                "params": ["5m"],
-                "type": "non_negative_derivative"
+                "type": "max"
               }
             ]
           ],
@@ -2342,205 +1964,12 @@
               "key": "host::tag",
               "operator": "=~",
               "value": "/^$hostname$/"
-            },
-            {
-              "condition": "AND",
-              "key": "instance::tag",
-              "operator": "=",
-              "value": "unbound"
-            },
-            {
-              "condition": "AND",
-              "key": "type_instance::tag",
-              "operator": "=",
-              "value": "unwanted.queries"
             }
           ]
         }
       ],
-      "title": "Queries Failing ACLs",
-      "transformations": [
-        {
-          "id": "renameByRegex",
-          "options": {
-            "regex": ".+ { host: (.*) }",
-            "renamePattern": "$1"
-          }
-        }
-      ],
+      "title": "Recursive Response Median Time",
       "type": "timeseries"
-    },
-    {
-      "datasource": {
-        "type": "influxdb",
-        "uid": "${DS_DNS_LOGS}"
-      },
-      "fieldConfig": {
-        "defaults": {
-          "color": {
-            "mode": "palette-classic"
-          },
-          "custom": {
-            "axisBorderShow": false,
-            "axisCenteredZero": false,
-            "axisColorMode": "text",
-            "axisLabel": "",
-            "axisPlacement": "auto",
-            "barAlignment": 0,
-            "drawStyle": "line",
-            "fillOpacity": 0,
-            "gradientMode": "none",
-            "hideFrom": {
-              "legend": false,
-              "tooltip": false,
-              "viz": false
-            },
-            "insertNulls": false,
-            "lineInterpolation": "linear",
-            "lineWidth": 1,
-            "pointSize": 5,
-            "scaleDistribution": {
-              "type": "linear"
-            },
-            "showPoints": "auto",
-            "spanNulls": false,
-            "stacking": {
-              "group": "A",
-              "mode": "none"
-            },
-            "thresholdsStyle": {
-              "mode": "off"
-            }
-          },
-          "mappings": [],
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
-              {
-                "color": "green",
-                "value": null
-              }
-            ]
-          }
-        },
-        "overrides": []
-      },
-      "gridPos": {
-        "h": 7,
-        "w": 6,
-        "x": 18,
-        "y": 20
-      },
-      "id": 58,
-      "options": {
-        "legend": {
-          "calcs": [],
-          "displayMode": "list",
-          "placement": "bottom",
-          "showLegend": true
-        },
-        "timezone": ["browser"],
-        "tooltip": {
-          "maxHeight": 600,
-          "mode": "multi",
-          "sort": "none"
-        }
-      },
-      "targets": [
-        {
-          "datasource": {
-            "type": "influxdb",
-            "uid": "${DS_DNS_LOGS}"
-          },
-          "groupBy": [
-            {
-              "params": ["5m"],
-              "type": "time"
-            },
-            {
-              "params": ["host::tag"],
-              "type": "tag"
-            }
-          ],
-          "measurement": "exec_value",
-          "orderByTime": "ASC",
-          "policy": "default",
-          "refId": "A",
-          "resultFormat": "time_series",
-          "select": [
-            [
-              {
-                "params": ["value"],
-                "type": "field"
-              },
-              {
-                "params": [],
-                "type": "sum"
-              },
-              {
-                "params": ["5m"],
-                "type": "non_negative_derivative"
-              }
-            ]
-          ],
-          "tags": [
-            {
-              "key": "host::tag",
-              "operator": "=~",
-              "value": "/^$hostname$/"
-            },
-            {
-              "condition": "AND",
-              "key": "instance::tag",
-              "operator": "=",
-              "value": "unbound"
-            },
-            {
-              "condition": "AND",
-              "key": "type_instance::tag",
-              "operator": "=",
-              "value": "unwanted.replies"
-            }
-          ]
-        }
-      ],
-      "title": "Unsolicited Replies",
-      "transformations": [
-        {
-          "id": "renameByRegex",
-          "options": {
-            "regex": ".+ { host: (.*) }",
-            "renamePattern": "$1"
-          }
-        }
-      ],
-      "type": "timeseries"
-    },
-    {
-      "collapsed": false,
-      "datasource": {
-        "type": "influxdb",
-        "uid": "000000002"
-      },
-      "gridPos": {
-        "h": 1,
-        "w": 24,
-        "x": 0,
-        "y": 27
-      },
-      "id": 18,
-      "panels": [],
-      "targets": [
-        {
-          "datasource": {
-            "type": "influxdb",
-            "uid": "000000002"
-          },
-          "refId": "A"
-        }
-      ],
-      "title": "Query Stats",
-      "type": "row"
     },
     {
       "datasource": {
@@ -2560,6 +1989,7 @@
             "axisLabel": "",
             "axisPlacement": "auto",
             "barAlignment": 0,
+            "barWidthFactor": 0.6,
             "drawStyle": "bars",
             "fillOpacity": 100,
             "gradientMode": "none",
@@ -2669,13 +2099,15 @@
         "h": 6,
         "w": 24,
         "x": 0,
-        "y": 28
+        "y": 30
       },
       "id": 8,
       "maxDataPoints": 24,
       "options": {
         "legend": {
-          "calcs": ["mean"],
+          "calcs": [
+            "mean"
+          ],
           "displayMode": "list",
           "placement": "bottom",
           "showLegend": false
@@ -2696,11 +2128,15 @@
           },
           "groupBy": [
             {
-              "params": ["1h"],
+              "params": [
+                "1h"
+              ],
               "type": "time"
             },
             {
-              "params": ["null"],
+              "params": [
+                "null"
+              ],
               "type": "fill"
             }
           ],
@@ -2714,7 +2150,9 @@
           "select": [
             [
               {
-                "params": ["response_size"],
+                "params": [
+                  "response_size"
+                ],
                 "type": "field"
               },
               {
@@ -2728,6 +2166,12 @@
               "key": "host::tag",
               "operator": "=~",
               "value": "/^$hostname$/"
+            },
+            {
+              "condition": "AND",
+              "key": "client::tag",
+              "operator": "=~",
+              "value": "/^$client$/"
             }
           ]
         },
@@ -2739,11 +2183,15 @@
           },
           "groupBy": [
             {
-              "params": ["1h"],
+              "params": [
+                "1h"
+              ],
               "type": "time"
             },
             {
-              "params": ["null"],
+              "params": [
+                "null"
+              ],
               "type": "fill"
             }
           ],
@@ -2758,7 +2206,9 @@
           "select": [
             [
               {
-                "params": ["matched"],
+                "params": [
+                  "matched"
+                ],
                 "type": "field"
               },
               {
@@ -2772,12 +2222,44 @@
               "key": "host::tag",
               "operator": "=~",
               "value": "/^$hostname$/"
+            },
+            {
+              "condition": "AND",
+              "key": "client::tag",
+              "operator": "=~",
+              "value": "/^$client$/"
             }
           ]
         }
       ],
       "title": "DNS queries",
       "type": "timeseries"
+    },
+    {
+      "collapsed": false,
+      "datasource": {
+        "type": "influxdb",
+        "uid": "000000002"
+      },
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 36
+      },
+      "id": 18,
+      "panels": [],
+      "targets": [
+        {
+          "datasource": {
+            "type": "influxdb",
+            "uid": "000000002"
+          },
+          "refId": "A"
+        }
+      ],
+      "title": "Query Stats",
+      "type": "row"
     },
     {
       "datasource": {
@@ -2859,7 +2341,7 @@
         "h": 7,
         "w": 12,
         "x": 0,
-        "y": 34
+        "y": 37
       },
       "id": 11,
       "options": {
@@ -2867,7 +2349,9 @@
         "footer": {
           "countRows": false,
           "fields": "",
-          "reducer": ["sum"],
+          "reducer": [
+            "sum"
+          ],
           "show": false
         },
         "frameIndex": 0,
@@ -2879,7 +2363,7 @@
           }
         ]
       },
-      "pluginVersion": "11.0.1",
+      "pluginVersion": "11.2.1",
       "targets": [
         {
           "datasource": {
@@ -2888,7 +2372,9 @@
           },
           "groupBy": [
             {
-              "params": ["name"],
+              "params": [
+                "name"
+              ],
               "type": "tag"
             }
           ],
@@ -2902,7 +2388,9 @@
           "select": [
             [
               {
-                "params": ["response_size"],
+                "params": [
+                  "response_size"
+                ],
                 "type": "field"
               },
               {
@@ -2919,9 +2407,69 @@
             },
             {
               "condition": "AND",
+              "key": "name::tag",
+              "operator": "!~",
+              "value": "/^(.+\\.)?example\\.\\w+$/"
+            },
+            {
+              "condition": "AND",
               "key": "host::tag",
               "operator": "=~",
               "value": "/^$hostname$/"
+            },
+            {
+              "condition": "AND",
+              "key": "name::tag",
+              "operator": "!~",
+              "value": "/.+\\.arpa\\.$/"
+            },
+            {
+              "condition": "AND",
+              "key": "name::tag",
+              "operator": "!~",
+              "value": "/^example\\.[a-z]+\\.$/"
+            },
+            {
+              "condition": "AND",
+              "key": "name::tag",
+              "operator": "!~",
+              "value": "/^(www\\.)?googleapis\\.com\\.$/"
+            },
+            {
+              "condition": "AND",
+              "key": "name::tag",
+              "operator": "!=",
+              "value": "spectrum.s3.amazonaws.com."
+            },
+            {
+              "condition": "AND",
+              "key": "name::tag",
+              "operator": "!=",
+              "value": "connect.samsungiotcloud.com."
+            },
+            {
+              "condition": "AND",
+              "key": "client::tag",
+              "operator": "=~",
+              "value": "/^$client$/"
+            },
+            {
+              "condition": "AND",
+              "key": "name::tag",
+              "operator": "!=",
+              "value": "api.cloudflare.com."
+            },
+            {
+              "condition": "AND",
+              "key": "name::tag",
+              "operator": "!=",
+              "value": "arstechnica.com."
+            },
+            {
+              "condition": "AND",
+              "key": "name::tag",
+              "operator": "!=",
+              "value": "unifi.jgoguen.ca."
             }
           ]
         }
@@ -2932,7 +2480,10 @@
           "id": "filterFieldsByName",
           "options": {
             "include": {
-              "names": ["name", "count"]
+              "names": [
+                "name",
+                "count"
+              ]
             }
           }
         }
@@ -3020,7 +2571,7 @@
         "h": 7,
         "w": 12,
         "x": 12,
-        "y": 34
+        "y": 37
       },
       "id": 37,
       "options": {
@@ -3028,7 +2579,9 @@
         "footer": {
           "countRows": false,
           "fields": "",
-          "reducer": ["sum"],
+          "reducer": [
+            "sum"
+          ],
           "show": false
         },
         "frameIndex": 0,
@@ -3040,7 +2593,7 @@
           }
         ]
       },
-      "pluginVersion": "11.0.1",
+      "pluginVersion": "11.2.1",
       "targets": [
         {
           "datasource": {
@@ -3049,7 +2602,9 @@
           },
           "groupBy": [
             {
-              "params": ["name"],
+              "params": [
+                "name"
+              ],
               "type": "tag"
             }
           ],
@@ -3063,7 +2618,9 @@
           "select": [
             [
               {
-                "params": ["response_size"],
+                "params": [
+                  "response_size"
+                ],
                 "type": "field"
               },
               {
@@ -3080,9 +2637,45 @@
             },
             {
               "condition": "AND",
+              "key": "name::tag",
+              "operator": "!~",
+              "value": "/^.+?\\.(com|org|net|ca|local)\\.jgoguen\\.ca\\.$/"
+            },
+            {
+              "condition": "AND",
+              "key": "name::tag",
+              "operator": "!~",
+              "value": "/^(.+\\.)?example\\.\\w+$/"
+            },
+            {
+              "condition": "AND",
               "key": "host::tag",
               "operator": "=~",
               "value": "/^$hostname$/"
+            },
+            {
+              "condition": "AND",
+              "key": "name::tag",
+              "operator": "!~",
+              "value": "/^minor\\-api\\-os\\.hoyoverse\\.com\\.$/"
+            },
+            {
+              "condition": "AND",
+              "key": "name::tag",
+              "operator": "!~",
+              "value": "/.+\\.arpa\\.$/"
+            },
+            {
+              "condition": "AND",
+              "key": "name::tag",
+              "operator": "!~",
+              "value": "/^doh\\.test\\.$/"
+            },
+            {
+              "condition": "AND",
+              "key": "client::tag",
+              "operator": "=~",
+              "value": "/^$client$/"
             }
           ]
         }
@@ -3093,7 +2686,10 @@
           "id": "filterFieldsByName",
           "options": {
             "include": {
-              "names": ["name", "count"]
+              "names": [
+                "name",
+                "count"
+              ]
             }
           }
         }
@@ -3184,7 +2780,7 @@
         "h": 7,
         "w": 12,
         "x": 0,
-        "y": 41
+        "y": 44
       },
       "id": 35,
       "options": {
@@ -3192,7 +2788,9 @@
         "footer": {
           "countRows": false,
           "fields": "",
-          "reducer": ["sum"],
+          "reducer": [
+            "sum"
+          ],
           "show": false
         },
         "showHeader": true,
@@ -3203,7 +2801,7 @@
           }
         ]
       },
-      "pluginVersion": "11.0.1",
+      "pluginVersion": "11.2.1",
       "targets": [
         {
           "datasource": {
@@ -3212,7 +2810,9 @@
           },
           "groupBy": [
             {
-              "params": ["type::tag"],
+              "params": [
+                "type::tag"
+              ],
               "type": "tag"
             }
           ],
@@ -3225,7 +2825,9 @@
           "select": [
             [
               {
-                "params": ["response_size"],
+                "params": [
+                  "response_size"
+                ],
                 "type": "field"
               },
               {
@@ -3239,6 +2841,12 @@
               "key": "host::tag",
               "operator": "=~",
               "value": "/^$hostname$/"
+            },
+            {
+              "condition": "AND",
+              "key": "client::tag",
+              "operator": "=~",
+              "value": "/^$client$/"
             }
           ]
         }
@@ -3250,7 +2858,10 @@
           "options": {
             "byVariable": false,
             "include": {
-              "names": ["count", "type"]
+              "names": [
+                "count",
+                "type"
+              ]
             }
           }
         }
@@ -3341,7 +2952,7 @@
         "h": 7,
         "w": 12,
         "x": 12,
-        "y": 41
+        "y": 44
       },
       "id": 38,
       "options": {
@@ -3349,7 +2960,9 @@
         "footer": {
           "countRows": false,
           "fields": "",
-          "reducer": ["sum"],
+          "reducer": [
+            "sum"
+          ],
           "show": false
         },
         "showHeader": true,
@@ -3360,7 +2973,7 @@
           }
         ]
       },
-      "pluginVersion": "11.0.1",
+      "pluginVersion": "11.2.1",
       "targets": [
         {
           "datasource": {
@@ -3369,7 +2982,9 @@
           },
           "groupBy": [
             {
-              "params": ["return_code::tag"],
+              "params": [
+                "return_code::tag"
+              ],
               "type": "tag"
             }
           ],
@@ -3382,7 +2997,9 @@
           "select": [
             [
               {
-                "params": ["response_size"],
+                "params": [
+                  "response_size"
+                ],
                 "type": "field"
               },
               {
@@ -3396,6 +3013,12 @@
               "key": "host::tag",
               "operator": "=~",
               "value": "/^$hostname$/"
+            },
+            {
+              "condition": "AND",
+              "key": "client::tag",
+              "operator": "=~",
+              "value": "/^$client$/"
             }
           ]
         }
@@ -3407,7 +3030,10 @@
           "options": {
             "byVariable": false,
             "include": {
-              "names": ["count", "return_code"]
+              "names": [
+                "count",
+                "return_code"
+              ]
             }
           }
         }
@@ -3424,7 +3050,7 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 48
+        "y": 51
       },
       "id": 21,
       "panels": [],
@@ -3575,6 +3201,21 @@
             },
             "properties": [
               {
+                "id": "mappings",
+                "value": [
+                  {
+                    "options": {
+                      "pattern": "^([^\\.]+)\\.([^\\.]+)\\.jgoguen\\.ca$",
+                      "result": {
+                        "index": 0,
+                        "text": "$1"
+                      }
+                    },
+                    "type": "regex"
+                  }
+                ]
+              },
+              {
                 "id": "custom.width",
                 "value": 150
               }
@@ -3586,7 +3227,7 @@
         "h": 11,
         "w": 12,
         "x": 0,
-        "y": 49
+        "y": 52
       },
       "id": 32,
       "options": {
@@ -3594,7 +3235,9 @@
         "footer": {
           "countRows": false,
           "fields": "",
-          "reducer": ["sum"],
+          "reducer": [
+            "sum"
+          ],
           "show": false
         },
         "showHeader": true,
@@ -3605,7 +3248,7 @@
           }
         ]
       },
-      "pluginVersion": "11.0.1",
+      "pluginVersion": "11.2.1",
       "targets": [
         {
           "datasource": {
@@ -3614,19 +3257,27 @@
           },
           "groupBy": [
             {
-              "params": ["type"],
+              "params": [
+                "type"
+              ],
               "type": "tag"
             },
             {
-              "params": ["name"],
+              "params": [
+                "name"
+              ],
               "type": "tag"
             },
             {
-              "params": ["return_code"],
+              "params": [
+                "return_code"
+              ],
               "type": "tag"
             },
             {
-              "params": ["client::tag"],
+              "params": [
+                "client::tag"
+              ],
               "type": "tag"
             }
           ],
@@ -3640,7 +3291,9 @@
           "select": [
             [
               {
-                "params": ["time_to_resolve"],
+                "params": [
+                  "time_to_resolve"
+                ],
                 "type": "field"
               }
             ]
@@ -3650,11 +3303,305 @@
               "key": "host::tag",
               "operator": "=~",
               "value": "/^$hostname$/"
+            },
+            {
+              "condition": "AND",
+              "key": "return_code::tag",
+              "operator": "=",
+              "value": "NOERROR"
+            },
+            {
+              "condition": "AND",
+              "key": "client::tag",
+              "operator": "=~",
+              "value": "/^$client$/"
             }
           ]
         }
       ],
-      "title": "Recent Queries",
+      "title": "Recent Allowed Queries",
+      "transformations": [
+        {
+          "id": "organize",
+          "options": {
+            "excludeByName": {
+              "Time 2": true,
+              "return_code": true
+            },
+            "includeByName": {},
+            "indexByName": {
+              "Time": 0,
+              "client": 2,
+              "clientip": 1,
+              "name": 3,
+              "return_code": 6,
+              "time_to_resolve": 5,
+              "type": 4
+            },
+            "renameByName": {
+              "Time 1": "Time",
+              "client": "Client Hostname",
+              "clientip": "Client IP",
+              "from_cache": "Cached",
+              "hostname": "Client",
+              "name": "DNS Query",
+              "return_code": "Action",
+              "time_to_resolve": "Reply",
+              "type": "Type"
+            }
+          }
+        }
+      ],
+      "type": "table"
+    },
+    {
+      "datasource": {
+        "type": "influxdb",
+        "uid": "${DS_DNS_LOGS}"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "fixed"
+          },
+          "custom": {
+            "align": "left",
+            "cellOptions": {
+              "type": "auto"
+            },
+            "filterable": true,
+            "inspect": false
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              }
+            ]
+          }
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Reply"
+            },
+            "properties": [
+              {
+                "id": "unit",
+                "value": "s"
+              },
+              {
+                "id": "custom.width",
+                "value": 100
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Action"
+            },
+            "properties": [
+              {
+                "id": "mappings",
+                "value": [
+                  {
+                    "options": {
+                      "NOERROR": {
+                        "index": 0,
+                        "text": "Ok"
+                      },
+                      "NXDOMAIN": {
+                        "index": 1,
+                        "text": "Block"
+                      },
+                      "SERVFAIL": {
+                        "index": 2,
+                        "text": "Fail"
+                      }
+                    },
+                    "type": "value"
+                  }
+                ]
+              },
+              {
+                "id": "custom.width",
+                "value": 78
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Type"
+            },
+            "properties": [
+              {
+                "id": "custom.width",
+                "value": 85
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "DNS Query"
+            },
+            "properties": [
+              {
+                "id": "custom.width",
+                "value": 300
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Time"
+            },
+            "properties": [
+              {
+                "id": "custom.width",
+                "value": 175
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Client IP"
+            },
+            "properties": [
+              {
+                "id": "custom.width",
+                "value": 200
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Client Hostname"
+            },
+            "properties": [
+              {
+                "id": "mappings",
+                "value": [
+                  {
+                    "options": {
+                      "pattern": "^([^\\.]+)\\.([^\\.]+)\\.jgoguen\\.ca$",
+                      "result": {
+                        "index": 0,
+                        "text": "$1"
+                      }
+                    },
+                    "type": "regex"
+                  }
+                ]
+              },
+              {
+                "id": "custom.width",
+                "value": 150
+              }
+            ]
+          }
+        ]
+      },
+      "gridPos": {
+        "h": 11,
+        "w": 12,
+        "x": 12,
+        "y": 52
+      },
+      "id": 68,
+      "options": {
+        "cellHeight": "sm",
+        "footer": {
+          "countRows": false,
+          "fields": "",
+          "reducer": [
+            "sum"
+          ],
+          "show": false
+        },
+        "showHeader": true,
+        "sortBy": [
+          {
+            "desc": true,
+            "displayName": "Time"
+          }
+        ]
+      },
+      "pluginVersion": "11.2.1",
+      "targets": [
+        {
+          "datasource": {
+            "type": "influxdb",
+            "uid": "${DS_DNS_LOGS}"
+          },
+          "groupBy": [
+            {
+              "params": [
+                "type"
+              ],
+              "type": "tag"
+            },
+            {
+              "params": [
+                "name"
+              ],
+              "type": "tag"
+            },
+            {
+              "params": [
+                "client::tag"
+              ],
+              "type": "tag"
+            }
+          ],
+          "hide": false,
+          "limit": "100",
+          "measurement": "unbound_queries",
+          "orderByTime": "ASC",
+          "policy": "default",
+          "refId": "A",
+          "resultFormat": "table",
+          "select": [
+            [
+              {
+                "params": [
+                  "time_to_resolve"
+                ],
+                "type": "field"
+              }
+            ]
+          ],
+          "tags": [
+            {
+              "key": "host::tag",
+              "operator": "=~",
+              "value": "/^$hostname$/"
+            },
+            {
+              "condition": "AND",
+              "key": "return_code::tag",
+              "operator": "=",
+              "value": "NXDOMAIN"
+            },
+            {
+              "condition": "AND",
+              "key": "client::tag",
+              "operator": "=~",
+              "value": "/^$client$/"
+            }
+          ]
+        }
+      ],
+      "title": "Recent Blocked Queries",
       "transformations": [
         {
           "id": "organize",
@@ -3761,6 +3708,21 @@
               {
                 "id": "custom.width",
                 "value": 300
+              },
+              {
+                "id": "mappings",
+                "value": [
+                  {
+                    "options": {
+                      "pattern": "^([^\\.]+)\\.([^\\.]+)\\.jgoguen\\.ca$",
+                      "result": {
+                        "index": 0,
+                        "text": "$1"
+                      }
+                    },
+                    "type": "regex"
+                  }
+                ]
               }
             ]
           }
@@ -3769,8 +3731,8 @@
       "gridPos": {
         "h": 11,
         "w": 12,
-        "x": 12,
-        "y": 49
+        "x": 0,
+        "y": 63
       },
       "id": 19,
       "options": {
@@ -3778,7 +3740,9 @@
         "footer": {
           "countRows": false,
           "fields": "",
-          "reducer": ["sum"],
+          "reducer": [
+            "sum"
+          ],
           "show": false
         },
         "showHeader": true,
@@ -3789,7 +3753,7 @@
           }
         ]
       },
-      "pluginVersion": "11.0.1",
+      "pluginVersion": "11.2.1",
       "targets": [
         {
           "datasource": {
@@ -3798,11 +3762,15 @@
           },
           "groupBy": [
             {
-              "params": ["clientip::tag"],
+              "params": [
+                "clientip::tag"
+              ],
               "type": "tag"
             },
             {
-              "params": ["client::tag"],
+              "params": [
+                "client::tag"
+              ],
               "type": "tag"
             }
           ],
@@ -3815,7 +3783,9 @@
           "select": [
             [
               {
-                "params": ["response_size"],
+                "params": [
+                  "response_size"
+                ],
                 "type": "field"
               },
               {
@@ -3829,6 +3799,12 @@
               "key": "host::tag",
               "operator": "=~",
               "value": "/^$hostname$/"
+            },
+            {
+              "condition": "AND",
+              "key": "client::tag",
+              "operator": "=~",
+              "value": "/^$client$/"
             }
           ]
         }
@@ -3839,8 +3815,1245 @@
           "id": "filterFieldsByName",
           "options": {
             "include": {
-              "names": ["count", "client"]
+              "names": [
+                "count",
+                "client"
+              ]
             }
+          }
+        }
+      ],
+      "type": "table"
+    },
+    {
+      "datasource": {
+        "type": "influxdb",
+        "uid": "${DS_DNS_LOGS}"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "fixed"
+          },
+          "custom": {
+            "align": "left",
+            "cellOptions": {
+              "type": "auto"
+            },
+            "filterable": true,
+            "inspect": false
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              }
+            ]
+          }
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Reply"
+            },
+            "properties": [
+              {
+                "id": "unit",
+                "value": "s"
+              },
+              {
+                "id": "custom.width",
+                "value": 100
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Action"
+            },
+            "properties": [
+              {
+                "id": "mappings",
+                "value": [
+                  {
+                    "options": {
+                      "NOERROR": {
+                        "index": 0,
+                        "text": "Ok"
+                      },
+                      "NXDOMAIN": {
+                        "index": 1,
+                        "text": "Block"
+                      },
+                      "SERVFAIL": {
+                        "index": 2,
+                        "text": "Fail"
+                      }
+                    },
+                    "type": "value"
+                  }
+                ]
+              },
+              {
+                "id": "custom.width",
+                "value": 78
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Type"
+            },
+            "properties": [
+              {
+                "id": "custom.width",
+                "value": 85
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "DNS Query"
+            },
+            "properties": [
+              {
+                "id": "custom.width",
+                "value": 300
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Time"
+            },
+            "properties": [
+              {
+                "id": "custom.width",
+                "value": 175
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Client IP"
+            },
+            "properties": [
+              {
+                "id": "custom.width",
+                "value": 200
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Client Hostname"
+            },
+            "properties": [
+              {
+                "id": "mappings",
+                "value": [
+                  {
+                    "options": {
+                      "pattern": "^([^\\.]+)\\.([^\\.]+)\\.jgoguen\\.ca$",
+                      "result": {
+                        "index": 0,
+                        "text": "$1"
+                      }
+                    },
+                    "type": "regex"
+                  }
+                ]
+              },
+              {
+                "id": "custom.width",
+                "value": 150
+              }
+            ]
+          }
+        ]
+      },
+      "gridPos": {
+        "h": 11,
+        "w": 12,
+        "x": 12,
+        "y": 63
+      },
+      "id": 75,
+      "options": {
+        "cellHeight": "sm",
+        "footer": {
+          "countRows": false,
+          "fields": "",
+          "reducer": [
+            "sum"
+          ],
+          "show": false
+        },
+        "showHeader": true,
+        "sortBy": [
+          {
+            "desc": true,
+            "displayName": "Time"
+          }
+        ]
+      },
+      "pluginVersion": "11.2.1",
+      "targets": [
+        {
+          "datasource": {
+            "type": "influxdb",
+            "uid": "${DS_DNS_LOGS}"
+          },
+          "groupBy": [
+            {
+              "params": [
+                "type"
+              ],
+              "type": "tag"
+            },
+            {
+              "params": [
+                "name"
+              ],
+              "type": "tag"
+            },
+            {
+              "params": [
+                "client::tag"
+              ],
+              "type": "tag"
+            },
+            {
+              "params": [
+                "host::tag"
+              ],
+              "type": "tag"
+            }
+          ],
+          "hide": false,
+          "limit": "100",
+          "measurement": "unbound_queries",
+          "orderByTime": "ASC",
+          "policy": "default",
+          "refId": "A",
+          "resultFormat": "table",
+          "select": [
+            [
+              {
+                "params": [
+                  "time_to_resolve"
+                ],
+                "type": "field"
+              }
+            ]
+          ],
+          "tags": [
+            {
+              "key": "host::tag",
+              "operator": "=~",
+              "value": "/^$hostname$/"
+            },
+            {
+              "condition": "AND",
+              "key": "return_code::tag",
+              "operator": "=",
+              "value": "SERVFAIL"
+            },
+            {
+              "condition": "AND",
+              "key": "client::tag",
+              "operator": "=~",
+              "value": "/^$client$/"
+            }
+          ]
+        }
+      ],
+      "title": "Recent Failed Queries",
+      "transformations": [
+        {
+          "id": "organize",
+          "options": {
+            "excludeByName": {
+              "Time 2": true,
+              "return_code": false
+            },
+            "includeByName": {},
+            "indexByName": {
+              "Time": 0,
+              "client": 2,
+              "clientip": 1,
+              "name": 3,
+              "return_code": 6,
+              "time_to_resolve": 5,
+              "type": 4
+            },
+            "renameByName": {
+              "Time 1": "Time",
+              "client": "Client Hostname",
+              "clientip": "Client IP",
+              "host": "DNS Server",
+              "hostname": "Client",
+              "name": "DNS Query",
+              "return_code": "Action",
+              "time_to_resolve": "Reply",
+              "type": "Type"
+            }
+          }
+        }
+      ],
+      "type": "table"
+    },
+    {
+      "collapsed": false,
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 74
+      },
+      "id": 70,
+      "panels": [],
+      "title": "Slow Queries",
+      "type": "row"
+    },
+    {
+      "datasource": {
+        "type": "influxdb",
+        "uid": "${DS_DNS_LOGS}"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "fixed"
+          },
+          "custom": {
+            "align": "left",
+            "cellOptions": {
+              "type": "auto"
+            },
+            "filterable": true,
+            "inspect": false
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green"
+              }
+            ]
+          }
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Reply"
+            },
+            "properties": [
+              {
+                "id": "unit",
+                "value": "s"
+              },
+              {
+                "id": "custom.width",
+                "value": 100
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Action"
+            },
+            "properties": [
+              {
+                "id": "mappings",
+                "value": [
+                  {
+                    "options": {
+                      "NOERROR": {
+                        "index": 0,
+                        "text": "Ok"
+                      },
+                      "NXDOMAIN": {
+                        "index": 1,
+                        "text": "Block"
+                      },
+                      "SERVFAIL": {
+                        "index": 2,
+                        "text": "Fail"
+                      }
+                    },
+                    "type": "value"
+                  }
+                ]
+              },
+              {
+                "id": "custom.width",
+                "value": 78
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Type"
+            },
+            "properties": [
+              {
+                "id": "custom.width",
+                "value": 85
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "DNS Query"
+            },
+            "properties": [
+              {
+                "id": "custom.width",
+                "value": 300
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Time"
+            },
+            "properties": [
+              {
+                "id": "custom.width",
+                "value": 175
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Client IP"
+            },
+            "properties": [
+              {
+                "id": "custom.width",
+                "value": 200
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Client Hostname"
+            },
+            "properties": [
+              {
+                "id": "mappings",
+                "value": [
+                  {
+                    "options": {
+                      "pattern": "^([^\\.]+)\\.([^\\.]+)\\.jgoguen\\.ca$",
+                      "result": {
+                        "index": 0,
+                        "text": "$1"
+                      }
+                    },
+                    "type": "regex"
+                  }
+                ]
+              },
+              {
+                "id": "custom.width",
+                "value": 150
+              }
+            ]
+          }
+        ]
+      },
+      "gridPos": {
+        "h": 11,
+        "w": 12,
+        "x": 0,
+        "y": 75
+      },
+      "id": 69,
+      "options": {
+        "cellHeight": "sm",
+        "footer": {
+          "countRows": false,
+          "fields": "",
+          "reducer": [
+            "sum"
+          ],
+          "show": false
+        },
+        "showHeader": true,
+        "sortBy": [
+          {
+            "desc": true,
+            "displayName": "Time"
+          }
+        ]
+      },
+      "pluginVersion": "11.2.0",
+      "targets": [
+        {
+          "datasource": {
+            "type": "influxdb",
+            "uid": "${DS_DNS_LOGS}"
+          },
+          "groupBy": [
+            {
+              "params": [
+                "type"
+              ],
+              "type": "tag"
+            },
+            {
+              "params": [
+                "name"
+              ],
+              "type": "tag"
+            },
+            {
+              "params": [
+                "return_code"
+              ],
+              "type": "tag"
+            },
+            {
+              "params": [
+                "client::tag"
+              ],
+              "type": "tag"
+            }
+          ],
+          "hide": false,
+          "limit": "100",
+          "measurement": "unbound_queries",
+          "orderByTime": "ASC",
+          "policy": "default",
+          "refId": "A",
+          "resultFormat": "table",
+          "select": [
+            [
+              {
+                "params": [
+                  "time_to_resolve"
+                ],
+                "type": "field"
+              }
+            ]
+          ],
+          "tags": [
+            {
+              "key": "host::tag",
+              "operator": "=~",
+              "value": "/^$hostname$/"
+            },
+            {
+              "condition": "AND",
+              "key": "return_code::tag",
+              "operator": "=",
+              "value": "NOERROR"
+            },
+            {
+              "condition": "AND",
+              "key": "client::tag",
+              "operator": "=~",
+              "value": "/^$client$/"
+            }
+          ]
+        }
+      ],
+      "title": "Recent Slow Queries (>1s)",
+      "transformations": [
+        {
+          "id": "organize",
+          "options": {
+            "excludeByName": {
+              "Time 2": true,
+              "return_code": true
+            },
+            "includeByName": {},
+            "indexByName": {
+              "Time": 0,
+              "client": 2,
+              "clientip": 1,
+              "name": 3,
+              "return_code": 6,
+              "time_to_resolve": 5,
+              "type": 4
+            },
+            "renameByName": {
+              "Time 1": "Time",
+              "client": "Client Hostname",
+              "clientip": "Client IP",
+              "from_cache": "Cached",
+              "hostname": "Client",
+              "name": "DNS Query",
+              "return_code": "Action",
+              "time_to_resolve": "Reply",
+              "type": "Type"
+            }
+          }
+        },
+        {
+          "id": "filterByValue",
+          "options": {
+            "filters": [
+              {
+                "config": {
+                  "id": "greaterOrEqual",
+                  "options": {
+                    "value": 1
+                  }
+                },
+                "fieldName": "Reply"
+              },
+              {
+                "config": {
+                  "id": "lower",
+                  "options": {
+                    "value": 2
+                  }
+                },
+                "fieldName": "Reply"
+              }
+            ],
+            "match": "all",
+            "type": "include"
+          }
+        }
+      ],
+      "type": "table"
+    },
+    {
+      "datasource": {
+        "type": "influxdb",
+        "uid": "${DS_DNS_LOGS}"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "fixed"
+          },
+          "custom": {
+            "align": "left",
+            "cellOptions": {
+              "type": "auto"
+            },
+            "filterable": true,
+            "inspect": false
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green"
+              }
+            ]
+          }
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Reply"
+            },
+            "properties": [
+              {
+                "id": "unit",
+                "value": "s"
+              },
+              {
+                "id": "custom.width",
+                "value": 100
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Action"
+            },
+            "properties": [
+              {
+                "id": "mappings",
+                "value": [
+                  {
+                    "options": {
+                      "NOERROR": {
+                        "index": 0,
+                        "text": "Ok"
+                      },
+                      "NXDOMAIN": {
+                        "index": 1,
+                        "text": "Block"
+                      },
+                      "SERVFAIL": {
+                        "index": 2,
+                        "text": "Fail"
+                      }
+                    },
+                    "type": "value"
+                  }
+                ]
+              },
+              {
+                "id": "custom.width",
+                "value": 78
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Type"
+            },
+            "properties": [
+              {
+                "id": "custom.width",
+                "value": 85
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "DNS Query"
+            },
+            "properties": [
+              {
+                "id": "custom.width",
+                "value": 300
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Time"
+            },
+            "properties": [
+              {
+                "id": "custom.width",
+                "value": 175
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Client IP"
+            },
+            "properties": [
+              {
+                "id": "custom.width",
+                "value": 200
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Client Hostname"
+            },
+            "properties": [
+              {
+                "id": "mappings",
+                "value": [
+                  {
+                    "options": {
+                      "pattern": "^([^\\.]+)\\.([^\\.]+)\\.jgoguen\\.ca$",
+                      "result": {
+                        "index": 0,
+                        "text": "$1"
+                      }
+                    },
+                    "type": "regex"
+                  }
+                ]
+              },
+              {
+                "id": "custom.width",
+                "value": 150
+              }
+            ]
+          }
+        ]
+      },
+      "gridPos": {
+        "h": 11,
+        "w": 12,
+        "x": 12,
+        "y": 75
+      },
+      "id": 71,
+      "options": {
+        "cellHeight": "sm",
+        "footer": {
+          "countRows": false,
+          "fields": "",
+          "reducer": [
+            "sum"
+          ],
+          "show": false
+        },
+        "showHeader": true,
+        "sortBy": [
+          {
+            "desc": true,
+            "displayName": "Time"
+          }
+        ]
+      },
+      "pluginVersion": "11.2.0",
+      "targets": [
+        {
+          "datasource": {
+            "type": "influxdb",
+            "uid": "${DS_DNS_LOGS}"
+          },
+          "groupBy": [
+            {
+              "params": [
+                "type"
+              ],
+              "type": "tag"
+            },
+            {
+              "params": [
+                "name"
+              ],
+              "type": "tag"
+            },
+            {
+              "params": [
+                "return_code"
+              ],
+              "type": "tag"
+            },
+            {
+              "params": [
+                "client::tag"
+              ],
+              "type": "tag"
+            }
+          ],
+          "hide": false,
+          "limit": "100",
+          "measurement": "unbound_queries",
+          "orderByTime": "ASC",
+          "policy": "default",
+          "refId": "A",
+          "resultFormat": "table",
+          "select": [
+            [
+              {
+                "params": [
+                  "time_to_resolve"
+                ],
+                "type": "field"
+              }
+            ]
+          ],
+          "tags": [
+            {
+              "key": "host::tag",
+              "operator": "=~",
+              "value": "/^$hostname$/"
+            },
+            {
+              "condition": "AND",
+              "key": "return_code::tag",
+              "operator": "=",
+              "value": "NOERROR"
+            },
+            {
+              "condition": "AND",
+              "key": "client::tag",
+              "operator": "=~",
+              "value": "/^$client$/"
+            }
+          ]
+        }
+      ],
+      "title": "Recent Slow Queries (>2s)",
+      "transformations": [
+        {
+          "id": "organize",
+          "options": {
+            "excludeByName": {
+              "Time 2": true,
+              "return_code": true
+            },
+            "includeByName": {},
+            "indexByName": {
+              "Time": 0,
+              "client": 2,
+              "clientip": 1,
+              "name": 3,
+              "return_code": 6,
+              "time_to_resolve": 5,
+              "type": 4
+            },
+            "renameByName": {
+              "Time 1": "Time",
+              "client": "Client Hostname",
+              "clientip": "Client IP",
+              "from_cache": "Cached",
+              "hostname": "Client",
+              "name": "DNS Query",
+              "return_code": "Action",
+              "time_to_resolve": "Reply",
+              "type": "Type"
+            }
+          }
+        },
+        {
+          "id": "filterByValue",
+          "options": {
+            "filters": [
+              {
+                "config": {
+                  "id": "greaterOrEqual",
+                  "options": {
+                    "value": 2
+                  }
+                },
+                "fieldName": "Reply"
+              },
+              {
+                "config": {
+                  "id": "lower",
+                  "options": {
+                    "value": 5
+                  }
+                },
+                "fieldName": "Reply"
+              }
+            ],
+            "match": "all",
+            "type": "include"
+          }
+        }
+      ],
+      "type": "table"
+    },
+    {
+      "datasource": {
+        "type": "influxdb",
+        "uid": "${DS_DNS_LOGS}"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "fixed"
+          },
+          "custom": {
+            "align": "left",
+            "cellOptions": {
+              "type": "auto"
+            },
+            "filterable": true,
+            "inspect": false
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green"
+              }
+            ]
+          }
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Reply"
+            },
+            "properties": [
+              {
+                "id": "unit",
+                "value": "s"
+              },
+              {
+                "id": "custom.width",
+                "value": 100
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Action"
+            },
+            "properties": [
+              {
+                "id": "mappings",
+                "value": [
+                  {
+                    "options": {
+                      "NOERROR": {
+                        "index": 0,
+                        "text": "Ok"
+                      },
+                      "NXDOMAIN": {
+                        "index": 1,
+                        "text": "Block"
+                      },
+                      "SERVFAIL": {
+                        "index": 2,
+                        "text": "Fail"
+                      }
+                    },
+                    "type": "value"
+                  }
+                ]
+              },
+              {
+                "id": "custom.width",
+                "value": 78
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Type"
+            },
+            "properties": [
+              {
+                "id": "custom.width",
+                "value": 85
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "DNS Query"
+            },
+            "properties": [
+              {
+                "id": "custom.width",
+                "value": 300
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Time"
+            },
+            "properties": [
+              {
+                "id": "custom.width",
+                "value": 175
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Client IP"
+            },
+            "properties": [
+              {
+                "id": "custom.width",
+                "value": 200
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Client Hostname"
+            },
+            "properties": [
+              {
+                "id": "mappings",
+                "value": [
+                  {
+                    "options": {
+                      "pattern": "^([^\\.]+)\\.([^\\.]+)\\.jgoguen\\.ca$",
+                      "result": {
+                        "index": 0,
+                        "text": "$1"
+                      }
+                    },
+                    "type": "regex"
+                  }
+                ]
+              },
+              {
+                "id": "custom.width",
+                "value": 150
+              }
+            ]
+          }
+        ]
+      },
+      "gridPos": {
+        "h": 11,
+        "w": 12,
+        "x": 0,
+        "y": 86
+      },
+      "id": 72,
+      "options": {
+        "cellHeight": "sm",
+        "footer": {
+          "countRows": false,
+          "fields": "",
+          "reducer": [
+            "sum"
+          ],
+          "show": false
+        },
+        "showHeader": true,
+        "sortBy": [
+          {
+            "desc": true,
+            "displayName": "Time"
+          }
+        ]
+      },
+      "pluginVersion": "11.2.0",
+      "targets": [
+        {
+          "datasource": {
+            "type": "influxdb",
+            "uid": "${DS_DNS_LOGS}"
+          },
+          "groupBy": [
+            {
+              "params": [
+                "type"
+              ],
+              "type": "tag"
+            },
+            {
+              "params": [
+                "name"
+              ],
+              "type": "tag"
+            },
+            {
+              "params": [
+                "return_code"
+              ],
+              "type": "tag"
+            },
+            {
+              "params": [
+                "client::tag"
+              ],
+              "type": "tag"
+            }
+          ],
+          "hide": false,
+          "limit": "100",
+          "measurement": "unbound_queries",
+          "orderByTime": "ASC",
+          "policy": "default",
+          "refId": "A",
+          "resultFormat": "table",
+          "select": [
+            [
+              {
+                "params": [
+                  "time_to_resolve"
+                ],
+                "type": "field"
+              }
+            ]
+          ],
+          "tags": [
+            {
+              "key": "host::tag",
+              "operator": "=~",
+              "value": "/^$hostname$/"
+            },
+            {
+              "condition": "AND",
+              "key": "return_code::tag",
+              "operator": "=",
+              "value": "NOERROR"
+            },
+            {
+              "condition": "AND",
+              "key": "client::tag",
+              "operator": "=~",
+              "value": "/^$client$/"
+            }
+          ]
+        }
+      ],
+      "title": "Recent Slow Queries (>5s)",
+      "transformations": [
+        {
+          "id": "organize",
+          "options": {
+            "excludeByName": {
+              "Time 2": true,
+              "return_code": true
+            },
+            "includeByName": {},
+            "indexByName": {
+              "Time": 0,
+              "client": 2,
+              "clientip": 1,
+              "name": 3,
+              "return_code": 6,
+              "time_to_resolve": 5,
+              "type": 4
+            },
+            "renameByName": {
+              "Time 1": "Time",
+              "client": "Client Hostname",
+              "clientip": "Client IP",
+              "from_cache": "Cached",
+              "hostname": "Client",
+              "name": "DNS Query",
+              "return_code": "Action",
+              "time_to_resolve": "Reply",
+              "type": "Type"
+            }
+          }
+        },
+        {
+          "id": "filterByValue",
+          "options": {
+            "filters": [
+              {
+                "config": {
+                  "id": "greaterOrEqual",
+                  "options": {
+                    "value": 5
+                  }
+                },
+                "fieldName": "Reply"
+              }
+            ],
+            "match": "all",
+            "type": "include"
           }
         }
       ],
@@ -3849,7 +5062,11 @@
   ],
   "refresh": "1m",
   "schemaVersion": 39,
-  "tags": ["unbound", "openbsd", "influxdb", "collectd"],
+  "tags": [
+    "unbound",
+    "openbsd",
+    "influxdb"
+  ],
   "templating": {
     "list": [
       {
@@ -3865,7 +5082,10 @@
         "multi": true,
         "name": "hostname",
         "options": [],
-        "query": "SHOW TAG VALUES FROM \"unbound_queries\" WITH KEY = \"host\"",
+        "query": {
+          "query": "SHOW TAG VALUES FROM \"unbound_queries\" WITH KEY = \"host\"",
+          "refId": "InfluxVariableQueryEditor-VariableQuery"
+        },
         "refresh": 2,
         "regex": "",
         "skipUrlSync": false,
@@ -3896,67 +5116,55 @@
         ]
       },
       {
-        "current": {
-          "selected": false,
-          "text": "75",
-          "value": "75"
+        "allValue": ".+",
+        "current": {},
+        "datasource": {
+          "type": "influxdb",
+          "uid": "${DS_DNS_LOGS}"
         },
+        "definition": "SHOW TAG VALUES FROM \"unbound_queries\" WITH KEY = \"client\"",
         "hide": 0,
-        "includeAll": false,
-        "label": "Percentile",
-        "multi": false,
-        "name": "pct",
-        "options": [
-          {
-            "selected": false,
-            "text": "25",
-            "value": "25"
-          },
-          {
-            "selected": false,
-            "text": "50",
-            "value": "50"
-          },
-          {
-            "selected": true,
-            "text": "75",
-            "value": "75"
-          },
-          {
-            "selected": false,
-            "text": "90",
-            "value": "90"
-          },
-          {
-            "selected": false,
-            "text": "95",
-            "value": "95"
-          },
-          {
-            "selected": false,
-            "text": "99",
-            "value": "99"
-          }
-        ],
-        "query": "25,50,75,90,95,99",
-        "queryValue": "",
+        "includeAll": true,
+        "multi": true,
+        "name": "client",
+        "options": [],
+        "query": {
+          "query": "SHOW TAG VALUES FROM \"unbound_queries\" WITH KEY = \"client\"",
+          "refId": "InfluxVariableQueryEditor-VariableQuery"
+        },
+        "refresh": 1,
+        "regex": "",
         "skipUrlSync": false,
-        "type": "custom"
+        "sort": 1,
+        "type": "query"
       }
     ]
   },
   "time": {
-    "from": "now-3h",
+    "from": "now-24h",
     "to": "now"
   },
-  "timeRangeUpdatedDuringEditOrView": false,
   "timepicker": {
-    "refresh_intervals": ["10s", "1m", "10m", "30m"],
-    "time_options": ["5m", "15m", "1h", "6h", "12h", "24h", "2d", "7d", "30d"]
+    "refresh_intervals": [
+      "1m",
+      "10m",
+      "30m"
+    ],
+    "time_options": [
+      "5m",
+      "15m",
+      "1h",
+      "6h",
+      "12h",
+      "24h",
+      "2d",
+      "7d",
+      "30d"
+    ]
   },
   "timezone": "",
   "title": "Unbound",
   "uid": "lnjRULqmz",
-  "version": 44,
+  "version": 93,
   "weekStart": ""
 }

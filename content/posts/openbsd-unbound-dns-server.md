@@ -34,13 +34,65 @@ OpenBSD, is fairly simple to configure, and can function as both an internal
 name server and a caching recursive resolver for public Internet DNS. I'll also
 enable DNSSEC validation.
 
-Note that you could also use [`nsd(8)`](https://man.openbsd.org/unbound) as the
-authoritative nameserver for your network. This works well for some people. I've
-chosen not to do this because I want the same DNS names internally and
-externally for accessing self-hosted services and that's much easier to do
-with only [`unbound(8)`](https://man.openbsd.org/unbound).
+Note that you could also use [`nsd(8)`](https://man.openbsd.org/nsd) as
+the authoritative name server for your network. This works well for some people.
+I've chosen not to do this because I want the same DNS names internally and
+externally for accessing self-hosted services and that's much easier to do with
+only [`unbound(8)`](https://man.openbsd.org/unbound).
 
-### DNS Server Preparation
+### Why run your own DNS server?
+
+It's reasonable to ask why would you want to run your own DNS server anyway. The
+most immediate benefit you'll notice is query speed. Consider the flow for
+resolving the IP address for `jgoguen.ca`:
+
+- Your client sends a query to the locally configured DNS server asking for the
+  IP address of `jgoguen.ca`.
+- If the local DNS server has that IP address cached, the IP address is returned
+  immediately. Otherwise, it has to go get that information.
+- The local DNS server sends a query for the IP address for `jgoguen.ca` to one
+  of the root name servers in `root.hints`.
+- The root server replies with a referral to the TLD name servers for `.ca`.
+- The local DNS server sends a query for the IP address for `jgoguen.ca` to one
+  of the `.ca` TLD name servers.
+- The TLD name server replies with a referral to the name servers authoritative
+  for `jgoguen.ca`.
+- The local DNS server sends a query for the IP address for `jgoguen.ca` to the
+  authoritative name server.
+- The authoritative name server replies with the IP address for `jgoguen.ca`.
+- The local DNS server replies with the IP address for `jgoguen.ca`.
+
+That's a fair bit of work just to resolve one domain name, and your devices will
+send out many thousands of DNS queries during a normal day. Every single query
+has to go out to the public Internet and back. It's reasonable to expect
+a single packet to take tens, or possibly even hundreds, of milliseconds to
+travel to a public Internet server, and a similar time for the reply to come
+back. That's not considering the time taken to actually resolve the query, which
+itself can be tens or hundreds of milliseconds. On your local network, it's
+reasonable to expect packet travel times to be low single digit milliseconds
+instead. Although it may not seem like much, saving a whole order of magnitude
+on each query can actually make anything depending on DNS name resolution feel
+faster. A local DNS server can spend the time to resolve queries once and serve
+results from the cache in typically under a millisecond.
+
+There's also a security benefit. With a local DNS server, you can intercept
+queries for known malicious or advertising domains and reply with &quot;no such
+server exists&quot;. Considering how many ad servers are repeatedly compromised to
+serve malicious software, or are tricked into linking to malicious URLs, ad
+blocking has become a critical part of basic Internet security.
+
+Please keep in mind that advertising is how many sites pay their bills. Although
+much less common these days, there are still some advertising companies that can
+serve ads in a privacy-preserving way. Blocking ads by default is always the
+best option, but if you find a site you enjoy using please do some research into
+how they run their ads. If you're satisfied that they're serving ads in a manner
+sufficiently private for you, and that they take adequate measures to prevent
+and remove any malicious advertising, please consider excluding that site from
+your ad blocking. For sites that you enjoy using invasive advertising or ad
+servers that don't adequately protect against malicious ads, contact the
+webmaster to encourage them to seek out a better alternative.
+
+## DNS Server Preparation
 
 Every good server begins with a good firewall configuration. A minimal
 [`pf.conf(5)`](https://man.openbsd.org/pf.conf) suitable for a DNS server:
@@ -62,23 +114,31 @@ block drop out log quick proto {tcp udp} user _pbuild
 block return all
 pass out modulate state
 
-# Allow inbound DHCP
+# Allow inbound DHCPv4
 pass in on $if_lan inet proto udp from port bootps to port bootpc
 pass out on $if_lan inet proto udp from port bootpc to port bootps
-pass in on $if_lan inet6 proto udp from fe80::/10 port dhcpv6-server to fe80::/10 port dhcpv6-client no state
-pass out on $if_lan inet6 proto udp from fe80::/10 port dhcpv6-client to fe80::/10 port dhcpv6-server no state
 
 # Allow inbound ICMP
 pass in on $if_lan inet proto icmp to ($if_lan)
 pass in on $if_lan inet6 proto icmp6 to { ($if_lan) ff02::1/16 fe80::/10 }
 
 # Allow inbound SSH
-pass in on $if_lan proto tcp from $if_lan:network to ($if_lan) port 22 modulate state
+pass in on $if_lan proto tcp from ($if_lan:network) to ($if_lan) port 22 \
+	modulate state
 
 # Allow inbound DNS
-pass in on $if_lan proto { tcp udp } from $if_lan:network to ($if_lan) port 53 modulate state
-pass in on $if_lan inet6 proto { tcp udp } from fe80::/10 to port 53 modulate state
+pass in on $if_lan proto { tcp udp } from ($if_lan:network) to ($if_lan) \
+	port 53 modulate state
+pass in on $if_lan inet6 proto { tcp udp } from fe80::/10 to port 53 \
+	modulate state
 ```
+
+Note that this `pf.conf` allows all ICMP and ICMP6. According to RFC 4890
+you are supposed to filter ICMP unless there's a good reason not to. For this
+DNS server setup, it will be on a controlled network where ICMP is already being
+properly filtered at the edge. To see what filtering is being done, or to copy
+the full set of proper filtering rules to include here, see my
+[home network gateway post]({{%relref "openbsd-home-gateway-att"%}}).
 
 Validate and enable the new ruleset:
 
@@ -92,10 +152,10 @@ Validate and enable the new ruleset:
 DNS servers, by their nature, require a static IP address. You can edit the
 relevant [`hostname.if(5)`](https://man.openbsd.org/hostname.if) file to set a
 static IP address for the DNS server, or edit
-[`dhcpd.conf(5)`](https://man.openbsd.org/dhcpd.conf) to set a `fixed-address`
-for the DNS server's MAC address.
+[`dhcpd.conf(5)`](https://man.openbsd.org/dhcpd.conf) on the DHCP server to set
+a `fixed-address` for the DNS server's MAC address.
 
-If you use [`hostname.if(5)`](https://man.openbsd.org/hostname.if):
+If you decide to use [`hostname.if(5)`](https://man.openbsd.org/hostname.if):
 
 ```sh
 % cat /etc/hostname.bse0
@@ -104,8 +164,8 @@ inet6 fd01:2345:6789:abcd::5 64
 up
 ```
 
-If you use DHCP, add these lines (one block per DNS server) to the `subnet`
-block in [`dhcpd.conf(5)`](https://man.openbsd.org/dhcpd.conf):
+If you decide to use DHCP, add these lines (one block per DNS server) to the
+`subnet` block in [`dhcpd.conf(5)`](https://man.openbsd.org/dhcpd.conf):
 
 ```conf
 host dns1 {
@@ -125,7 +185,7 @@ You will still need to set a static IPv6 address in the relevant
 advertise the DNS servers over IPv6. Make sure your DNS servers are accessible
 at their static addresses before proceeding!
 
-### `unbound(8)` Configuration
+## `unbound(8)` Configuration
 
 Set up [`unbound.conf(5)`](https://man.openbsd.org/unbound.conf):
 
@@ -162,7 +222,8 @@ server:
   num-threads: 4
 
   # Configure the DNS cache, to speed up requests for frequently requested
-  # domains. Cache slabs should be no more than the number of threads.
+  # domains. Cache slabs should be a power of 2 and no more than the number of
+  # threads.
   # rrset-cache-size should be about double msg-cache-size.
   cache-max-ttl: 604800
   cache-min-ttl: 1800
@@ -178,7 +239,9 @@ server:
 
   # Configure port and socket options
   outgoing-range: 200
-  so-reuseport: yes
+  # On a Linux system, you want so-reuseport set to yes. On OpenBSD, that will
+  # actually prevent more than one thread from being used.
+  so-reuseport: no
   so-rcvbuf: 2m
   so-sndbuf: 2m
 
@@ -223,7 +286,133 @@ You should be able to query a public DNS name and get a response:
 % dig www.google.com @::1
 ```
 
-### Make the rest of the LAN use it
+### Get the root hints file
+
+To resolve DNS queries, unbound needs to know where the root name servers are.
+Unbound does have a list in its code, but things can change so we want to keep
+an updated list available. First, get the root hints file and put in in place:
+
+```sh
+% doas ftp -o /var/unbound/etc/root.hints https://www.internic.net/domain/named.root
+```
+
+Then add this line to the `server` section in
+[`unbound.conf(5)`](https://man.openbsd.org/unbound.conf):
+
+```conf
+root-hints: "/var/unbound/etc/root.hints"
+```
+
+Validate and restart [`unbound(8)`](https://man.openbsd.org/unbound):
+
+```sh
+% doas unbound-checkconf
+% doas rcctl restart unbound
+```
+
+### Enable DNSSEC
+
+Now that you can resolve host names using your new DNS server, it's time to add
+DNSSEC validation. This gives you confidence that, for domains that use DNSSEC,
+the query results have not been tampered with. Few sites are using DNSSEC today,
+but by configuring DNSSEC validation now you'll automatically take advantage of
+it when more sites do start using it.
+
+First, create `/var/unbound/etc/root.key` and allow the `_unbound` user to
+write to it:
+
+```sh
+% doas install -o _unbound -g _unbound -m 0644 /var/unbound/etc/root.key
+```
+
+Edit the file to add this line:
+
+```bind
+. IN DS 38696 8 2 683D2D0ACB8C9B712A1948B27F741219298D0A450D612C483AF444A4C0FB2B16
+```
+
+This is the correct hash for the 2024-07-18 root key. Unbound will update this
+file later with the right `DNSKEY` record. You can check
+[`root-anchors.xml`](https://data.iana.org/root-anchors/root-anchors.xml) to get
+the most recent hash and key tag. You only have to do this the first time you
+set up DNSSEC, unbound will keep this file up to date as part of its normal
+operation. Just tell unbound where to find it by adding this line to the
+`server` section of [`unbound.conf(5)`](https://man.openbsd.org/unbound.conf):
+
+```conf
+auto-trust-anchor-file: "/var/unbound/etc/root.key"
+```
+
+Validate and restart [`unbound(8)`](https://man.openbsd.org/unbound):
+
+```sh
+% doas unbound-checkconf
+% doas rcctl restart unbound
+```
+
+Now check if you can resolve a domain using DNSSEC and validate it. Using
+[`dig(1)`](https://man.openbsd.org/dig), the `flags:` line will include flag
+`ad` if DNSSEC is present and valid, and `+dnssec` will cause a `RRSIG` record
+to be included in the reply:
+
+```sh
+% dig jgoguen.ca +dnssec @::1
+; <<>> dig 9.10.8-P1 <<>> jgoguen.ca +dnssec @::1
+;; global options: +cmd
+;; Got answer:
+;; ->>HEADER<<- opcode: QUERY, status: NOERROR, id: 65483
+;; flags: qr rd ra ad; QUERY: 1, ANSWER: 5, AUTHORITY: 0, ADDITIONAL: 1
+
+;; OPT PSEUDOSECTION:
+; EDNS: version: 0, flags: do; udp: 1232
+;; QUESTION SECTION:
+;jgoguen.ca.                    IN      A
+
+;; ANSWER SECTION:
+jgoguen.ca.             1461    IN      A       185.199.110.153
+jgoguen.ca.             1461    IN      A       185.199.111.153
+jgoguen.ca.             1461    IN      A       185.199.109.153
+jgoguen.ca.             1461    IN      A       185.199.108.153
+jgoguen.ca.             1461    IN      RRSIG   A 13 2 300 20241008004809 20241005224809 34505 jgoguen.ca. m8ACnfzVqiOkyKb3ubRDhTqMIj/2TvrUxjgVKbCiCI/GY5tqrh8Daldq r5SUwrUd+qHQK4yyyJFfpaTdCsffag==
+
+;; Query time: 0 msec
+;; SERVER: ::1#53(::1)
+;; WHEN: Sun Oct 06 19:53:48 EDT 2024
+;; MSG SIZE  rcvd: 209
+```
+
+Note the last line, which contains the value of the `RRSIG` record. Compare to
+a domain not using DNSSEC:
+
+```sh
+% dig google.com +dnssec @::1
+
+; <<>> dig 9.10.8-P1 <<>> google.com +dnssec @::1
+;; global options: +cmd
+;; Got answer:
+;; ->>HEADER<<- opcode: QUERY, status: NOERROR, id: 61465
+;; flags: qr rd ra; QUERY: 1, ANSWER: 6, AUTHORITY: 0, ADDITIONAL: 1
+
+;; OPT PSEUDOSECTION:
+; EDNS: version: 0, flags: do; udp: 1232
+;; QUESTION SECTION:
+;google.com.                    IN      A
+
+;; ANSWER SECTION:
+google.com.             1800    IN      A       172.253.124.101
+google.com.             1800    IN      A       172.253.124.139
+google.com.             1800    IN      A       172.253.124.138
+google.com.             1800    IN      A       172.253.124.100
+google.com.             1800    IN      A       172.253.124.113
+google.com.             1800    IN      A       172.253.124.102
+
+;; Query time: 32 msec
+;; SERVER: ::1#53(::1)
+;; WHEN: Sun Oct 06 20:00:36 EDT 2024
+;; MSG SIZE  rcvd: 135
+```
+
+## Make the rest of the LAN use unbound
 
 To make LAN clients use your new DNS servers, edit
 [`dhcpd.conf(5)`](https://man.openbsd.org/dhcpd.conf) and change the
@@ -263,7 +452,7 @@ to continue. For this next section, we'll add monitoring of the DNS service.
 ### Pre-requisites: Monitoring software
 
 This section assumes you have [Grafana](https://grafana.com/),
-[InfluxxDB 2](https://www.influxdata.com/), and
+[InfluxDB 2](https://www.influxdata.com/), and
 [Telegraf](https://www.influxdata.com/time-series-platform/telegraf/) already
 installed and working. A few configuration details you'll want to include
 (or have equivalents set up):
@@ -295,139 +484,68 @@ Add these configuration items to the `server` block in your existing
 [`unbound.conf(5)`](https://man.openbsd.org/unbound.conf):
 
 ```conf
-extended-statistics: yes
 log-local-actions: yes
 log-queries: no
 log-replies: yes
 statistics-cumulative: yes
+statistics-inhibit-zero: no
+statistics-interval: 30
 val-log-level: 2
 ```
 
 Validate and restart [`unbound(8)`](https://man.openbsd.org/unbound):
 
 ```sh
-% doas unbound-checkconf && doas rcctl restart unbound
+% doas unbound-checkconf
+% doas rcctl restart unbound
 ```
+
+Unbound will now print statistics to the output log every 30 seconds.
 
 ### DNS Statistics
 
 [`unbound(8)`](https://man.openbsd.org/unbound) is now recording statistics,
-which you can view at any time:
+which are sent to `/var/log/daemon` every 30 seconds. To be useful, we need to
+get those statistics to InfluxDB. To do so, we'll use a Go binary to listen to
+syslog generated by unbound. On an OpenBSD host with a Go compiler (ideally not
+a server, but if that's needed just remove the compiler later) fetch and compile
+the binary, moving it into place after building:
 
 ```sh
-% doas unbound-control stats_noreset
+% ftp -o unbound2influx.tar.gz https://vcs.jgoguen.ca/jgoguen/unbound2influx/archive/main.tar.gz
+% tar zxf unbound2influx.tar.gz
+% cd unbound2influx
+% go build -o bin/unbound2influx
+% doas install -o root -g _syslogd -m 0510 bin/unbound2influx /usr/local/bin/unbound2influx
 ```
 
-To be useful, we need to get those statistics to InfluxDB. To do so, we'll use
-`collectd`. Install it first:
+You need to create `/etc/unbound2influx.json` to tell the program where to send
+data. Because this file will contain a token, it needs to be adequately
+protected. Create a file:
 
 ```sh
-% doas pkg_add collectd
+doas install -o root -g _syslogd -m 0640 /dev/null /etc/unbound2influx.json
 ```
 
-A minimal `collectd.conf`:
-
-```conf
-Hostname    "dns2"
-LoadPlugin syslog
-<Plugin syslog>
-  LogLevel info
-</Plugin>
-LoadPlugin exec
-LoadPlugin network
-<Plugin exec>
-  Exec _collectd "/usr/local/bin/collectd-unbound"
-</Plugin>
-<Plugin network>
-  Server "10.0.0.4" "9456"
-</Plugin>
-```
-
-To allow `collectd` to run `unbound-control` to get statistics, add this line to
-[`doas.conf(5)`](https://man.openbsd.org/doas.conf):
-
-```doas
-permit nopass _collectd as _unbound cmd unbound-control args stats_noreset
-```
-
-Finally, copy this script to `/usr/local/bin/collectd-unbound`:
-
-```sh
-#!/bin/sh
-
-PATH="/bin:/sbin:/usr/bin:/usr/sbin"
-
-HOSTNAME="${COLLECTD_HOSTNAME:-$(hostname -s)}"
-INTERVAL="${COLLECTD_INTERVAL:-30}"
-
-while sleep "$INTERVAL"; do
-  doas -u _unbound unbound-control stats_noreset | egrep -v "^(histogram\.|time\.now|time\.elapsed)" | sed -re "s;^([^=]+)=([0-9\.]+);PUTVAL $HOSTNAME/exec-unbound/gauge-\1 interval=$INTERVAL N:\2;"
-
-  awk -v h=$HOSTNAME -v i=$INTERVAL 'END { print "PUTVAL " h "/exec-unbound/gauge-num.adhosts interval=" i " N:" FNR }' /var/unbound/etc/unbound-adhosts.conf
-  awk -v h=$HOSTNAME -v i=$INTERVAL '!/^($|[:space:]*#)/ { hosts++ } END { print "PUTVAL " h "/exec-unbound/gauge-num.allowlist interval=" i " N:" hosts+0 }' /var/unbound/allowlist.txt
-  awk -v h=$HOSTNAME -v i=$INTERVAL '!/^($|[:space:]*#)/ { hosts++ } END { print "PUTVAL " h "/exec-unbound/gauge-num.manual-blocks interval=" i " N:" hosts+0 }' /var/unbound/blocklist.txt
-done
-
-exit 0
-```
-
-Make sure the script is owned by `root:_collectd` and give it permissions
-`0750`.
-
-Enable and start `collectd`, it will shortly start sending statistics to
-InfluxDB:
-
-```sh
-% doas rcctl enable collectd
-% doas rcctl start collectd
-```
-
-DNS queries are being logged to [`syslogd(8)`](https://man.openbsd.org/syslogd).
-We need to send them to an external program for processing and forwarding to
-InfluxDB. I wrote a simple Go program to read, queue, process, and send the
-logs. Download [unbound2influx.go](/static/go/unbound2influx.go) and build it:
-
-```sh
-% go build -o unbound2influx unbound2influx.go
-```
-
-Set permissions and move it into place:
-
-```sh
-% doas chown root:_syslogd unbound2influx
-% doas chmod 0750 unbound2influx
-% doas mv unbound2influx /usr/local/bin/unbound2influx
-```
-
-You also need to create `/etc/unbound2influx.cfg` and fill in details. `hosts`
-points to the file you use to define LAN addresses, if you haven't done that
-give it a path to an empty file:
-
-```sh
-% doas cat /etc/unbound2influx.cfg
-token = <API token from InfluxDB>
-bucket = <bucket name from InfluxDB>
-org = <org name from InfluxDB>
-hosts = /var/unbound/etc/lan-hosts.conf
-influx_host = http://10.0.0.4:8086
-```
-
-Edit [`syslog.conf(5)`](https://man.openbsd.org/syslog.conf) to add these lines
-to the bottom of the file:
+Follow <https://vcs.jgoguen.ca/jgoguen/unbound2influx#configuration> to fill in
+the file correctly. Once done, update
+[`syslog.conf(5)`](https://man.openbsd.org/syslog.conf) to add these lines to
+the bottom of the file:
 
 ```conf
 !unbound
 *.* |/usr/local/bin/unbound2influx
 ```
 
-Restart [`syslogd(8)`](https://man.openbsd.org/syslogd) and logs will start
-streaming to InfluxDB as DNS requests are made:
+Restart [`syslogd(8)`](https://man.openbsd.org/syslogd):
 
 ```sh
 % doas rcctl restart syslogd
 ```
 
-### Ad Blocking
+DNS logs and statistics will be sent to InfluxDB as they're written to syslog.
+
+## Malicious/Ad Host Blocking
 
 The way the Internet is today, ad blocking is practically a fundamental security
 requirement. Many third-party ad services (and some first-party ad services) are
@@ -435,38 +553,126 @@ regularly used to serve malicious ads or malicious content along with legitimate
 ads. There's also a lot to be concerned about regarding privacy online the way
 ad networks operate. You can't stop all ads everywhere, but let's set up
 [`unbound(8)`](https://man.openbsd.org/unbound) to block what we can while
-you're at home.
+you're at home. Far from blocking only ads, the same techniques used to block
+ads are used to prevent communication with known malicious domains.
 
-Start by creating two empty files, `allowlist.txt` and `blocklist.txt`. They can
-be anywhere, but the script I wrote defaults to `allowlist.txt` and
-`blocklist.txt` in the same directory as the script. The script, which I've
-installed at `/var/unbound/unbound-adhosts.py` can be
-[downloaded here](/py/unbound-adhosts.py). Set permissions on the files:
+To handle blocking malicious domains, we'll use a Go binary to periodically
+fetch lists of known malicious and ad servers. A configuration file for
+[`unbound(8)`](https://man.openbsd.org/unbound) will be updated as needed.
 
-```sh
-% doas chown root:_unbound unbound-adhosts.py allowlist.txt blocklist.txt
-% doas chmod 0755 unbound-adhosts.py
-```
-
-You can run it now to verify everything works. By default the script will write
-out the domain list at `/var/unbound/unbound-adhosts.conf`.
+First, fetch and compile the `unbound-adhosts` binary:
 
 ```sh
-% doas /var/unbound/unbound-adhosts.py -v
+% ftp -o unbound-adhosts.tar.gz https://vcs.jgoguen.ca/jgoguen/unbound-adhosts/archive/main.tar.gz
+% tar zxf unbound-adhosts.tar.gz
+% cd unbound-adhosts
+% go build -o bin/unbound-adhosts
+% doas install -o root -g _unbound -m 0510 bin/unbound-adhosts /usr/local/bin/unbound-adhosts
 ```
 
-Add a line to the end of the `server` section in
-[`unbound(8)`](https://man.openbsd.org/unbound):
+You need to create a cache directory, allowlist and blocklist files, and a
+configuration file:
+
+```sh
+% doas install -o root -g _unbound -m 0770 -d /var/cache/unbound-adhosts
+% doas install -o root -g _unbound -m 0640 /dev/null /etc/unbound-adhosts.json
+% doas install -o root -g wheel -m 0664 /dev/null /var/unbound/allowlist.txt
+% doas install -o root -g wheel -m 0664 /dev/null /var/unbound/blocklist.txt
+```
+
+`allowlist.txt` holds domain names, one per line, that are to be excluded from
+blocking. Any domain and all subdomains will not be added to the final
+blocking configuration. `blocklist.txt` holds domain names, also one per line,
+that will always be added to the set of domains to block. In case of a conflict
+at the same or higher domain level, `allowlist.txt` will prevail.
+
+Follow <https://vcs.jgoguen.ca/jgoguen/unbound-adhosts#configuration> to fill in
+the configuration file correctly. Four different filter formats are accepted, so
+you can make use of almost any server list you find on the Internet. For
+reference, or a starting point, my configuration has these entries for blocking
+and allowlist:
+
+```json
+{
+  "allowlist": {
+    "adguard_filters": [],
+    "bare_domain_filters": [
+      "https://raw.githubusercontent.com/hagezi/dns-blocklists/main/domains/whitelist-referral.txt",
+      "https://raw.githubusercontent.com/anudeepND/whitelist/master/domains/whitelist.txt",
+      "https://raw.githubusercontent.com/anudeepND/whitelist/master/domains/referral-sites.txt"
+    ],
+    "hostfile_filters": [],
+    "unbound_filters": []
+  },
+  "blocklist": {
+    "adguard_filters": [
+      "https://adguardteam.github.io/AdGuardSDNSFilter/Filters/filter.txt",
+      "https://adguardteam.github.io/HostlistsRegistry/assets/filter_6.txt",
+      "https://adguardteam.github.io/HostlistsRegistry/assets/filter_7.txt",
+      "https://adguardteam.github.io/HostlistsRegistry/assets/filter_10.txt",
+      "https://adguardteam.github.io/HostlistsRegistry/assets/filter_11.txt",
+      "https://adguardteam.github.io/HostlistsRegistry/assets/filter_30.txt",
+      "https://adguardteam.github.io/HostlistsRegistry/assets/filter_31.txt",
+      "https://adguardteam.github.io/HostlistsRegistry/assets/filter_47.txt",
+      "https://raw.githubusercontent.com/AdguardTeam/AdguardFilters/master/FrenchFilter/sections/adservers.txt",
+      "https://raw.githubusercontent.com/AdguardTeam/AdGuardSDNSFilter/gh-pages/Filters/adguard_popup_filter.txt",
+      "https://raw.githubusercontent.com/hagezi/dns-blocklists/main/adblock/gambling.txt",
+      "https://raw.githubusercontent.com/hagezi/dns-blocklists/main/adblock/fake.txt",
+      "https://raw.githubusercontent.com/hagezi/dns-blocklists/main/adblock/spam-tlds-adblock.txt",
+      "https://raw.githubusercontent.com/hagezi/dns-blocklists/main/adblock/hoster.txt"
+    ],
+    "bare_domain_filters": [
+      "https://www.stopforumspam.com/downloads/toxic_domains_whole.txt",
+      "https://raw.githubusercontent.com/hagezi/dns-blocklists/main/domains/doh.txt",
+      "https://raw.githubusercontent.com/hagezi/dns-blocklists/main/domains/tif.txt",
+      "https://raw.githubusercontent.com/hagezi/dns-blocklists/main/domains/native.winoffice.txt",
+      "https://raw.githubusercontent.com/hagezi/dns-blocklists/main/domains/native.amazon.txt",
+      "https://raw.githubusercontent.com/hagezi/dns-blocklists/main/domains/native.apple.txt",
+      "https://raw.githubusercontent.com/hagezi/dns-blocklists/main/domains/native.lgwebos.txt",
+      "https://raw.githubusercontent.com/hagezi/dns-blocklists/main/domains/native.tiktok.txt",
+      "https://raw.githubusercontent.com/JGeek00/adguard-home-lists/main/lists/lg-webos-ads.txt"
+    ],
+    "hostfile_filters": [
+      "https://adaway.org/hosts.txt",
+      "https://raw.githubusercontent.com/StevenBlack/hosts/master/hosts",
+      "https://pgl.yoyo.org/adservers/serverlist.php?showintro=0;hostformat=hosts",
+      "https://raw.githubusercontent.com/Sekhan/TheGreatWall/master/TheGreatWall.txt",
+      "https://www.github.developerdan.com/hosts/lists/dating-services-extended.txt",
+      "https://www.github.developerdan.com/hosts/lists/hate-and-junk-extended.txt",
+      "https://raw.githubusercontent.com/davidonzo/Threat-Intel/master/lists/latestdomains.piHole.txt",
+      "https://adguardteam.github.io/HostlistsRegistry/assets/filter_9.txt",
+      "https://adguardteam.github.io/HostlistsRegistry/assets/filter_23.txt",
+      "https://someonewhocares.org/hosts/hosts"
+    ],
+    "unbound_filters": [
+      "https://malware-filter.gitlab.io/malware-filter/phishing-filter-unbound.conf",
+      "https://malware-filter.gitlab.io/malware-filter/urlhaus-filter-unbound.conf"
+    ]
+  }
+}
+```
+
+You can run it now to verify everything works. By default, the script will write
+out the domain list at `/var/unbound/etc/unbound-adhosts.conf`.
+
+```sh
+% doas /usr/local/bin/unbound-adhosts update
+```
+
+Inspect `/var/unbound/etc/unbound-adhosts.conf` to see the final result. Once
+you're satisfied, add a line to the end of the `server` section in
+[`unbound.conf(5)`](https://man.openbsd.org/unbound.conf):
 
 ```conf
 include: /var/unbound/etc/unbound-adhosts.conf
 ```
 
-You can validate and restart [`unbound(8)`](https://man.openbsd.org/unbound) to
+Validate and restart [`unbound(8)`](https://man.openbsd.org/unbound) to
 verify everything works so far:
 
 ```sh
-% doas unbound-control reload_keep_cache
+% doas unbounb-checkconfig
+% doas -u _unbound unbound-control reload_keep_cache
 % host ad-feeds.com ::1
 Using domain server:
 Name: ::1
@@ -476,22 +682,30 @@ Aliases:
 Host ad-feeds.com not found: 3(NXDOMAIN)
 ```
 
-Finally, add an entry to `root`'s crontab to run this periodically:
+Finally, add an entry to `_unbound`'s crontab to run this periodically:
 
 ```sh
-% doas crontab -e
+% doas -u _unbound crontab -e
 ```
 
 Add this line:
 
 ```crontab
-11~20	*/6	*	*	*	/var/unbound/unbound-adhosts.py
+11~20	*/6	*	*	*	/usr/local/bin/unbound-adhosts update
 ```
 
-Every 6 hours, somewhere between minutes 11-20, your adblock list will be
-updated and [`unbound(8)`](https://man.openbsd.org/unbound) reloaded.
+Every 6 hours, somewhere between minutes 11-20, your block config will be
+updated. If you want [`unbound(8)`](https://man.openbsd.org/unbound) reloaded
+automatically, you can either add `--reload` to the cron entry or set `reload`
+to `true` in `/etc/unbound-adhosts.json`.
 
-### Pretty Graphs
+This will also give you stats on blocked domains. Because blocked domains reply
+with `NXDOMAIN`, the Grafana dashboard assumes that any `NXDOMAIN` is a blocked
+request. While not strictly correct, the number of false positives is most
+likely extremely low compared to the number of blocked requests and probably
+won't impact the percentage values noticeably.
+
+## Pretty Graphs
 
 Now that you have DNS data going to InfluxDB, it's time to do something useful
 with it. You can [download the JSON](/grafana/unbound-dashboard.json) for
@@ -499,12 +713,14 @@ a Grafana dashboard, or use the screenshots below for reference.
 
 {{< figure src="/img/grafana/unbound-grafana-1.png" link="/img/grafana/unbound-grafana-1.png" alt="Grafana dashboard showing information about queries, response time, and cache status" width="33%" class="inline" target="_blank" >}}
 {{< figure src="/img/grafana/unbound-grafana-2.png" link="/img/grafana/unbound-grafana-2.png" alt="Grafana dashboard showing details about top queried and blocked domains and query types" width="33%" class="inline" target="_blank" >}}
-{{< figure src="/img/grafana/unbound-grafana-3.png" link="/img/grafana/unbound-grafana-3.png" alt="Grafana dashboard showing a log of recent queries and top clients by query count" width="33%" class="inline" target="_blank" >}}
+
+Having graphs for your data helps you see at a glance how your DNS servers are
+performing and where any problems might be.
 
 ## What's Next?
 
 At this point, take a look at
-[Awesome Self-hosted](https://awesome-selfhosted.net/) and see if there's any
+[Awesome Self-hosted](https://awesome-selfhosted.net/) and see if there are any
 services you want to host on your LAN. You have internal DNS to reach them by
 local IP, and your
 [OpenBSD gateway](/posts/2024/07/16/openbsd-ipv6-home-internet-gateway-with-att-fibre/)
@@ -512,4 +728,16 @@ allows you to easily forward traffic to an internal web server (or you can run
 [`relayd(8)`](https://man.openbsd.org/relayd) to forward to different places
 based on different criteria). Just be careful about what you host and how you
 configure the servers and services, your OpenBSD firewall can protect you from
-a lot but it can't protect you from a misconfiguration.
+a lot, but it can't protect you from a misconfiguration.
+
+## Changelog
+
+- 2024-10-08:
+  + The Grafana dashboard has been updated to the latest version in use.
+  + Script links have been replaced with links to Go source to compile binaries.
+  + Added a section on why you might want to run your own DNS server.
+  + Added directions to enable DNSSEC validation and initializing the root key.
+  + Added directions for getting the root hints file from upstream.
+  + [`pf.conf`](https://man.openbsd.org/pf.conf) has been tweaked slightly,
+    mostly for display.
+  + Minor wording updates for clarity throughout.
