@@ -301,7 +301,7 @@ pass in on $if_lan inet6 proto icmp6 from ($if_lan:network) to \
 pass in on egress inet6 proto icmp6 from any to ($if_lan:network) \
   icmp6-type { paramprob code nxthdr, paramprob code 2 } max-pkt-rate 5/5
 pass in on $if_lan inet6 proto icmp6 from ($if_lan:network) to \
-  !($if_lan:network) icmp6-type { paramprob code nxthdr, parapmrob code 2 } \
+  !($if_lan:network) icmp6-type { paramprob code nxthdr, paramprob code 2 } \
 	max-pkt-rate 5/1
 
 # Transit ICMPv6 - normally should not be dropped
