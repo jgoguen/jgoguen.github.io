@@ -2,37 +2,122 @@
 # vim: set expandtab autoindent tabstop=2 softtabstop=2 shiftwidth=2:
 # yaml-language-server: $schema=https://json.schemastore.org/github-workflow
 
-name: 'hugo-build'
+name: "hugo-build"
 
-'on':
+"on":
   push:
     branches:
       - main
+  schedule:
+    - cron: "42 */12 * * *"
 
 jobs:
-  deploy:
+  update-robots-txt:
     runs-on: ubuntu-latest
+    if: github.event_name == 'schedule'
     steps:
       - name: Checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4
         with:
-          submodules: true
-          fetch-depth: 0
+          submodules: recursive
+          fetch-depth: 1
+
+      - name: Copy base robots.txt
+        run: cp -f robots-base.txt static/robots.txt
+
+      - name: Fetch generated robots.txt
+        run: |
+          curl -fsSL -X POST https://api.darkvisitors.com/robots-txts -H "Content-Type: application/json" -H "Authorization: Bearer ${{ secrets.DARKVISITORS_TOKEN }}" -d '{"agent_types": ["AI Assistant", "AI Data Scraper", "AI Search Crawler", "Undocumented AI Agent"]}' >>static/robots.txt
+
+      - name: Commit new robots.txt
+        uses: EndBug/add-and-commit@v9
+        with:
+          add: static/robots.txt
+          message: "chore(robots): Update robots.txt"
+          default_author: github_actions
+
+  deploy:
+    runs-on: ubuntu-latest
+    if: "!cancelled()"
+    needs:
+      - update-robots-txt
+    env:
+      HUGO_CACHEDIR: /tmp/hugo-cache
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          submodules: recursive
+          fetch-depth: 1
+
+      - name: Restore Hugo cache directory
+        uses: actions/cache/restore@v4
+        with:
+          path: ${{ env.HUGO_CACHEDIR }}
+          key: cache-hugo-cachedir-
+          restore-keys: |
+            cache-hugo-cachedir-
+
+      - name: Restore Hugo resources directory
+        uses: actions/cache/restore@v4
+        with:
+          path: ./resources
+          key: cache-hugo-resources-
+          restore-keys: |
+            cache-hugo-resources-
+
       - name: Setup Hugo
         uses: peaceiris/actions-hugo@v3
         with:
-          hugo-version: 'latest'
+          hugo-version: "latest"
           extended: true
+
       - name: Clean public directory
         run: rm -rf public
+
       - name: Build
-        run: hugo --minify
+        run: hugo --minify --enableGitInfo
+
+      - name: Save Hugo cache directory
+        uses: actions/cache/save@v4
+        with:
+          path: ${{ env.HUGO_CACHEDIR }}
+          key: "cache-hugo-cachedir-${{ hashFiles(format('{0}/**/*', env.HUGO_CACHEDIR)) }}"
+
+      - name: Save Hugo resources directory
+        uses: actions/cache/save@v4
+        with:
+          path: ./resources
+          key: "cache-hugo-resources-${{ hashFiles('./resources/**/*') }}"
+
       - name: Create CNAME file
+        if: runner.environment == 'github-hosted'
         run: printf 'jgoguen.ca' >public/CNAME
+
       - name: Create nojekyll file
+        if: runner.environment == 'github-hosted'
         run: touch public/.nojekyll
-      - name: Deploy
+
+      - name: Deploy to GitHub Pages
+        if: runner.environment == 'github-hosted'
         uses: peaceiris/actions-gh-pages@v3
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_dir: ./public
+
+      - name: Deploy
+        if: runner.environment != 'github-hosted'
+        run: |
+          apt update
+          apt install -y rsync
+
+          SSH_KEY=$(mktemp)
+          chmod 0600 $SSH_KEY
+          printf '%s\n' "${{ secrets.SSH_DEPLOY_KEY }}" >$SSH_KEY
+
+          eval $(ssh-agent)
+          ssh-add -vvv $SSH_KEY
+
+          rsync -aP --delete -e "ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null" ./public/ ${{ vars.SSH_DEPLOY_USER }}@${{ vars.SSH_DEPLOY_HOST }}:${{ vars.DESTDIR }}/
+
+          rm -f $SSH_KEY
