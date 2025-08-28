@@ -1,13 +1,13 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>People on Heap Overrun</title><link>https://jgoguen.ca/tags/people/</link><description>Recent content in People on Heap Overrun</description><generator>Hugo</generator><language>en-ca</language><lastBuildDate>Fri, 07 Mar 2025 10:40:22 -0500</lastBuildDate><atom:link href="https://jgoguen.ca/tags/people/index.xml" rel="self" type="application/rss+xml"/><item><title>If you Understand TCP, you Understand Consent</title><link>https://jgoguen.ca/posts/2022/12/12/if-you-understand-tcp-you-understand-consent/</link><pubDate>Mon, 12 Dec 2022 00:00:00 +0000</pubDate><guid>https://jgoguen.ca/posts/2022/12/12/if-you-understand-tcp-you-understand-consent/</guid><description>&lt;p>If you can understand TCP, you can understand consent. It&amp;rsquo;s really quite simple.
-Here we&amp;rsquo;ll look at how TCP flags (the original six plus &lt;code>ECE&lt;/code> and &lt;code>CWR&lt;/code>) map to
-a conversation between two people.&lt;/p>
-&lt;p>Let&amp;rsquo;s say you want to start talking to someone. In TCP, you start with the
-three-way handshake:&lt;/p>
-&lt;div class="highlight">&lt;pre tabindex="0" style="color:#cdd6f4;background-color:#1e1e2e;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-fallback" data-lang="fallback">&lt;span style="display:flex;">&lt;span>You --- SYN --&amp;gt; Them
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>You &amp;lt;--SYN/ACK--- Them
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>You --- ACK --&amp;gt; Them
-&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>In human terms, a &lt;code>SYN&lt;/code> (synchronize) expresses that you&amp;rsquo;re asking to begin
-a conversation, and an &lt;code>ACK&lt;/code> (acknowledge) is how you acknowledge what the other
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>People on Heap Overrun</title><link>https://jgoguen.ca/tags/people/</link><description>Recent content in People on Heap Overrun</description><generator>Hugo</generator><language>en-ca</language><lastBuildDate>Fri, 07 Mar 2025 10:40:22 -0500</lastBuildDate><atom:link href="https://jgoguen.ca/tags/people/index.xml" rel="self" type="application/rss+xml"/><item><title>If you Understand TCP, you Understand Consent</title><link>https://jgoguen.ca/posts/2022/12/12/if-you-understand-tcp-you-understand-consent/</link><pubDate>Mon, 12 Dec 2022 00:00:00 +0000</pubDate><guid>https://jgoguen.ca/posts/2022/12/12/if-you-understand-tcp-you-understand-consent/</guid><description>&lt;p&gt;If you can understand TCP, you can understand consent. It&amp;rsquo;s really quite simple.
+Here we&amp;rsquo;ll look at how TCP flags (the original six plus &lt;code&gt;ECE&lt;/code&gt; and &lt;code&gt;CWR&lt;/code&gt;) map to
+a conversation between two people.&lt;/p&gt;
+&lt;p&gt;Let&amp;rsquo;s say you want to start talking to someone. In TCP, you start with the
+three-way handshake:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#cdd6f4;background-color:#1e1e2e;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"&gt;&lt;code class="language-fallback" data-lang="fallback"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;You --- SYN --&amp;gt; Them
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;You &amp;lt;--SYN/ACK--- Them
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;You --- ACK --&amp;gt; Them
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;In human terms, a &lt;code&gt;SYN&lt;/code&gt; (synchronize) expresses that you&amp;rsquo;re asking to begin
+a conversation, and an &lt;code&gt;ACK&lt;/code&gt; (acknowledge) is how you acknowledge what the other
 person has said. Note that both sides must explicitly begin the conversation and
 both sides must acknowledge the other. If it doesn&amp;rsquo;t happen like this, there is
-no conversation.&lt;/p></description></item></channel></rss>
+no conversation.&lt;/p&gt;</description></item></channel></rss>

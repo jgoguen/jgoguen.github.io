@@ -1,17 +1,17 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Heap Overrun</title><link>https://jgoguen.ca/</link><description>Recent content on Heap Overrun</description><generator>Hugo</generator><language>en-ca</language><lastBuildDate>Fri, 07 Mar 2025 10:40:22 -0500</lastBuildDate><atom:link href="https://jgoguen.ca/index.xml" rel="self" type="application/rss+xml"/><item><title>OpenBSD DNS Server with Unbound and Statistics</title><link>https://jgoguen.ca/posts/2024/07/20/openbsd-dns-server-with-unbound-and-statistics/</link><pubDate>Sat, 20 Jul 2024 00:00:00 +0000</pubDate><guid>https://jgoguen.ca/posts/2024/07/20/openbsd-dns-server-with-unbound-and-statistics/</guid><description>&lt;h2 id="dns-servers">
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Heap Overrun</title><link>https://jgoguen.ca/</link><description>Recent content on Heap Overrun</description><generator>Hugo</generator><language>en-ca</language><lastBuildDate>Fri, 07 Mar 2025 10:40:22 -0500</lastBuildDate><atom:link href="https://jgoguen.ca/index.xml" rel="self" type="application/rss+xml"/><item><title>OpenBSD DNS Server with Unbound and Statistics</title><link>https://jgoguen.ca/posts/2024/07/20/openbsd-dns-server-with-unbound-and-statistics/</link><pubDate>Sat, 20 Jul 2024 00:00:00 +0000</pubDate><guid>https://jgoguen.ca/posts/2024/07/20/openbsd-dns-server-with-unbound-and-statistics/</guid><description>&lt;h2 id="dns-servers"&gt;
  DNS Servers
- &lt;a class="heading-link" href="#dns-servers">
- &lt;i class="fa-solid fa-link" aria-hidden="true" title="Link to heading">&lt;/i>
- &lt;span class="sr-only">Link to heading&lt;/span>
- &lt;/a>
-&lt;/h2>
-&lt;p>Your network&amp;rsquo;s DNS is delegated to two public Internet resolvers. I&amp;rsquo;ve used
+ &lt;a class="heading-link" href="#dns-servers"&gt;
+ &lt;i class="fa-solid fa-link" aria-hidden="true" title="Link to heading"&gt;&lt;/i&gt;
+ &lt;span class="sr-only"&gt;Link to heading&lt;/span&gt;
+ &lt;/a&gt;
+&lt;/h2&gt;
+&lt;p&gt;Your network&amp;rsquo;s DNS is delegated to two public Internet resolvers. I&amp;rsquo;ve used
 Google Public DNS here purely to illustrate how to configure the DNS servers
 used by your LAN, but you could easily use quad9 or Cloudflare or any other
 public DNS service. Some people may have various privacy concerns with these
 companies, or with any public DNS service, and some people may have more
 extensive home networking needs that justify internal DNS servers (like running
-a &lt;a href="https://jellyfin.org/" class="external-link" target="_blank" rel="noopener">Jellyfin media server&lt;/a>).&lt;/p></description></item><item><title>OpenBSD IPv6 Home Internet Gateway with AT&amp;T Fibre</title><link>https://jgoguen.ca/posts/2024/07/20/openbsd-ipv6-home-internet-gateway-with-att-fibre/</link><pubDate>Sat, 20 Jul 2024 00:00:00 +0000</pubDate><guid>https://jgoguen.ca/posts/2024/07/20/openbsd-ipv6-home-internet-gateway-with-att-fibre/</guid><description>&lt;p>When you sign up for Internet service, one thing you&amp;rsquo;re going to get is a home
+a &lt;a href="https://jellyfin.org/" class="external-link" target="_blank" rel="noopener"&gt;Jellyfin media server&lt;/a&gt;).&lt;/p&gt;</description></item><item><title>OpenBSD IPv6 Home Internet Gateway with AT&amp;T Fibre</title><link>https://jgoguen.ca/posts/2024/07/20/openbsd-ipv6-home-internet-gateway-with-att-fibre/</link><pubDate>Sat, 20 Jul 2024 00:00:00 +0000</pubDate><guid>https://jgoguen.ca/posts/2024/07/20/openbsd-ipv6-home-internet-gateway-with-att-fibre/</guid><description>&lt;p&gt;When you sign up for Internet service, one thing you&amp;rsquo;re going to get is a home
 gateway. It&amp;rsquo;s going to offer wired and wireless Internet connections plus
 a bunch of other things you may not want and probably won&amp;rsquo;t need. Unfortunately,
 one of the things it&amp;rsquo;s going to offer you is poor performance. The wireless
@@ -21,25 +21,25 @@ areas. It&amp;rsquo;s also not built on the best hardware for the job, so when i
 the most you may not get the connection speeds you expect. Depending on your
 needs, you may find that the ISP hardware doesn&amp;rsquo;t offer you enough flexibility.
 And, perhaps most importantly, it&amp;rsquo;s not all that secure, and the firewalls can
-be difficult to configure properly.&lt;/p></description></item><item><title>If you Understand TCP, you Understand Consent</title><link>https://jgoguen.ca/posts/2022/12/12/if-you-understand-tcp-you-understand-consent/</link><pubDate>Mon, 12 Dec 2022 00:00:00 +0000</pubDate><guid>https://jgoguen.ca/posts/2022/12/12/if-you-understand-tcp-you-understand-consent/</guid><description>&lt;p>If you can understand TCP, you can understand consent. It&amp;rsquo;s really quite simple.
-Here we&amp;rsquo;ll look at how TCP flags (the original six plus &lt;code>ECE&lt;/code> and &lt;code>CWR&lt;/code>) map to
-a conversation between two people.&lt;/p>
-&lt;p>Let&amp;rsquo;s say you want to start talking to someone. In TCP, you start with the
-three-way handshake:&lt;/p>
-&lt;div class="highlight">&lt;pre tabindex="0" style="color:#cdd6f4;background-color:#1e1e2e;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-fallback" data-lang="fallback">&lt;span style="display:flex;">&lt;span>You --- SYN --&amp;gt; Them
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>You &amp;lt;--SYN/ACK--- Them
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>You --- ACK --&amp;gt; Them
-&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>In human terms, a &lt;code>SYN&lt;/code> (synchronize) expresses that you&amp;rsquo;re asking to begin
-a conversation, and an &lt;code>ACK&lt;/code> (acknowledge) is how you acknowledge what the other
+be difficult to configure properly.&lt;/p&gt;</description></item><item><title>If you Understand TCP, you Understand Consent</title><link>https://jgoguen.ca/posts/2022/12/12/if-you-understand-tcp-you-understand-consent/</link><pubDate>Mon, 12 Dec 2022 00:00:00 +0000</pubDate><guid>https://jgoguen.ca/posts/2022/12/12/if-you-understand-tcp-you-understand-consent/</guid><description>&lt;p&gt;If you can understand TCP, you can understand consent. It&amp;rsquo;s really quite simple.
+Here we&amp;rsquo;ll look at how TCP flags (the original six plus &lt;code&gt;ECE&lt;/code&gt; and &lt;code&gt;CWR&lt;/code&gt;) map to
+a conversation between two people.&lt;/p&gt;
+&lt;p&gt;Let&amp;rsquo;s say you want to start talking to someone. In TCP, you start with the
+three-way handshake:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#cdd6f4;background-color:#1e1e2e;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"&gt;&lt;code class="language-fallback" data-lang="fallback"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;You --- SYN --&amp;gt; Them
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;You &amp;lt;--SYN/ACK--- Them
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;You --- ACK --&amp;gt; Them
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;In human terms, a &lt;code&gt;SYN&lt;/code&gt; (synchronize) expresses that you&amp;rsquo;re asking to begin
+a conversation, and an &lt;code&gt;ACK&lt;/code&gt; (acknowledge) is how you acknowledge what the other
 person has said. Note that both sides must explicitly begin the conversation and
 both sides must acknowledge the other. If it doesn&amp;rsquo;t happen like this, there is
-no conversation.&lt;/p></description></item><item><title>SSH Certificates</title><link>https://jgoguen.ca/posts/2022/12/07/ssh-certificates/</link><pubDate>Wed, 07 Dec 2022 00:00:00 +0000</pubDate><guid>https://jgoguen.ca/posts/2022/12/07/ssh-certificates/</guid><description>&lt;p>If you have a SSH server, you&amp;rsquo;ve probably heard that you should be using SSH key
+no conversation.&lt;/p&gt;</description></item><item><title>SSH Certificates</title><link>https://jgoguen.ca/posts/2022/12/07/ssh-certificates/</link><pubDate>Wed, 07 Dec 2022 00:00:00 +0000</pubDate><guid>https://jgoguen.ca/posts/2022/12/07/ssh-certificates/</guid><description>&lt;p&gt;If you have a SSH server, you&amp;rsquo;ve probably heard that you should be using SSH key
 authentication instead of passwords. There&amp;rsquo;s a lot of benefits to key
 authentication: better experience, smooth login, ability to log in via scripts,
 service accounts become possible, and keys are significantly harder to crack
 than a password. But if you deal with a lot of servers, or you manage a lot of
 users, or both, there&amp;rsquo;s a better way using SSH certificates instead of simple
-keys.&lt;/p></description></item><item><title>OpenBSD IPv6 Home Internet Gateway with Xfinity/Comcast</title><link>https://jgoguen.ca/posts/2022/06/08/openbsd-ipv6-home-internet-gateway-with-xfinity/comcast/</link><pubDate>Wed, 08 Jun 2022 00:00:00 +0000</pubDate><guid>https://jgoguen.ca/posts/2022/06/08/openbsd-ipv6-home-internet-gateway-with-xfinity/comcast/</guid><description>&lt;p>When you sign up for Internet service, one thing you&amp;rsquo;re going to get is a home
+keys.&lt;/p&gt;</description></item><item><title>OpenBSD IPv6 Home Internet Gateway with Xfinity/Comcast</title><link>https://jgoguen.ca/posts/2022/06/08/openbsd-ipv6-home-internet-gateway-with-xfinity/comcast/</link><pubDate>Wed, 08 Jun 2022 00:00:00 +0000</pubDate><guid>https://jgoguen.ca/posts/2022/06/08/openbsd-ipv6-home-internet-gateway-with-xfinity/comcast/</guid><description>&lt;p&gt;When you sign up for Internet service, one thing you&amp;rsquo;re going to get is a home
 gateway. It&amp;rsquo;s going to offer wired and wireless Internet connections plus
 a bunch of other things you may not want and probably won&amp;rsquo;t need. Unfortunately,
 one of the things it&amp;rsquo;s going to offer you is poor performance. The wireless
@@ -47,43 +47,43 @@ network on it probably won&amp;rsquo;t cover your whole house, and if you&amp;rs
 in where you can hook it up that could mean poor coverage in the most important
 areas. It&amp;rsquo;s also not built on the best hardware for the job, so when it counts
 the most you may not get the connection speeds you expect. And, perhaps most
-importantly, it&amp;rsquo;s not all that secure.&lt;/p></description></item><item><title>About Me</title><link>https://jgoguen.ca/about/</link><pubDate>Sun, 20 Oct 2019 21:03:44 -0700</pubDate><guid>https://jgoguen.ca/about/</guid><description>&lt;p>I am an InfoSec generalist, software developer, and system administrator for
+importantly, it&amp;rsquo;s not all that secure.&lt;/p&gt;</description></item><item><title>About Me</title><link>https://jgoguen.ca/about/</link><pubDate>Sun, 20 Oct 2019 21:03:44 -0700</pubDate><guid>https://jgoguen.ca/about/</guid><description>&lt;p&gt;I am an InfoSec generalist, software developer, and system administrator for
 CentOS and OpenBSD servers. I have a strong track record of effectively applying
 established standards and best practices to my work. I take pride in delivering
 high-quality results and consistently improving both back-end infrastructure and
-the end-user experience.&lt;/p>
-&lt;p>I live in the United States where I&amp;rsquo;m employed as a Site Reliability Engineer with
-MongoDB.&lt;/p>
-&lt;p>As a software developer, I am familiar with shell scripting, Python 3, and
+the end-user experience.&lt;/p&gt;
+&lt;p&gt;I live in the United States where I&amp;rsquo;m employed as a Site Reliability Engineer with
+MongoDB.&lt;/p&gt;
+&lt;p&gt;As a software developer, I am familiar with shell scripting, Python 3, and
 Golang. I can also work with C, Java, or Perl, and I can learn new languages as
 needed. Having a strong information security background allows me to identify
 potential security vulnerabilities and help teams solve the overall security
-issues they face in a consistent and reusable way.&lt;/p></description></item><item><title/><link>https://jgoguen.ca/_includes/_about/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://jgoguen.ca/_includes/_about/</guid><description>&lt;p>I am an InfoSec generalist, software developer, and system administrator for
+issues they face in a consistent and reusable way.&lt;/p&gt;</description></item><item><title/><link>https://jgoguen.ca/_includes/_about/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://jgoguen.ca/_includes/_about/</guid><description>&lt;p&gt;I am an InfoSec generalist, software developer, and system administrator for
 CentOS and OpenBSD servers. I have a strong track record of effectively applying
 established standards and best practices to my work. I take pride in delivering
 high-quality results and consistently improving both back-end infrastructure and
-the end-user experience.&lt;/p>
-&lt;p>I live in the United States where I&amp;rsquo;m employed as a Site Reliability Engineer with
-MongoDB.&lt;/p>
-&lt;p>As a software developer, I am familiar with shell scripting, Python 3, and
+the end-user experience.&lt;/p&gt;
+&lt;p&gt;I live in the United States where I&amp;rsquo;m employed as a Site Reliability Engineer with
+MongoDB.&lt;/p&gt;
+&lt;p&gt;As a software developer, I am familiar with shell scripting, Python 3, and
 Golang. I can also work with C, Java, or Perl, and I can learn new languages as
 needed. Having a strong information security background allows me to identify
 potential security vulnerabilities and help teams solve the overall security
-issues they face in a consistent and reusable way.&lt;/p></description></item><item><title>Contact Me for Work</title><link>https://jgoguen.ca/contact/careers/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://jgoguen.ca/contact/careers/</guid><description>&lt;h1 id="summary">
+issues they face in a consistent and reusable way.&lt;/p&gt;</description></item><item><title>Contact Me for Work</title><link>https://jgoguen.ca/contact/careers/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://jgoguen.ca/contact/careers/</guid><description>&lt;h1 id="summary"&gt;
  Summary
- &lt;a class="heading-link" href="#summary">
- &lt;i class="fa-solid fa-link" aria-hidden="true" title="Link to heading">&lt;/i>
- &lt;span class="sr-only">Link to heading&lt;/span>
- &lt;/a>
-&lt;/h1>
+ &lt;a class="heading-link" href="#summary"&gt;
+ &lt;i class="fa-solid fa-link" aria-hidden="true" title="Link to heading"&gt;&lt;/i&gt;
+ &lt;span class="sr-only"&gt;Link to heading&lt;/span&gt;
+ &lt;/a&gt;
+&lt;/h1&gt;
 
 
 
 
-&lt;p>I am an InfoSec generalist, software developer, and system administrator for
+&lt;p&gt;I am an InfoSec generalist, software developer, and system administrator for
 CentOS and OpenBSD servers. I have a strong track record of effectively applying
 established standards and best practices to my work. I take pride in delivering
 high-quality results and consistently improving both back-end infrastructure and
-the end-user experience.&lt;/p>
-&lt;p>I live in the United States where I&amp;rsquo;m employed as a Site Reliability Engineer with
-MongoDB.&lt;/p></description></item></channel></rss>
+the end-user experience.&lt;/p&gt;
+&lt;p&gt;I live in the United States where I&amp;rsquo;m employed as a Site Reliability Engineer with
+MongoDB.&lt;/p&gt;</description></item></channel></rss>
