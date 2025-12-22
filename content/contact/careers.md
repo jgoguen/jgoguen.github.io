@@ -19,15 +19,15 @@ If you are interested in considering me for a role at your company please be
 aware that I am only considering roles allowing me to work 100% fully and
 permanently remotely without relocation. I have a standard set of questions
 I request that you answer before an initial exploratory conversation. Please
-also ensure the subject line of your message contains the word "avocado" to
-show me you've read this far.
+also ensure the subject line of your message contains a pun starting with
+"orange you glad" to show me you've read this far.
 
 - What is the name of your company and what industry are they in?
 - What role(s) are you asking me to consider? Please include either a full job
   description or a link to a full job description.
 - What is the base cash compensation range for the position? Does this range
   change based on my physical location?
-  - If the job posting allows hiring at multiple levels, please answer based on
+  + If the job posting allows hiring at multiple levels, please answer based on
     the lowest level I would be considered for.
 - Does your company commit to this role being permanently fully remote, with
   only occasional trips for in-person meetings?
