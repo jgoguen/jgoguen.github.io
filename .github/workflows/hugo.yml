@@ -45,26 +45,21 @@ jobs:
       HUGO_CACHEDIR: /tmp/hugo-cache
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
         with:
           submodules: recursive
           fetch-depth: 1
 
-      - name: Restore Hugo cache directory
-        uses: actions/cache/restore@v4
+      - name: Hugo caches
+        uses: actions/cache@v5
         with:
-          path: ${{ env.HUGO_CACHEDIR }}
-          key: cache-hugo-cachedir-
+          path: |
+            ${{ env.HUGO_CACHEDIR }}
+            ./resources
+          key: cache-hugo-cachedir-resources
           restore-keys: |
             cache-hugo-cachedir-
-
-      - name: Restore Hugo resources directory
-        uses: actions/cache/restore@v4
-        with:
-          path: ./resources
-          key: cache-hugo-resources-
-          restore-keys: |
-            cache-hugo-resources-
+            cache-hugo-
 
       - name: Setup Hugo
         uses: peaceiris/actions-hugo@v3
@@ -78,18 +73,6 @@ jobs:
       - name: Build
         run: hugo --minify --enableGitInfo
 
-      - name: Save Hugo cache directory
-        uses: actions/cache/save@v4
-        with:
-          path: ${{ env.HUGO_CACHEDIR }}
-          key: "cache-hugo-cachedir-${{ hashFiles(format('{0}/**/*', env.HUGO_CACHEDIR)) }}"
-
-      - name: Save Hugo resources directory
-        uses: actions/cache/save@v4
-        with:
-          path: ./resources
-          key: "cache-hugo-resources-${{ hashFiles('./resources/**/*') }}"
-
       - name: Create CNAME file
         if: runner.environment == 'github-hosted'
         run: printf 'jgoguen.ca' >public/CNAME
@@ -100,24 +83,22 @@ jobs:
 
       - name: Deploy to GitHub Pages
         if: runner.environment == 'github-hosted'
-        uses: peaceiris/actions-gh-pages@v3
+        uses: peaceiris/actions-gh-pages@v4
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_dir: ./public
 
       - name: Deploy
-        if: runner.environment != 'github-hosted'
         run: |
-          apt update
-          apt install -y rsync
+          sudo apt-get update
+          sudo apt-get install -y rsync
 
-          SSH_KEY=$(mktemp)
-          chmod 0600 $SSH_KEY
-          printf '%s\n' "${{ secrets.SSH_DEPLOY_KEY }}" >$SSH_KEY
+          install -d -m 0700 ~/.ssh
+          printf '@cert-authority %s ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIIvT1dRp+1kCH7P8H4OF8drJaSMDPDs5NtvB956hA6AJ\n' "${{ vars.SSH_DEPLOY_HOST }}" >>~/.ssh/known_hosts
 
           eval $(ssh-agent)
-          ssh-add -vvv $SSH_KEY
+          ssh-add - <<< "${{ secrets.SSH_DEPLOY_KEY }}"
 
-          rsync -aP --delete -e "ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null" ./public/ ${{ vars.SSH_DEPLOY_USER }}@${{ vars.SSH_DEPLOY_HOST }}:${{ vars.DESTDIR }}/
-
-          rm -f $SSH_KEY
+          # This assumes authorized_keys on the server is set to force rrsync with the target directory. If not, say bye
+          # bye to the user's home directory I guess.
+          rsync -rlP --delete --exclude='CNAME' --exclude='.nojekyll' ./public/ ${{ vars.SSH_DEPLOY_USER }}@${{ vars.SSH_DEPLOY_HOST }}:
