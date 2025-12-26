@@ -27,7 +27,7 @@ jobs:
 
       - name: Fetch generated robots.txt
         run: |
-          curl -fsSL -X POST https://api.darkvisitors.com/robots-txts -H "Content-Type: application/json" -H "Authorization: Bearer ${{ secrets.DARKVISITORS_TOKEN }}" -d '{"agent_types": ["AI Assistant", "AI Data Scraper", "AI Search Crawler", "Undocumented AI Agent"]}' >>static/robots.txt
+          curl -fsSL -X POST https://api.darkvisitors.com/robots-txts -H "Content-Type: application/json" -H "Authorization: Bearer ${{ secrets.DARKVISITORS_TOKEN }}" -d '{"agent_types": ["AI Agent", "AI Assistant", "AI Data Scraper", "AI Search Crawler", "Intelligence Gatherer", "Scraper", "SEO Crawler", "Undocumented AI Agent", "Uncategorized"]}' >>static/robots.txt
 
       - name: Commit new robots.txt
         uses: EndBug/add-and-commit@v9
