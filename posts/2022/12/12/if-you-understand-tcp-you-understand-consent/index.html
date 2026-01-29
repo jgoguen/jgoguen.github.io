@@ -14,7 +14,7 @@
 <span class=tag><a href=https://jgoguen.ca/tags/people/>People</a></span></div></div></header><div><p>If you can understand TCP, you can understand consent. It&rsquo;s really quite simple.
 Here we&rsquo;ll look at how TCP flags (the original six plus <code>ECE</code> and <code>CWR</code>) map to
 a conversation between two people.</p><p>Let&rsquo;s say you want to start talking to someone. In TCP, you start with the
-three-way handshake:</p><div class=highlight><pre tabindex=0 style=color:#cdd6f4;background-color:#1e1e2e;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-fallback data-lang=fallback><span style=display:flex><span>You ---  SYN  --&gt; Them
+three-way handshake:</p><div class=highlight><pre tabindex=0 style=color:#cdd6f4;background-color:#1e1e2e;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none><code class=language-fallback data-lang=fallback><span style=display:flex><span>You ---  SYN  --&gt; Them
 </span></span><span style=display:flex><span>You &lt;--SYN/ACK--- Them
 </span></span><span style=display:flex><span>You ---  ACK  --&gt; Them
 </span></span></code></pre></div><p>In human terms, a <code>SYN</code> (synchronize) expresses that you&rsquo;re asking to begin
@@ -24,9 +24,9 @@ both sides must acknowledge the other. If it doesn&rsquo;t happen like this, the
 no conversation.</p><p>At this point, a conversation has been started with explicit consent from both
 people. It is highly important to note there is no way to force a conversation.
 If someone doesn&rsquo;t want to talk, they cannot be forced to. The normal flow of
-a conversation is simple. You talk to them:</p><div class=highlight><pre tabindex=0 style=color:#cdd6f4;background-color:#1e1e2e;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-fallback data-lang=fallback><span style=display:flex><span>You ---Talk--&gt; Them
+a conversation is simple. You talk to them:</p><div class=highlight><pre tabindex=0 style=color:#cdd6f4;background-color:#1e1e2e;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none><code class=language-fallback data-lang=fallback><span style=display:flex><span>You ---Talk--&gt; Them
 </span></span><span style=display:flex><span>You &lt;-- ACK--- Them
-</span></span></code></pre></div><p>Or they talk to you:</p><div class=highlight><pre tabindex=0 style=color:#cdd6f4;background-color:#1e1e2e;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-fallback data-lang=fallback><span style=display:flex><span>You &lt;--Talk--- Them
+</span></span></code></pre></div><p>Or they talk to you:</p><div class=highlight><pre tabindex=0 style=color:#cdd6f4;background-color:#1e1e2e;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none><code class=language-fallback data-lang=fallback><span style=display:flex><span>You &lt;--Talk--- Them
 </span></span><span style=display:flex><span>You ---ACK --&gt; Them
 </span></span></code></pre></div><p>However, sometimes something urgent comes up. There&rsquo;s two relevant TCP flags
 here: <code>URG</code> (urgent) and <code>PSH</code> (push). <code>URG</code> tells the recipient (the other
@@ -44,11 +44,11 @@ needed until the recipient tells you they&rsquo;re feeling better.</p><p>Finally
 at all. For a conversation, that means either person can simply say &ldquo;this
 conversation is over&rdquo; and walk away. In TCP, that&rsquo;s done with the <code>RST</code> (reset)
 flag. When the <code>RST</code> flag is seen, both sides are to consider the conversation
-abruptly over.</p><div class=highlight><pre tabindex=0 style=color:#cdd6f4;background-color:#1e1e2e;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-fallback data-lang=fallback><span style=display:flex><span>You ---Talk--&gt; Them
+abruptly over.</p><div class=highlight><pre tabindex=0 style=color:#cdd6f4;background-color:#1e1e2e;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none><code class=language-fallback data-lang=fallback><span style=display:flex><span>You ---Talk--&gt; Them
 </span></span><span style=display:flex><span>You &lt;-- RST--- Them
 </span></span><span style=display:flex><span>(Nothing else may follow)
 </span></span></code></pre></div><p>Of course, hopefully it doesn&rsquo;t come to that. It&rsquo;s always better when the
-conversation ends on a more polite note. Yet again, TCP shows us how it&rsquo;s done:</p><div class=highlight><pre tabindex=0 style=color:#cdd6f4;background-color:#1e1e2e;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-fallback data-lang=fallback><span style=display:flex><span>You ---  FIN  --&gt; Them
+conversation ends on a more polite note. Yet again, TCP shows us how it&rsquo;s done:</p><div class=highlight><pre tabindex=0 style=color:#cdd6f4;background-color:#1e1e2e;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none><code class=language-fallback data-lang=fallback><span style=display:flex><span>You ---  FIN  --&gt; Them
 </span></span><span style=display:flex><span>You &lt;--FIN/ACK--- Them
 </span></span><span style=display:flex><span>You ---  ACK  --&gt; Them
 </span></span></code></pre></div><p>The <code>FIN</code> (finished) flag means you have nothing more to say. You are signalling

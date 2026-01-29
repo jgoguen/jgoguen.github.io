@@ -45,7 +45,7 @@ first create a private key on the secure storage using the PKCS#11 interface.</p
 <a class=heading-link href=#create-a-key-in-secure-hardware><i class="fa-solid fa-link" aria-hidden=true title="Link to heading"></i>
 <span class=sr-only>Link to heading</span></a></h2><p>First you need to know the PKCS#11 URI of the secure hardware module you want to
 use. You can find this with the <code>p11tool</code> command, part of the <code>gnutls-utils</code>
-package on CentOS and similar distributions:</p><div class=highlight><pre tabindex=0 style=color:#cdd6f4;background-color:#1e1e2e;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-gdscript3 data-lang=gdscript3><span style=display:flex><span><span style=color:#89dceb;font-weight:700>$</span> p11tool <span style=color:#89dceb;font-weight:700>--</span>list<span style=color:#89dceb;font-weight:700>-</span>tokens
+package on CentOS and similar distributions:</p><div class=highlight><pre tabindex=0 style=color:#cdd6f4;background-color:#1e1e2e;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none><code class=language-gdscript3 data-lang=gdscript3><span style=display:flex><span><span style=color:#89dceb;font-weight:700>$</span> p11tool <span style=color:#89dceb;font-weight:700>--</span>list<span style=color:#89dceb;font-weight:700>-</span>tokens
 </span></span><span style=display:flex><span>Token <span style=color:#fab387>0</span>:
 </span></span><span style=display:flex><span>        URL: pkcs11:model<span style=color:#89dceb;font-weight:700>=</span>SuperHSM;manufacturer<span style=color:#89dceb;font-weight:700>=</span>SuperSoft;serial<span style=color:#89dceb;font-weight:700>=</span><span style=color:#fab387>883197678</span>b507ca7;token<span style=color:#89dceb;font-weight:700>=</span>puffy<span style=color:#89dceb;font-weight:700>-</span>hsm
 </span></span><span style=display:flex><span>        <span style=color:#fab387>Label</span>: puffy<span style=color:#89dceb;font-weight:700>-</span>hsm
@@ -57,7 +57,7 @@ package on CentOS and similar distributions:</p><div class=highlight><pre tabind
 </span></span><span style=display:flex><span>        Module: <span style=color:#89dceb;font-weight:700>/</span>usr<span style=color:#89dceb;font-weight:700>/</span>lib64<span style=color:#89dceb;font-weight:700>/</span>pkcs11<span style=color:#89dceb;font-weight:700>/</span>libsuperhsm2<span style=color:#89dceb;font-weight:700>.</span>so
 </span></span></code></pre></div><p>Make note of the URL and the Module, you will need both of these later.</p><p>Now generate a private key for your SSH CA. Since you&rsquo;re storing the private key
 in secure hardware you could use one key for all your CAs, or you can use one
-key per CA.</p><div class=highlight><pre tabindex=0 style=color:#cdd6f4;background-color:#1e1e2e;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-gdscript3 data-lang=gdscript3><span style=display:flex><span><span style=color:#89dceb;font-weight:700>$</span> p11tool <span style=color:#89dceb;font-weight:700>--</span>generate<span style=color:#89dceb;font-weight:700>-</span>privkey<span style=color:#89dceb;font-weight:700>=</span>ecdsa <span style=color:#89dceb;font-weight:700>--</span>sec<span style=color:#89dceb;font-weight:700>-</span>param<span style=color:#89dceb;font-weight:700>=</span>high <span style=color:#89dceb;font-weight:700>--</span>login <span style=color:#89dceb;font-weight:700>--</span>label ssh<span style=color:#89dceb;font-weight:700>-</span>user<span style=color:#89dceb;font-weight:700>-</span>ca <span style=color:#a6e3a1>&#39;pkcs11:model=SuperHSM;manufacturer=SuperSoft;serial=883197678b507ca7;token=puffy-hsm&#39;</span>
+key per CA.</p><div class=highlight><pre tabindex=0 style=color:#cdd6f4;background-color:#1e1e2e;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none><code class=language-gdscript3 data-lang=gdscript3><span style=display:flex><span><span style=color:#89dceb;font-weight:700>$</span> p11tool <span style=color:#89dceb;font-weight:700>--</span>generate<span style=color:#89dceb;font-weight:700>-</span>privkey<span style=color:#89dceb;font-weight:700>=</span>ecdsa <span style=color:#89dceb;font-weight:700>--</span>sec<span style=color:#89dceb;font-weight:700>-</span>param<span style=color:#89dceb;font-weight:700>=</span>high <span style=color:#89dceb;font-weight:700>--</span>login <span style=color:#89dceb;font-weight:700>--</span>label ssh<span style=color:#89dceb;font-weight:700>-</span>user<span style=color:#89dceb;font-weight:700>-</span>ca <span style=color:#a6e3a1>&#39;pkcs11:model=SuperHSM;manufacturer=SuperSoft;serial=883197678b507ca7;token=puffy-hsm&#39;</span>
 </span></span><span style=display:flex><span>warning: no <span style=color:#89dceb;font-weight:700>--</span>outfile was specified <span style=color:#89dceb;font-weight:700>and</span> the generated public key will be printed on screen<span style=color:#89dceb;font-weight:700>.</span>
 </span></span><span style=display:flex><span>Generating an EC<span style=color:#89dceb;font-weight:700>/</span>ECDSA key<span style=color:#89dceb;font-weight:700>...</span>
 </span></span><span style=display:flex><span>Token <span style=color:#a6e3a1>&#39;puffy-hsm&#39;</span> with URL <span style=color:#a6e3a1>&#39;pkcs11:model=SuperHSM;manufacturer=SuperSoft;serial=883197678b507ca7;token=puffy-hsm&#39;</span> requires user PIN
@@ -72,7 +72,7 @@ You will use this later when issuing SSH certificates.</p><h2 id=create-a-key-on
 <a class=heading-link href=#create-a-key-on-disk><i class="fa-solid fa-link" aria-hidden=true title="Link to heading"></i>
 <span class=sr-only>Link to heading</span></a></h2><p>If you don&rsquo;t have secure hardware available, you will need to store your private
 keys on disk. These will allow anyone with access to create new certificates
-trusted by all your devices, so be sure to appropriately protect them!</p><p>Creating a private key on disk is a matter of a single command:</p><div class=highlight><pre tabindex=0 style=color:#cdd6f4;background-color:#1e1e2e;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-fallback data-lang=fallback><span style=display:flex><span>$ ssh-keygen -t ecdsa -b 521 -f ssh-ca -C &#39;SSH CA Certificate&#39;
+trusted by all your devices, so be sure to appropriately protect them!</p><p>Creating a private key on disk is a matter of a single command:</p><div class=highlight><pre tabindex=0 style=color:#cdd6f4;background-color:#1e1e2e;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none><code class=language-fallback data-lang=fallback><span style=display:flex><span>$ ssh-keygen -t ecdsa -b 521 -f ssh-ca -C &#39;SSH CA Certificate&#39;
 </span></span><span style=display:flex><span>Generating public/private ecdsa key pair.
 </span></span><span style=display:flex><span>Enter passphrase (empty for no passphrase):
 </span></span><span style=display:flex><span>Enter same passphrase again:
@@ -103,7 +103,7 @@ server to a connecting client. All you need is your SSH server&rsquo;s host publ
 stored in <code>/etc/ssh/ssh_host_*_key.pub</code>, and the keys generated earlier.</p><h2 id=signing-with-pkcs11>Signing with PKCS#11
 <a class=heading-link href=#signing-with-pkcs11><i class="fa-solid fa-link" aria-hidden=true title="Link to heading"></i>
 <span class=sr-only>Link to heading</span></a></h2><p>To sign with a private key stored in secure hardware, use the <code>-D</code> option to
-<code>ssh-keygen</code>:</p><div class=highlight><pre tabindex=0 style=color:#cdd6f4;background-color:#1e1e2e;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-fallback data-lang=fallback><span style=display:flex><span>$ ssh-keygen -s ssh-ca.pub -D libsuperhsm2.so -I dev1234.example.com -h -n dev1234.example.com,dev1234,10.20.0.134 -V +52w -z $(date +%s) ./ssh_host_ecdsa_key.pub
+<code>ssh-keygen</code>:</p><div class=highlight><pre tabindex=0 style=color:#cdd6f4;background-color:#1e1e2e;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none><code class=language-fallback data-lang=fallback><span style=display:flex><span>$ ssh-keygen -s ssh-ca.pub -D libsuperhsm2.so -I dev1234.example.com -h -n dev1234.example.com,dev1234,10.20.0.134 -V +52w -z $(date +%s) ./ssh_host_ecdsa_key.pub
 </span></span><span style=display:flex><span>Enter PIN for &#39;puffy-hsm&#39;:
 </span></span><span style=display:flex><span>Signed host key ./ssh_host_ecdsa_key-cert.pub: id &#34;dev1234.example.com&#34; serial 1670459268 for dev1234.example.com,dev1234,10.20.0.134 valid from 2022-12-05T22:45:00 to 2023-12-04T22:46:02
 </span></span></code></pre></div><p>Let&rsquo;s break that command down a bit. Each option means:</p><ul><li><code>-s ssh-ca.pub</code>: Use <code>ssh-ca.pub</code> as the SSH public key</li><li><code>-D libsuperhsm2.so</code>: Look for the private key using the PKCS#11 library
@@ -118,15 +118,15 @@ it can sometimes be helpful to have a serial number defined. If you don&rsquo;t 
 a serial number, 0 will be used.</li><li><code>./ssh_host_ecdsa_key.pub</code>: The path to the host public key to sign.</li></ul><h2 id=signing-with-on-disk-keys>Signing with on-disk keys
 <a class=heading-link href=#signing-with-on-disk-keys><i class="fa-solid fa-link" aria-hidden=true title="Link to heading"></i>
 <span class=sr-only>Link to heading</span></a></h2><p>To sign with a private key stored on disk, leave out the <code>-D</code> option and pass
-the private key to <code>-s</code>:</p><div class=highlight><pre tabindex=0 style=color:#cdd6f4;background-color:#1e1e2e;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-fallback data-lang=fallback><span style=display:flex><span>$ ssh-keygen -s ssh-ca -I dev1234.example.com -h -n dev1234.example.com,dev1234,10.20.0.134 -V +52w -z $(date +%s) ./ssh_host_ecdsa_key.pub
+the private key to <code>-s</code>:</p><div class=highlight><pre tabindex=0 style=color:#cdd6f4;background-color:#1e1e2e;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none><code class=language-fallback data-lang=fallback><span style=display:flex><span>$ ssh-keygen -s ssh-ca -I dev1234.example.com -h -n dev1234.example.com,dev1234,10.20.0.134 -V +52w -z $(date +%s) ./ssh_host_ecdsa_key.pub
 </span></span><span style=display:flex><span>Signed host key ./ssh_host_ecdsa_key-cert.pub: id &#34;dev1234.example.com&#34; serial 1670459268 for dev1234.example.com,dev1234,10.20.0.134 valid from 2022-12-05T22:45:00 to 2023-12-04T22:46:02
 </span></span></code></pre></div><h2 id=using-the-host-certificate>Using the host certificate
 <a class=heading-link href=#using-the-host-certificate><i class="fa-solid fa-link" aria-hidden=true title="Link to heading"></i>
 <span class=sr-only>Link to heading</span></a></h2><p>Once you&rsquo;ve generated a host SSH certificate, you need to tell <code>sshd</code> to use it.
-Add this line to <code>/etc/ssh/sshd_config</code> and restart <code>sshd</code>:</p><div class=highlight><pre tabindex=0 style=color:#cdd6f4;background-color:#1e1e2e;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-fallback data-lang=fallback><span style=display:flex><span>HostCertificate /etc/ssh/ssh_host_ecdsa_key-cert.pub
+Add this line to <code>/etc/ssh/sshd_config</code> and restart <code>sshd</code>:</p><div class=highlight><pre tabindex=0 style=color:#cdd6f4;background-color:#1e1e2e;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none><code class=language-fallback data-lang=fallback><span style=display:flex><span>HostCertificate /etc/ssh/ssh_host_ecdsa_key-cert.pub
 </span></span></code></pre></div><p>Now your SSH server is configured to present a host certificate, so the last
 step is to tell clients to trust the certificate. Start by generating the
-<code>known_hosts</code> format file:</p><div class=highlight><pre tabindex=0 style=color:#cdd6f4;background-color:#1e1e2e;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-fallback data-lang=fallback><span style=display:flex><span>$ printf &#39;@cert-authority *.example.com %s&#39; &#34;$(cat ssh-ca.pub)&#34; &gt;ssh_known_hosts
+<code>known_hosts</code> format file:</p><div class=highlight><pre tabindex=0 style=color:#cdd6f4;background-color:#1e1e2e;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none><code class=language-fallback data-lang=fallback><span style=display:flex><span>$ printf &#39;@cert-authority *.example.com %s&#39; &#34;$(cat ssh-ca.pub)&#34; &gt;ssh_known_hosts
 </span></span></code></pre></div><p>Copy <code>ssh_known_hosts</code> to clients who should trust the SSH host certificates as
 <code>/etc/ssh/ssh_known_hosts</code>. After that, you can remove any entries in the user&rsquo;s
 <code>known_hosts</code> file for the server; they will automatically trust it based on the
@@ -139,7 +139,7 @@ certificates to identify users to servers. The commands to do so are similar to
 host certificates. You will also need the public portion of the user&rsquo;s SSH key.</p><h2 id=signing-with-pkcs11-1>Signing with PKCS#11
 <a class=heading-link href=#signing-with-pkcs11-1><i class="fa-solid fa-link" aria-hidden=true title="Link to heading"></i>
 <span class=sr-only>Link to heading</span></a></h2><p>To sign a user certificate with a key stored in secure hardware, we once again
-use the <code>-D</code> option to <code>ssh-keygen</code>:</p><div class=highlight><pre tabindex=0 style=color:#cdd6f4;background-color:#1e1e2e;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-fallback data-lang=fallback><span style=display:flex><span>$ ssh-keygen -s ssh-ca.pub -D libsuperhsm2.so -I jgoguen@example.com -n jgoguen,deploybot -V +2w -z $(date +%s) ./user.pub
+use the <code>-D</code> option to <code>ssh-keygen</code>:</p><div class=highlight><pre tabindex=0 style=color:#cdd6f4;background-color:#1e1e2e;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none><code class=language-fallback data-lang=fallback><span style=display:flex><span>$ ssh-keygen -s ssh-ca.pub -D libsuperhsm2.so -I jgoguen@example.com -n jgoguen,deploybot -V +2w -z $(date +%s) ./user.pub
 </span></span><span style=display:flex><span>Enter PIN for &#39;puffy-hsm&#39;:
 </span></span><span style=display:flex><span>Signed user key ./user-cert.pub: id &#34;jgoguen@example.com&#34; serial 1670459268 for jgoguen,deploybot valid from 2022-12-06T23:06:00 to 2022-12-20T23:07:00
 </span></span></code></pre></div><p>Let&rsquo;s break that command down. Each option means:</p><ul><li><code>-s ssh-ca.pub</code>: Use <code>ssh-ca.pub</code> as the SSH public key</li><li><code>-D libsuperhsm2.so</code>: Look for the private key using the PKCS#11 library
@@ -155,7 +155,7 @@ serial number to be set to the current time. You don&rsquo;t need this option, b
 it can sometimes be helpful to have a serial number defined. If you don&rsquo;t set
 a serial number, 0 will be used.</li><li><code>./jgoguen.pub</code>: The path to the user public key to sign.</li></ul><h2 id=signing-with-on-disk-keys-1>Signing with on-disk keys
 <a class=heading-link href=#signing-with-on-disk-keys-1><i class="fa-solid fa-link" aria-hidden=true title="Link to heading"></i>
-<span class=sr-only>Link to heading</span></a></h2><p>Again, this is similar to how a host certificate is signed.</p><div class=highlight><pre tabindex=0 style=color:#cdd6f4;background-color:#1e1e2e;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-fallback data-lang=fallback><span style=display:flex><span>$ ssh-keygen -s ssh-ca -I jgoguen@example.com -n jgoguen,deploybot -V +2w -z $(date +%s) ./user.pub
+<span class=sr-only>Link to heading</span></a></h2><p>Again, this is similar to how a host certificate is signed.</p><div class=highlight><pre tabindex=0 style=color:#cdd6f4;background-color:#1e1e2e;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none><code class=language-fallback data-lang=fallback><span style=display:flex><span>$ ssh-keygen -s ssh-ca -I jgoguen@example.com -n jgoguen,deploybot -V +2w -z $(date +%s) ./user.pub
 </span></span><span style=display:flex><span>Signed user key ./user-cert.pub: id &#34;jgoguen@example.com&#34; serial 1670459268 for jgoguen,deploybot valid from 2022-12-06T23:06:00 to 2022-12-20T23:07:00
 </span></span></code></pre></div><p>Once again, the options are the same as for signing with a PKCS#11 key except
 that the <code>-s</code> option points to the private key to use for signing.</p><h2 id=using-the-user-certificate>Using the user certificate
@@ -164,7 +164,7 @@ that the <code>-s</code> option points to the private key to use for signing.</p
 CA signing key. Copy the contents of the CA public key (in this example,
 <code>ssh-ca.pub</code>) to all servers as <code>/etc/ssh/user-ca.pub</code>. Then add this line to
 <code>/etc/sshd/sshd_config</code> on all servers that should accept SSH certificate
-authentication and restart <code>sshd</code>:</p><div class=highlight><pre tabindex=0 style=color:#cdd6f4;background-color:#1e1e2e;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-fallback data-lang=fallback><span style=display:flex><span>TrustedUserCAKeys /etc/ssh/user-ca.pub
+authentication and restart <code>sshd</code>:</p><div class=highlight><pre tabindex=0 style=color:#cdd6f4;background-color:#1e1e2e;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none><code class=language-fallback data-lang=fallback><span style=display:flex><span>TrustedUserCAKeys /etc/ssh/user-ca.pub
 </span></span></code></pre></div><p>Next, deliver the file <code>user-cert.pub</code> to the user&rsquo;s client device. This can be
 stored in their <code>~/.ssh</code> directory. The <code>ssh</code> command will expect to find three
 files: <code>user</code> (unless the user&rsquo;s private key is stored in a PKCS#11 store),
@@ -176,11 +176,11 @@ to store the private key.</p><h1 id=trust-but-verify>Trust But Verify
 <span class=sr-only>Link to heading</span></a></h1><p>Verifying that SSH certificates are in use is as simple as watching the logs of
 your SSH server. On a modern Linux distribution with <code>systemd</code>, that can be done
 with <code>journalctl -f -u sshd.service</code>. For a successful login, you&rsquo;ll see
-something like this in the SSH server logs:</p><div class=highlight><pre tabindex=0 style=color:#cdd6f4;background-color:#1e1e2e;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-fallback data-lang=fallback><span style=display:flex><span>sshd[52436]: Accepted publickey for deploybot from 10.20.30.40 port 9923 ssh2: ECDSA-CERT ID jgoguen@example.com (serial 1670459268) CA ECDSA SHA256:tltbnMalWg+skhm+VlGLd2xHiVPozyuOPl34WypdEO0
+something like this in the SSH server logs:</p><div class=highlight><pre tabindex=0 style=color:#cdd6f4;background-color:#1e1e2e;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none><code class=language-fallback data-lang=fallback><span style=display:flex><span>sshd[52436]: Accepted publickey for deploybot from 10.20.30.40 port 9923 ssh2: ECDSA-CERT ID jgoguen@example.com (serial 1670459268) CA ECDSA SHA256:tltbnMalWg+skhm+VlGLd2xHiVPozyuOPl34WypdEO0
 </span></span></code></pre></div><p>If the user tries to log in with a different username, you&rsquo;ll instead see
-something like this:</p><div class=highlight><pre tabindex=0 style=color:#cdd6f4;background-color:#1e1e2e;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-fallback data-lang=fallback><span style=display:flex><span>sshd[52436]: error: key_cert_check_authority: invalid certificate
+something like this:</p><div class=highlight><pre tabindex=0 style=color:#cdd6f4;background-color:#1e1e2e;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none><code class=language-fallback data-lang=fallback><span style=display:flex><span>sshd[52436]: error: key_cert_check_authority: invalid certificate
 </span></span><span style=display:flex><span>sshd[52436]: error: Certificate invalid: name is not a listed principal
-</span></span></code></pre></div><p>And if the certificate is expired:</p><div class=highlight><pre tabindex=0 style=color:#cdd6f4;background-color:#1e1e2e;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-fallback data-lang=fallback><span style=display:flex><span>sshd[52436]: error: key_cert_check_authority: invalid certificate
+</span></span></code></pre></div><p>And if the certificate is expired:</p><div class=highlight><pre tabindex=0 style=color:#cdd6f4;background-color:#1e1e2e;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none><code class=language-fallback data-lang=fallback><span style=display:flex><span>sshd[52436]: error: key_cert_check_authority: invalid certificate
 </span></span><span style=display:flex><span>sshd[52436]: error: Certificate invalid: expired
 </span></span></code></pre></div><h1 id=beyond-the-basics>Beyond The Basics
 <a class=heading-link href=#beyond-the-basics><i class="fa-solid fa-link" aria-hidden=true title="Link to heading"></i>
@@ -192,8 +192,8 @@ you don&rsquo;t want to allow X11 forwarding. If you check <code>man ssh-keygen<
 for the <code>-O</code> flag, you&rsquo;ll see a number of different things you can enforce in
 the certificate itself. For example, if you wanted to deny port forwarding and
 X11 forwarding, you would add <code>-O no-x11-forwarding -O no-port-forwarding</code> to
-the <code>ssh-keygen</code> command used to issue a user certificate:</p><div class=highlight><pre tabindex=0 style=color:#cdd6f4;background-color:#1e1e2e;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-fallback data-lang=fallback><span style=display:flex><span>$ ssh-keygen -s ssh-ca.pub -D libsuperhsm2.so -I jgoguen@example.com -n jgoguen,deploybot -V +2w -z $(date +%s) -O no-x11-forwarding -O no-port-forwarding ./user.pub
-</span></span></code></pre></div><p>You can inspect the newly-issued certificate to verify these options are now set:</p><div class=highlight><pre tabindex=0 style=color:#cdd6f4;background-color:#1e1e2e;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-fallback data-lang=fallback><span style=display:flex><span>$ ssh-keygen -f ./user-cert.pub -L
+the <code>ssh-keygen</code> command used to issue a user certificate:</p><div class=highlight><pre tabindex=0 style=color:#cdd6f4;background-color:#1e1e2e;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none><code class=language-fallback data-lang=fallback><span style=display:flex><span>$ ssh-keygen -s ssh-ca.pub -D libsuperhsm2.so -I jgoguen@example.com -n jgoguen,deploybot -V +2w -z $(date +%s) -O no-x11-forwarding -O no-port-forwarding ./user.pub
+</span></span></code></pre></div><p>You can inspect the newly-issued certificate to verify these options are now set:</p><div class=highlight><pre tabindex=0 style=color:#cdd6f4;background-color:#1e1e2e;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none><code class=language-fallback data-lang=fallback><span style=display:flex><span>$ ssh-keygen -f ./user-cert.pub -L
 </span></span><span style=display:flex><span>./user-cert.pub:
 </span></span><span style=display:flex><span>        Type: ecdsa-sha2-nistp256-cert-v01@openssh.com user certificate
 </span></span><span style=display:flex><span>        Public key: ECDSA-CERT SHA256:yeYf7VNJMtYm1Dr+ZqqZHV3DlPpndqFgeOfNfYWXLGk
@@ -221,7 +221,7 @@ other SSH servers are required to originate from the bastion host, and a bastion
 host should have a much more locked down configuration. Forcing all connections
 through a bastion host requires only two simple <code>Host</code> stanzas in
 <code>/etc/ssh/ssh_config</code> or <code>~/.ssh/config</code>. If using private keys stored on disk,
-use these stanzas:</p><div class=highlight><pre tabindex=0 style=color:#cdd6f4;background-color:#1e1e2e;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-fallback data-lang=fallback><span style=display:flex><span>Host *.example.com
+use these stanzas:</p><div class=highlight><pre tabindex=0 style=color:#cdd6f4;background-color:#1e1e2e;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none><code class=language-fallback data-lang=fallback><span style=display:flex><span>Host *.example.com
 </span></span><span style=display:flex><span>  ProxyJump ssh-gw.example.com
 </span></span><span style=display:flex><span>  IdentityFile ~/.ssh/user
 </span></span><span style=display:flex><span>
@@ -229,7 +229,7 @@ use these stanzas:</p><div class=highlight><pre tabindex=0 style=color:#cdd6f4;b
 </span></span><span style=display:flex><span>  ProxyJump none
 </span></span><span style=display:flex><span>  IdentityFile ~/.ssh/user
 </span></span></code></pre></div><p>If you&rsquo;re using private keys stored in secure hardware, use these stanzas
-instead:</p><div class=highlight><pre tabindex=0 style=color:#cdd6f4;background-color:#1e1e2e;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-fallback data-lang=fallback><span style=display:flex><span>Host *.example.com
+instead:</p><div class=highlight><pre tabindex=0 style=color:#cdd6f4;background-color:#1e1e2e;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none><code class=language-fallback data-lang=fallback><span style=display:flex><span>Host *.example.com
 </span></span><span style=display:flex><span>  ProxyJump ssh-gw.example.com
 </span></span><span style=display:flex><span>  CertificateFile ~/.ssh/user-cert.pub
 </span></span><span style=display:flex><span>  # For a PKCS#11 URI, only a subset of path arguments are supported by OpenSSH
@@ -248,12 +248,12 @@ doesn&rsquo;t change that. Users can still log in with their SSH private keys, a
 they can add their own SSH keys to their <code>authorized_keys</code> file to allow them to
 log in without using their SSH certificate. Fortunately, putting a stop to this
 is a one-line change. In <code>/etc/ssh/sshd_config</code> make sure this line is present
-then restart <code>sshd</code>:</p><div class=highlight><pre tabindex=0 style=color:#cdd6f4;background-color:#1e1e2e;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-fallback data-lang=fallback><span style=display:flex><span>AuthorizedKeysFile none
+then restart <code>sshd</code>:</p><div class=highlight><pre tabindex=0 style=color:#cdd6f4;background-color:#1e1e2e;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none><code class=language-fallback data-lang=fallback><span style=display:flex><span>AuthorizedKeysFile none
 </span></span></code></pre></div><p>This will prevent <code>sshd</code> from checking for any <code>authorized_keys</code> file anywhere,
 effectively removing the ability to log in with standard SSH keys and enforcing
 SSH certificates. If you want to go one step further and completely remove the
 ability to log in with anything but certificates, also add this line to
-<code>/etc/ssh/sshd_config</code> and restart <code>sshd</code>:</p><div class=highlight><pre tabindex=0 style=color:#cdd6f4;background-color:#1e1e2e;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-fallback data-lang=fallback><span style=display:flex><span>AuthenticationMethods publickey
+<code>/etc/ssh/sshd_config</code> and restart <code>sshd</code>:</p><div class=highlight><pre tabindex=0 style=color:#cdd6f4;background-color:#1e1e2e;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none><code class=language-fallback data-lang=fallback><span style=display:flex><span>AuthenticationMethods publickey
 </span></span></code></pre></div><p>If you do decide to completely remove any other authentication method, you
 should keep a &ldquo;break glass&rdquo; user account active that can log in with a password
 (and 2-factor authentication if possible).</p><h2 id=allow-alternate-user-login-on-specific-hosts>Allow alternate user login on specific hosts
@@ -263,7 +263,7 @@ host where that user exists. You may want to restrict where a user can log in as
 <code>deploybot</code> though, such as only allowing users to log in as <code>deploybot</code> on
 build test hosts. To achieve this, start by removing <code>deploybot</code> as a principal
 on the issued certificate. Then, on every host you want to allow <code>deploybot</code>
-logins for, add this line to <code>/etc/ssh/sshd_config</code>:</p><div class=highlight><pre tabindex=0 style=color:#cdd6f4;background-color:#1e1e2e;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-fallback data-lang=fallback><span style=display:flex><span>AuthorizedPrincipalsFile /etc/ssh/auth_principals/auth_principals_%u
+logins for, add this line to <code>/etc/ssh/sshd_config</code>:</p><div class=highlight><pre tabindex=0 style=color:#cdd6f4;background-color:#1e1e2e;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none><code class=language-fallback data-lang=fallback><span style=display:flex><span>AuthorizedPrincipalsFile /etc/ssh/auth_principals/auth_principals_%u
 </span></span></code></pre></div><p>Then create the directory <code>/etc/ssh/auth_principals</code> and create the file
 <code>/etc/ssh/auth_principals/auth_principals_deploybot</code>. In that file, add the
 principals of users allowed to log in as <code>deploybot</code>, one per line. Restart

@@ -26,7 +26,7 @@ Here we&amp;rsquo;ll look at how TCP flags (the original six plus &lt;code&gt;EC
 a conversation between two people.&lt;/p&gt;
 &lt;p&gt;Let&amp;rsquo;s say you want to start talking to someone. In TCP, you start with the
 three-way handshake:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#cdd6f4;background-color:#1e1e2e;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"&gt;&lt;code class="language-fallback" data-lang="fallback"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;You --- SYN --&amp;gt; Them
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#cdd6f4;background-color:#1e1e2e;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-fallback" data-lang="fallback"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;You --- SYN --&amp;gt; Them
 &lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;You &amp;lt;--SYN/ACK--- Them
 &lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;You --- ACK --&amp;gt; Them
 &lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;In human terms, a &lt;code&gt;SYN&lt;/code&gt; (synchronize) expresses that you&amp;rsquo;re asking to begin
