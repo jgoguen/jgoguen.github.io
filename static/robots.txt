@@ -5241,7 +5241,7 @@ Disallow: /
 User-agent: Termly
 Disallow: /
 
-# Uncategorized
+# Undocumented AI Agent
 # https://knownagents.com/agents/terracotta
 
 User-agent: TerraCotta
