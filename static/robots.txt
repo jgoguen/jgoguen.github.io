@@ -316,6 +316,12 @@ User-agent: AlphaBot
 Disallow: /
 
 # Intelligence Gatherer
+# https://knownagents.com/agents/amazing-searchbot
+
+User-agent: Amazing-SearchBot
+Disallow: /
+
+# Intelligence Gatherer
 # https://knownagents.com/agents/amazon-adbot
 
 User-agent: Amazon AdBot
@@ -327,7 +333,7 @@ Disallow: /
 User-agent: AmazonAdBot
 Disallow: /
 
-# AI Search Crawler
+# AI Data Scraper
 # https://knownagents.com/agents/amazonbot
 
 User-agent: Amazonbot
@@ -349,6 +355,18 @@ Disallow: /
 # https://knownagents.com/agents/amisoftware
 
 User-agent: AmiSoftware
+Disallow: /
+
+# AI Search Crawler
+# https://knownagents.com/agents/amzn-searchbot
+
+User-agent: Amzn-SearchBot
+Disallow: /
+
+# AI Assistant
+# https://knownagents.com/agents/amzn-user
+
+User-agent: Amzn-User
 Disallow: /
 
 # Intelligence Gatherer
@@ -529,6 +547,12 @@ Disallow: /
 # https://knownagents.com/agents/awesomecrawler
 
 User-agent: awesomecrawler
+Disallow: /
+
+# AI Search Crawler
+# https://knownagents.com/agents/azureai-searchbot
+
+User-agent: AzureAI-SearchBot
 Disallow: /
 
 # Uncategorized
@@ -895,6 +919,12 @@ Disallow: /
 # https://knownagents.com/agents/capsulechecker
 
 User-agent: CapsuleChecker
+Disallow: /
+
+# Uncategorized
+# https://knownagents.com/agents/capterrabot
+
+User-agent: CapterraBot
 Disallow: /
 
 # Uncategorized
@@ -1888,6 +1918,12 @@ User-agent: Experibot
 Disallow: /
 
 # Uncategorized
+# https://knownagents.com/agents/expo-research-bot
+
+User-agent: expo-research-bot
+Disallow: /
+
+# Uncategorized
 # https://knownagents.com/agents/extecontextcrawl
 
 User-agent: ExteContextCrawl
@@ -2014,6 +2050,12 @@ User-agent: Fedineko
 Disallow: /
 
 # Uncategorized
+# https://knownagents.com/agents/fedistatscrawler
+
+User-agent: fedistatsCrawler
+Disallow: /
+
+# Uncategorized
 # https://knownagents.com/agents/fedoraplanet
 
 User-agent: fedoraplanet
@@ -2101,6 +2143,12 @@ Disallow: /
 # https://knownagents.com/agents/flamingo-searchengine
 
 User-agent: Flamingo_SearchEngine
+Disallow: /
+
+# Uncategorized
+# https://knownagents.com/agents/fleebsbot
+
+User-agent: FleebsBot
 Disallow: /
 
 # Uncategorized
@@ -2817,6 +2865,12 @@ Disallow: /
 User-agent: k2spider
 Disallow: /
 
+# AI Assistant
+# https://knownagents.com/agents/kagi-fetcher
+
+User-agent: kagi-fetcher
+Disallow: /
+
 # Uncategorized
 # https://knownagents.com/agents/kaikki-org-digital-archive
 
@@ -3007,6 +3061,12 @@ Disallow: /
 # https://knownagents.com/agents/libweb
 
 User-agent: libWeb
+Disallow: /
+
+# Uncategorized
+# https://knownagents.com/agents/light-crawler
+
+User-agent: Light Crawler
 Disallow: /
 
 # Intelligence Gatherer
@@ -3520,6 +3580,12 @@ User-agent: mojeek
 Disallow: /
 
 # Uncategorized
+# https://knownagents.com/agents/momentumfetcher
+
+User-agent: MomentumFetcher
+Disallow: /
+
+# Uncategorized
 # https://knownagents.com/agents/monitageuptime
 
 User-agent: MonitageUptime
@@ -3718,6 +3784,12 @@ User-agent: newsai
 Disallow: /
 
 # Uncategorized
+# https://knownagents.com/agents/newsbot
+
+User-agent: NewsBot
+Disallow: /
+
+# Uncategorized
 # https://knownagents.com/agents/newsharecounts
 
 User-agent: newsharecounts
@@ -3727,6 +3799,12 @@ Disallow: /
 # https://knownagents.com/agents/newspaper
 
 User-agent: newspaper
+Disallow: /
+
+# Intelligence Gatherer
+# https://knownagents.com/agents/newsroom-bi
+
+User-agent: NewsRoom.BI
 Disallow: /
 
 # Uncategorized
@@ -4141,6 +4219,12 @@ Disallow: /
 # https://knownagents.com/agents/poggio-citations
 
 User-agent: Poggio-Citations
+Disallow: /
+
+# Uncategorized
+# https://knownagents.com/agents/pomothy-bot
+
+User-agent: Pomothy-Bot
 Disallow: /
 
 # Uncategorized
@@ -4882,6 +4966,12 @@ User-agent: Siteimprove.com
 Disallow: /
 
 # Uncategorized
+# https://knownagents.com/agents/sitemapcrawler
+
+User-agent: SitemapCrawler
+Disallow: /
+
+# Uncategorized
 # https://knownagents.com/agents/sitesnagger
 
 User-agent: SiteSnagger
@@ -4903,6 +4993,12 @@ Disallow: /
 # https://knownagents.com/agents/siteuptime-com
 
 User-agent: SiteUptime.com
+Disallow: /
+
+# Uncategorized
+# https://knownagents.com/agents/slaccalebot
+
+User-agent: SlaccaleBot
 Disallow: /
 
 # Uncategorized
@@ -5542,6 +5638,12 @@ User-agent: urlappendbot
 Disallow: /
 
 # Uncategorized
+# https://knownagents.com/agents/urlbeebot
+
+User-agent: UrlBeeBot
+Disallow: /
+
+# Uncategorized
 # https://knownagents.com/agents/urlsuma-de-crawler
 
 User-agent: urlsuma.de crawler
@@ -5821,6 +5923,12 @@ Disallow: /
 # https://knownagents.com/agents/websauger
 
 User-agent: WebSauger
+Disallow: /
+
+# Uncategorized
+# https://knownagents.com/agents/websearch-bot
+
+User-agent: websearch-bot
 Disallow: /
 
 # Uncategorized
