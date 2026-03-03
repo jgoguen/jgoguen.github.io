@@ -322,6 +322,12 @@ User-agent: Amazing-SearchBot
 Disallow: /
 
 # Intelligence Gatherer
+# https://knownagents.com/agents/amazingtest-searchbot
+
+User-agent: AmazingTest-SearchBot
+Disallow: /
+
+# Intelligence Gatherer
 # https://knownagents.com/agents/amazon-adbot
 
 User-agent: Amazon AdBot
@@ -982,6 +988,12 @@ User-agent: CentComBot
 Disallow: /
 
 # Uncategorized
+# https://knownagents.com/agents/centro-ads-txt-crawler
+
+User-agent: Centro Ads.txt Crawler
+Disallow: /
+
+# Uncategorized
 # https://knownagents.com/agents/centurybot
 
 User-agent: Centurybot
@@ -1297,6 +1309,12 @@ Disallow: /
 # https://knownagents.com/agents/content-crawler-spider
 
 User-agent: content crawler spider
+Disallow: /
+
+# Uncategorized
+# https://knownagents.com/agents/contentanalyzer
+
+User-agent: ContentAnalyzer
 Disallow: /
 
 # SEO Crawler
@@ -2260,6 +2278,12 @@ User-agent: GenomeCrawlerd
 Disallow: /
 
 # Uncategorized
+# https://knownagents.com/agents/germcrawler
+
+User-agent: GermCrawler
+Disallow: /
+
+# Uncategorized
 # https://knownagents.com/agents/getright
 
 User-agent: GetRight
@@ -2833,6 +2857,12 @@ Disallow: /
 # https://knownagents.com/agents/jobboersebot
 
 User-agent: JobboerseBot
+Disallow: /
+
+# Uncategorized
+# https://knownagents.com/agents/jobhuntbot
+
+User-agent: JobHuntBot
 Disallow: /
 
 # Uncategorized
@@ -3753,6 +3783,12 @@ Disallow: /
 User-agent: NetResearchServer
 Disallow: /
 
+# Uncategorized
+# https://knownagents.com/agents/netscope-domainscanner
+
+User-agent: NetScope-DomainScanner
+Disallow: /
+
 # Intelligence Gatherer
 # https://knownagents.com/agents/netseer-crawler
 
@@ -4288,6 +4324,12 @@ User-agent: productsup.io/crawler
 Disallow: /
 
 # Uncategorized
+# https://knownagents.com/agents/promptingbot
+
+User-agent: PromptingBot
+Disallow: /
+
+# Uncategorized
 # https://knownagents.com/agents/propowerbot
 
 User-agent: ProPowerBot
@@ -4549,6 +4591,12 @@ Disallow: /
 # https://knownagents.com/agents/s4a
 
 User-agent: s4a
+Disallow: /
+
+# Uncategorized
+# https://knownagents.com/agents/saasbrowserbot
+
+User-agent: SaaSBrowserBot
 Disallow: /
 
 # Uncategorized
@@ -4870,6 +4918,12 @@ User-agent: Sidetrade indexer bot
 Disallow: /
 
 # Uncategorized
+# https://knownagents.com/agents/simpleasyncpagecrawler
+
+User-agent: SimpleAsyncPageCrawler
+Disallow: /
+
+# Uncategorized
 # https://knownagents.com/agents/simplecrawler
 
 User-agent: simplecrawler
@@ -4999,6 +5053,12 @@ Disallow: /
 # https://knownagents.com/agents/slaccalebot
 
 User-agent: SlaccaleBot
+Disallow: /
+
+# Uncategorized
+# https://knownagents.com/agents/sleepbot
+
+User-agent: SleepBot
 Disallow: /
 
 # Uncategorized
@@ -5365,6 +5425,12 @@ Disallow: /
 # https://knownagents.com/agents/thinkbot
 
 User-agent: Thinkbot
+Disallow: /
+
+# Uncategorized
+# https://knownagents.com/agents/thinkers-bot
+
+User-agent: thinkers-bot
 Disallow: /
 
 # Uncategorized
@@ -5743,6 +5809,12 @@ Disallow: /
 # https://knownagents.com/agents/vkrobot
 
 User-agent: VKRobot
+Disallow: /
+
+# Uncategorized
+# https://knownagents.com/agents/vmcrawl
+
+User-agent: vmcrawl
 Disallow: /
 
 # Uncategorized
