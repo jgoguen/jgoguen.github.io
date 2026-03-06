@@ -411,6 +411,18 @@ Disallow: /
 User-agent: Apercite
 Disallow: /
 
+# Undocumented AI Agent
+# https://knownagents.com/agents/apifybot
+
+User-agent: ApifyBot
+Disallow: /
+
+# AI Data Scraper
+# https://knownagents.com/agents/apifywebsitecontentcrawler
+
+User-agent: ApifyWebsiteContentCrawler
+Disallow: /
+
 # Uncategorized
 # https://knownagents.com/agents/appinsights
 
@@ -1923,10 +1935,10 @@ Disallow: /
 User-agent: EveryoneSocialBot
 Disallow: /
 
-# Uncategorized
+# AI Search Crawler
 # https://knownagents.com/agents/exabot
 
-User-agent: Exabot
+User-agent: ExaBot
 Disallow: /
 
 # Uncategorized
@@ -2149,6 +2161,12 @@ Disallow: /
 # https://knownagents.com/agents/fiperbot
 
 User-agent: fiperbot
+Disallow: /
+
+# AI Data Scraper
+# https://knownagents.com/agents/firecrawlagent
+
+User-agent: FirecrawlAgent
 Disallow: /
 
 # Uncategorized
@@ -5367,7 +5385,7 @@ Disallow: /
 User-agent: TaraGroup Intelligent Bot
 Disallow: /
 
-# AI Assistant
+# Undocumented AI Agent
 # https://knownagents.com/agents/tavilybot
 
 User-agent: TavilyBot
