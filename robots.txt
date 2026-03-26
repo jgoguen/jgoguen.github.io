@@ -2415,6 +2415,12 @@ Disallow: /
 User-agent: Google-Adwords-Instant
 Disallow: /
 
+# AI Agent
+# https://knownagents.com/agents/google-agent
+
+User-agent: Google-Agent
+Disallow: /
+
 # Uncategorized
 # https://knownagents.com/agents/google-calendar-importer
 
