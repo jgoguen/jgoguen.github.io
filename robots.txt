@@ -417,18 +417,6 @@ Disallow: /
 User-agent: Apercite
 Disallow: /
 
-# Undocumented AI Agent
-# https://knownagents.com/agents/apifybot
-
-User-agent: ApifyBot
-Disallow: /
-
-# AI Data Scraper
-# https://knownagents.com/agents/apifywebsitecontentcrawler
-
-User-agent: ApifyWebsiteContentCrawler
-Disallow: /
-
 # Uncategorized
 # https://knownagents.com/agents/appinsights
 
@@ -847,18 +835,6 @@ Disallow: /
 # https://knownagents.com/agents/brandverity
 
 User-agent: BrandVerity
-Disallow: /
-
-# AI Search Crawler
-# https://knownagents.com/agents/bravebot
-
-User-agent: Bravebot
-Disallow: /
-
-# Uncategorized
-# https://knownagents.com/agents/brightbot
-
-User-agent: Brightbot
 Disallow: /
 
 # Intelligence Gatherer
@@ -1665,18 +1641,6 @@ Disallow: /
 User-agent: DeuSu
 Disallow: /
 
-# AI Assistant
-# https://knownagents.com/agents/devin
-
-User-agent: Devin
-Disallow: /
-
-# AI Data Scraper
-# https://knownagents.com/agents/diffbot
-
-User-agent: Diffbot
-Disallow: /
-
 # Uncategorized
 # https://knownagents.com/agents/digg-deeper
 
@@ -1977,12 +1941,6 @@ Disallow: /
 User-agent: EveryoneSocialBot
 Disallow: /
 
-# AI Search Crawler
-# https://knownagents.com/agents/exabot
-
-User-agent: ExaBot
-Disallow: /
-
 # Uncategorized
 # https://knownagents.com/agents/experibot
 
@@ -2203,12 +2161,6 @@ Disallow: /
 # https://knownagents.com/agents/fiperbot
 
 User-agent: fiperbot
-Disallow: /
-
-# AI Data Scraper
-# https://knownagents.com/agents/firecrawlagent
-
-User-agent: FirecrawlAgent
 Disallow: /
 
 # Uncategorized
@@ -5020,12 +4972,6 @@ User-agent: ServerHunterSpider
 Disallow: /
 
 # Uncategorized
-# https://knownagents.com/agents/shapbot
-
-User-agent: ShapBot
-Disallow: /
-
-# Uncategorized
 # https://knownagents.com/agents/shellbot
 
 User-agent: ShellBot
@@ -5509,12 +5455,6 @@ Disallow: /
 # https://knownagents.com/agents/taragroup-intelligent-bot
 
 User-agent: TaraGroup Intelligent Bot
-Disallow: /
-
-# Undocumented AI Agent
-# https://knownagents.com/agents/tavilybot
-
-User-agent: TavilyBot
 Disallow: /
 
 # Uncategorized
@@ -6469,12 +6409,6 @@ Disallow: /
 # https://knownagents.com/agents/yoozbot
 
 User-agent: yoozBot
-Disallow: /
-
-# AI Search Crawler
-# https://knownagents.com/agents/youbot
-
-User-agent: YouBot
 Disallow: /
 
 # Uncategorized
