@@ -219,6 +219,12 @@ Disallow: /
 User-agent: admantx
 Disallow: /
 
+# Uncategorized
+# https://knownagents.com/agents/ads-well-known-bot
+
+User-agent: ads-well-known-bot
+Disallow: /
+
 # Intelligence Gatherer
 # https://knownagents.com/agents/adsbot-google
 
@@ -337,6 +343,12 @@ Disallow: /
 # https://knownagents.com/agents/amazon-adbot
 
 User-agent: Amazon AdBot
+Disallow: /
+
+# Intelligence Gatherer
+# https://knownagents.com/agents/amazon-advertising-ad-standards-bot
+
+User-agent: Amazon-Advertising-ad-standards-bot
 Disallow: /
 
 # Intelligence Gatherer
@@ -483,6 +495,12 @@ Disallow: /
 User-agent: AspiegelBot
 Disallow: /
 
+# Intelligence Gatherer
+# https://knownagents.com/agents/assaybot
+
+User-agent: Assaybot
+Disallow: /
+
 # Uncategorized
 # https://knownagents.com/agents/asterias
 
@@ -595,6 +613,12 @@ Disallow: /
 # https://knownagents.com/agents/backdoorbot
 
 User-agent: BackDoorBot
+Disallow: /
+
+# Uncategorized
+# https://knownagents.com/agents/backlinkbot
+
+User-agent: BacklinkBot
 Disallow: /
 
 # Uncategorized
@@ -853,6 +877,12 @@ Disallow: /
 # https://knownagents.com/agents/brokenlinkcheck-com
 
 User-agent: brokenlinkcheck.com
+Disallow: /
+
+# Uncategorized
+# https://knownagents.com/agents/brokenlinksbot
+
+User-agent: BrokenLinksBot
 Disallow: /
 
 # Uncategorized
@@ -1252,6 +1282,12 @@ User-agent: cludo.com
 Disallow: /
 
 # Uncategorized
+# https://knownagents.com/agents/clueweb-crawler
+
+User-agent: ClueWeb-Crawler
+Disallow: /
+
+# Uncategorized
 # https://knownagents.com/agents/cms-checker
 
 User-agent: CMS-Checker
@@ -1411,6 +1447,12 @@ Disallow: /
 # https://knownagents.com/agents/crawl4ai
 
 User-agent: Crawl4AI
+Disallow: /
+
+# Uncategorized
+# https://knownagents.com/agents/crawlbot
+
+User-agent: CrawlBot
 Disallow: /
 
 # Uncategorized
@@ -1681,6 +1723,12 @@ Disallow: /
 # https://knownagents.com/agents/dnbcrawler-analytics
 
 User-agent: DnBCrawler-Analytics
+Disallow: /
+
+# Uncategorized
+# https://knownagents.com/agents/dnscrawler
+
+User-agent: DNSCrawler
 Disallow: /
 
 # Uncategorized
@@ -2134,6 +2182,12 @@ User-agent: FemtosearchBot
 Disallow: /
 
 # Uncategorized
+# https://knownagents.com/agents/fetch-nodeinfo-bot
+
+User-agent: fetch-nodeinfo-bot
+Disallow: /
+
+# Uncategorized
 # https://knownagents.com/agents/fever
 
 User-agent: Fever
@@ -2566,12 +2620,6 @@ User-agent: HelloworkJobPostingBot
 Disallow: /
 
 # Uncategorized
-# https://knownagents.com/agents/henkbot
-
-User-agent: HenkBot
-Disallow: /
-
-# Uncategorized
 # https://knownagents.com/agents/hetrixtools-uptime-monitoring-bot
 
 User-agent: HetrixTools Uptime Monitoring Bot
@@ -2605,6 +2653,12 @@ Disallow: /
 # https://knownagents.com/agents/httrack-3-0
 
 User-agent: HTTrack 3.0
+Disallow: /
+
+# Uncategorized
+# https://knownagents.com/agents/hubseedsbot
+
+User-agent: HubSeedsBot
 Disallow: /
 
 # Intelligence Gatherer
@@ -2707,6 +2761,12 @@ Disallow: /
 # https://knownagents.com/agents/imagespider
 
 User-agent: imageSpider
+Disallow: /
+
+# Uncategorized
+# https://knownagents.com/agents/imj-companypage-scraper
+
+User-agent: IMJ-CompanyPage-Scraper
 Disallow: /
 
 # Uncategorized
@@ -2947,6 +3007,12 @@ Disallow: /
 # https://knownagents.com/agents/kangaroo-bot
 
 User-agent: Kangaroo Bot
+Disallow: /
+
+# Intelligence Gatherer
+# https://knownagents.com/agents/kargobot
+
+User-agent: KargoBot
 Disallow: /
 
 # Intelligence Gatherer
@@ -3385,6 +3451,12 @@ Disallow: /
 # https://knownagents.com/agents/mata-hari
 
 User-agent: Mata Hari
+Disallow: /
+
+# Uncategorized
+# https://knownagents.com/agents/matchboxbot
+
+User-agent: MatchboxBot
 Disallow: /
 
 # Uncategorized
@@ -4138,6 +4210,12 @@ User-agent: Orthogaffe
 Disallow: /
 
 # Intelligence Gatherer
+# https://knownagents.com/agents/outboundbuddy-enrichment
+
+User-agent: outboundbuddy-enrichment
+Disallow: /
+
+# Intelligence Gatherer
 # https://knownagents.com/agents/outbrain
 
 User-agent: outbrain
@@ -4213,6 +4291,12 @@ Disallow: /
 # https://knownagents.com/agents/parse-ly-scraper
 
 User-agent: parse.ly scraper
+Disallow: /
+
+# Intelligence Gatherer
+# https://knownagents.com/agents/partneroptimizer-bot
+
+User-agent: PartnerOptimizer-bot
 Disallow: /
 
 # Uncategorized
@@ -4354,6 +4438,12 @@ User-agent: Primalbot
 Disallow: /
 
 # Uncategorized
+# https://knownagents.com/agents/primehealthbot
+
+User-agent: PrimeHealthBot
+Disallow: /
+
+# Uncategorized
 # https://knownagents.com/agents/privacyawarebot
 
 User-agent: PrivacyAwareBot
@@ -4455,6 +4545,12 @@ Disallow: /
 User-agent: QueryN Metasearch
 Disallow: /
 
+# Intelligence Gatherer
+# https://knownagents.com/agents/quuubot
+
+User-agent: QuuuBot
+Disallow: /
+
 # Uncategorized
 # https://knownagents.com/agents/qwam-content-intelligence
 
@@ -4537,6 +4633,12 @@ Disallow: /
 # https://knownagents.com/agents/repomonkey-bait-tackle
 
 User-agent: RepoMonkey Bait & Tackle
+Disallow: /
+
+# Uncategorized
+# https://knownagents.com/agents/research-crawler
+
+User-agent: research-crawler
 Disallow: /
 
 # Uncategorized
@@ -4666,6 +4768,12 @@ User-agent: SaaSBrowserBot
 Disallow: /
 
 # Uncategorized
+# https://knownagents.com/agents/saasworksbot
+
+User-agent: saasworksbot
+Disallow: /
+
+# Uncategorized
 # https://knownagents.com/agents/safednsbot
 
 User-agent: SafeDNSBot
@@ -4693,6 +4801,12 @@ Disallow: /
 # https://knownagents.com/agents/sbl-bot
 
 User-agent: SBL-BOT
+Disallow: /
+
+# Uncategorized
+# https://knownagents.com/agents/scaleupxq-crawler
+
+User-agent: ScaleUpXQ-Crawler
 Disallow: /
 
 # Uncategorized
@@ -4777,6 +4891,12 @@ Disallow: /
 # https://knownagents.com/agents/sebot-wa
 
 User-agent: SEBot-WA
+Disallow: /
+
+# Uncategorized
+# https://knownagents.com/agents/security-audit
+
+User-agent: Security-Audit
 Disallow: /
 
 # Uncategorized
@@ -4909,6 +5029,12 @@ Disallow: /
 # https://knownagents.com/agents/seobilitybot
 
 User-agent: SeobilityBot
+Disallow: /
+
+# Uncategorized
+# https://knownagents.com/agents/seocherrybot
+
+User-agent: SeoCherryBot
 Disallow: /
 
 # SEO Crawler
@@ -5061,6 +5187,12 @@ Disallow: /
 User-agent: siteexplorer.info
 Disallow: /
 
+# SEO Crawler
+# https://knownagents.com/agents/sitegurucrawler
+
+User-agent: SiteGuruCrawler
+Disallow: /
+
 # Uncategorized
 # https://knownagents.com/agents/siteimprove
 
@@ -5083,6 +5215,12 @@ Disallow: /
 # https://knownagents.com/agents/siteimprove-com
 
 User-agent: Siteimprove.com
+Disallow: /
+
+# SEO Crawler
+# https://knownagents.com/agents/siteliner
+
+User-agent: Siteliner
 Disallow: /
 
 # Uncategorized
@@ -5157,6 +5295,18 @@ Disallow: /
 User-agent: slurp
 Disallow: /
 
+# Uncategorized
+# https://knownagents.com/agents/smallwebindexbot
+
+User-agent: Smallwebindexbot
+Disallow: /
+
+# Uncategorized
+# https://knownagents.com/agents/smartbotcrawler
+
+User-agent: SmartBotCrawler
+Disallow: /
+
 # Intelligence Gatherer
 # https://knownagents.com/agents/smartologybot
 
@@ -5167,6 +5317,12 @@ Disallow: /
 # https://knownagents.com/agents/smtbot
 
 User-agent: SMTBot
+Disallow: /
+
+# Uncategorized
+# https://knownagents.com/agents/socialbeeagent
+
+User-agent: SocialBeeAgent
 Disallow: /
 
 # Uncategorized
@@ -5319,6 +5475,18 @@ Disallow: /
 User-agent: Streamline3Bot
 Disallow: /
 
+# Intelligence Gatherer
+# https://knownagents.com/agents/stripebot
+
+User-agent: Stripebot
+Disallow: /
+
+# Uncategorized
+# https://knownagents.com/agents/subspacebot
+
+User-agent: SubspaceBot
+Disallow: /
+
 # Uncategorized
 # https://knownagents.com/agents/sucuri-integrity-monitor
 
@@ -5365,6 +5533,12 @@ Disallow: /
 # https://knownagents.com/agents/superpagesbot2-0
 
 User-agent: superpagesbot2.0
+Disallow: /
+
+# Uncategorized
+# https://knownagents.com/agents/surlibot
+
+User-agent: SurliBot
 Disallow: /
 
 # Uncategorized
@@ -5481,12 +5655,6 @@ Disallow: /
 User-agent: Termly
 Disallow: /
 
-# Undocumented AI Agent
-# https://knownagents.com/agents/terracotta
-
-User-agent: TerraCotta
-Disallow: /
-
 # Uncategorized
 # https://knownagents.com/agents/the-intraformant
 
@@ -5542,6 +5710,12 @@ User-agent: Titan
 Disallow: /
 
 # Uncategorized
+# https://knownagents.com/agents/tldwpbot
+
+User-agent: TLDWPBot
+Disallow: /
+
+# Uncategorized
 # https://knownagents.com/agents/tls-tester
 
 User-agent: TLS tester
@@ -5557,6 +5731,12 @@ Disallow: /
 # https://knownagents.com/agents/tombapublicwebcrawler
 
 User-agent: TombaPublicWebCrawler
+Disallow: /
+
+# Uncategorized
+# https://knownagents.com/agents/topifybot
+
+User-agent: TopifyBot
 Disallow: /
 
 # Uncategorized
@@ -5743,6 +5923,12 @@ Disallow: /
 # https://knownagents.com/agents/um-ln
 
 User-agent: um-LN
+Disallow: /
+
+# Uncategorized
+# https://knownagents.com/agents/umichsearchenginecrawler
+
+User-agent: UMichSearchEngineCrawler
 Disallow: /
 
 # Uncategorized
@@ -6082,6 +6268,12 @@ User-agent: WebSauger
 Disallow: /
 
 # Uncategorized
+# https://knownagents.com/agents/webscraperbot
+
+User-agent: WebScraperBot
+Disallow: /
+
+# Uncategorized
 # https://knownagents.com/agents/websearch-bot
 
 User-agent: websearch-bot
@@ -6109,6 +6301,12 @@ Disallow: /
 # https://knownagents.com/agents/webstripper
 
 User-agent: WebStripper
+Disallow: /
+
+# Intelligence Gatherer
+# https://knownagents.com/agents/webtrackrcrawler
+
+User-agent: WebTrackrCrawler
 Disallow: /
 
 # Intelligence Gatherer
