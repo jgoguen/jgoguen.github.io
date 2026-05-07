@@ -4089,6 +4089,12 @@ Disallow: /
 User-agent: nyt_scraping
 Disallow: /
 
+# Intelligence Gatherer
+# https://knownagents.com/agents/oai-adsbot
+
+User-agent: OAI-AdsBot
+Disallow: /
+
 # AI Search Crawler
 # https://knownagents.com/agents/oai-searchbot
 
