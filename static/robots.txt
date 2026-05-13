@@ -6657,6 +6657,12 @@ Disallow: /
 User-agent: zenback bot
 Disallow: /
 
+# Undocumented AI Agent
+# https://knownagents.com/agents/zenphonybot
+
+User-agent: ZenphonyBot
+Disallow: /
+
 # Uncategorized
 # https://knownagents.com/agents/zeus
 
