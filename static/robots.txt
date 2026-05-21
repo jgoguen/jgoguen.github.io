@@ -5103,6 +5103,12 @@ Disallow: /
 User-agent: ServerHunterSpider
 Disallow: /
 
+# AI Assistant
+# https://knownagents.com/agents/shap-user
+
+User-agent: Shap-User
+Disallow: /
+
 # Uncategorized
 # https://knownagents.com/agents/shellbot
 
