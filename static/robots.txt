@@ -291,6 +291,12 @@ Disallow: /
 User-agent: AhrefsSiteAudit
 Disallow: /
 
+# AI Data Scraper
+# https://knownagents.com/agents/ai2bot
+
+User-agent: AI2Bot
+Disallow: /
+
 # AI Assistant
 # https://knownagents.com/agents/ai2bot-deepresearcheval
 
@@ -3573,6 +3579,12 @@ Disallow: /
 User-agent: MakeMerryBot
 Disallow: /
 
+# Intelligence Gatherer
+# https://knownagents.com/agents/mantisbot
+
+User-agent: Mantisbot
+Disallow: /
+
 # AI Agent
 # https://knownagents.com/agents/manus-user
 
@@ -5925,7 +5937,7 @@ Disallow: /
 User-agent: theoldreader.com
 Disallow: /
 
-# Uncategorized
+# Scraper
 # https://knownagents.com/agents/thinkbot
 
 User-agent: Thinkbot
