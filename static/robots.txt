@@ -369,6 +369,18 @@ Disallow: /
 User-agent: Amazon-Advertising-ad-standards-bot
 Disallow: /
 
+# AI Search Crawler
+# https://knownagents.com/agents/amazon-kendra
+
+User-agent: amazon-kendra
+Disallow: /
+
+# AI Assistant
+# https://knownagents.com/agents/amazon-qbusiness
+
+User-agent: amazon-QBusiness
+Disallow: /
+
 # Intelligence Gatherer
 # https://knownagents.com/agents/amazonadbot
 
@@ -1731,7 +1743,7 @@ Disallow: /
 User-agent: deepnoc
 Disallow: /
 
-# Undocumented AI Agent
+# AI Data Scraper
 # https://knownagents.com/agents/deepseekbot
 
 User-agent: DeepSeekBot
@@ -1849,6 +1861,12 @@ Disallow: /
 # https://knownagents.com/agents/dotbot
 
 User-agent: DotBot
+Disallow: /
+
+# AI Data Scraper
+# https://knownagents.com/agents/doubaobot
+
+User-agent: Doubaobot
 Disallow: /
 
 # Uncategorized
@@ -2023,6 +2041,12 @@ Disallow: /
 # https://knownagents.com/agents/erisbot
 
 User-agent: ErisBot
+Disallow: /
+
+# AI Data Scraper
+# https://knownagents.com/agents/erniebot
+
+User-agent: ERNIEBot
 Disallow: /
 
 # Uncategorized
@@ -3195,6 +3219,12 @@ Disallow: /
 User-agent: KimiBot
 Disallow: /
 
+# AI Data Scraper
+# https://knownagents.com/agents/kimicrawler
+
+User-agent: KimiCrawler
+Disallow: /
+
 # Intelligence Gatherer
 # https://knownagents.com/agents/klaviyo
 
@@ -3789,6 +3819,12 @@ Disallow: /
 User-agent: MgidBot
 Disallow: /
 
+# AI Data Scraper
+# https://knownagents.com/agents/micro-crawl
+
+User-agent: micro-crawl
+Disallow: /
+
 # Uncategorized
 # https://knownagents.com/agents/miixpc
 
@@ -3925,6 +3961,18 @@ Disallow: /
 # https://knownagents.com/agents/moodlebot
 
 User-agent: MoodleBot
+Disallow: /
+
+# AI Data Scraper
+# https://knownagents.com/agents/moonshotbot
+
+User-agent: MoonshotBot
+Disallow: /
+
+# AI Data Scraper
+# https://knownagents.com/agents/moonspider
+
+User-agent: MoonSpider
 Disallow: /
 
 # Uncategorized
@@ -4761,6 +4809,12 @@ Disallow: /
 User-agent: Qwarrybot
 Disallow: /
 
+# AI Data Scraper
+# https://knownagents.com/agents/qwenbot
+
+User-agent: QwenBot
+Disallow: /
+
 # Uncategorized
 # https://knownagents.com/agents/radiation-retriever-1-1
 
@@ -5005,6 +5059,12 @@ Disallow: /
 # https://knownagents.com/agents/safesearch-microdata-crawler
 
 User-agent: SafeSearch microdata crawler
+Disallow: /
+
+# AI Data Scraper
+# https://knownagents.com/agents/salamandravlm
+
+User-agent: SalamandraVLM
 Disallow: /
 
 # Intelligence Gatherer
@@ -5997,6 +6057,12 @@ Disallow: /
 User-agent: TombaPublicWebCrawler
 Disallow: /
 
+# AI Assistant
+# https://knownagents.com/agents/tongyibot
+
+User-agent: TongyiBot
+Disallow: /
+
 # Uncategorized
 # https://knownagents.com/agents/topifybot
 
@@ -6901,6 +6967,12 @@ Disallow: /
 # https://knownagents.com/agents/yextbot
 
 User-agent: YextBot
+Disallow: /
+
+# AI Assistant
+# https://knownagents.com/agents/yiyanbot
+
+User-agent: YiyanBot
 Disallow: /
 
 # Uncategorized
