@@ -717,6 +717,12 @@ Disallow: /
 User-agent: BDCbot
 Disallow: /
 
+# AI Data Scraper
+# https://knownagents.com/agents/bedrockbot
+
+User-agent: bedrockbot
+Disallow: /
+
 # Uncategorized
 # https://knownagents.com/agents/behloolbot
 
@@ -6931,6 +6937,18 @@ Disallow: /
 # https://knownagents.com/agents/yak
 
 User-agent: YaK
+Disallow: /
+
+# AI Search Crawler
+# https://knownagents.com/agents/yandexadditional
+
+User-agent: YandexAdditional
+Disallow: /
+
+# AI Search Crawler
+# https://knownagents.com/agents/yandexadditionalbot
+
+User-agent: YandexAdditionalBot
 Disallow: /
 
 # Uncategorized
