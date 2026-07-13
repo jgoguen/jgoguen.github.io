@@ -8,10 +8,10 @@ I live in the United States where I'm employed as a Site Reliability Engineer wi
 MongoDB.
 
 As a software developer, I am familiar with shell scripting, Python 3, and
-Golang. I can also work with C, Java, or Perl, and I can learn new languages as
-needed. Having a strong information security background allows me to identify
-potential security vulnerabilities and help teams solve the overall security
-issues they face in a consistent and reusable way.
+Golang. I can also learn new languages as needed. Having a strong information
+security background allows me to identify potential security vulnerabilities and
+help teams solve the overall security issues they face in a consistent and reusable
+way.
 
 Having a strong generalist background in both system administration and
 information security helps to keep systems I manage updated with security
