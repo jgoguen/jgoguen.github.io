@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Heap Overrun</title><link>https://jgoguen.ca/</link><description>Recent content on Heap Overrun</description><generator>Hugo</generator><language>en-ca</language><lastBuildDate>Mon, 13 Jul 2026 12:13:33 -0400</lastBuildDate><atom:link href="https://jgoguen.ca/index.xml" rel="self" type="application/rss+xml"/><item><title>OpenBSD DNS Server with Unbound and Statistics</title><link>https://jgoguen.ca/posts/2024/07/20/openbsd-dns-server-with-unbound-and-statistics/</link><pubDate>Sat, 20 Jul 2024 00:00:00 +0000</pubDate><guid>https://jgoguen.ca/posts/2024/07/20/openbsd-dns-server-with-unbound-and-statistics/</guid><description>&lt;h2 id="dns-servers"&gt;
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Heap Overrun</title><link>https://jgoguen.ca/</link><description>Recent content on Heap Overrun</description><generator>Hugo</generator><language>en-ca</language><lastBuildDate>Mon, 13 Jul 2026 12:18:22 -0400</lastBuildDate><atom:link href="https://jgoguen.ca/index.xml" rel="self" type="application/rss+xml"/><item><title>OpenBSD DNS Server with Unbound and Statistics</title><link>https://jgoguen.ca/posts/2024/07/20/openbsd-dns-server-with-unbound-and-statistics/</link><pubDate>Sat, 20 Jul 2024 00:00:00 +0000</pubDate><guid>https://jgoguen.ca/posts/2024/07/20/openbsd-dns-server-with-unbound-and-statistics/</guid><description>&lt;h2 id="dns-servers"&gt;
  DNS Servers
  &lt;a class="heading-link" href="#dns-servers"&gt;
  &lt;i class="fa-solid fa-link" aria-hidden="true" title="Link to heading"&gt;&lt;/i&gt;
@@ -55,10 +55,10 @@ the end-user experience.&lt;/p&gt;
 &lt;p&gt;I live in the United States where I&amp;rsquo;m employed as a Site Reliability Engineer with
 MongoDB.&lt;/p&gt;
 &lt;p&gt;As a software developer, I am familiar with shell scripting, Python 3, and
-Golang. I can also work with C, Java, or Perl, and I can learn new languages as
-needed. Having a strong information security background allows me to identify
-potential security vulnerabilities and help teams solve the overall security
-issues they face in a consistent and reusable way.&lt;/p&gt;</description></item><item><title/><link>https://jgoguen.ca/_includes/_about/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://jgoguen.ca/_includes/_about/</guid><description>&lt;p&gt;I am an InfoSec generalist, software developer, and system administrator for
+Golang. I can also learn new languages as needed. Having a strong information
+security background allows me to identify potential security vulnerabilities and
+help teams solve the overall security issues they face in a consistent and reusable
+way.&lt;/p&gt;</description></item><item><title/><link>https://jgoguen.ca/_includes/_about/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://jgoguen.ca/_includes/_about/</guid><description>&lt;p&gt;I am an InfoSec generalist, software developer, and system administrator for
 CentOS and OpenBSD servers. I have a strong track record of effectively applying
 established standards and best practices to my work. I take pride in delivering
 high-quality results and consistently improving both back-end infrastructure and
@@ -66,10 +66,10 @@ the end-user experience.&lt;/p&gt;
 &lt;p&gt;I live in the United States where I&amp;rsquo;m employed as a Site Reliability Engineer with
 MongoDB.&lt;/p&gt;
 &lt;p&gt;As a software developer, I am familiar with shell scripting, Python 3, and
-Golang. I can also work with C, Java, or Perl, and I can learn new languages as
-needed. Having a strong information security background allows me to identify
-potential security vulnerabilities and help teams solve the overall security
-issues they face in a consistent and reusable way.&lt;/p&gt;</description></item><item><title>Contact Me for Work</title><link>https://jgoguen.ca/contact/careers/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://jgoguen.ca/contact/careers/</guid><description>&lt;h1 id="summary"&gt;
+Golang. I can also learn new languages as needed. Having a strong information
+security background allows me to identify potential security vulnerabilities and
+help teams solve the overall security issues they face in a consistent and reusable
+way.&lt;/p&gt;</description></item><item><title>Contact Me for Work</title><link>https://jgoguen.ca/contact/careers/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://jgoguen.ca/contact/careers/</guid><description>&lt;h1 id="summary"&gt;
  Summary
  &lt;a class="heading-link" href="#summary"&gt;
  &lt;i class="fa-solid fa-link" aria-hidden="true" title="Link to heading"&gt;&lt;/i&gt;
