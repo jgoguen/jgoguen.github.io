@@ -6279,6 +6279,24 @@ Disallow: /
 User-agent: UMichSearchEngineCrawler
 Disallow: /
 
+# Intelligence Gatherer
+# https://knownagents.com/agents/upcontent
+
+User-agent: UpContent
+Disallow: /
+
+# Intelligence Gatherer
+# https://knownagents.com/agents/upcontent-qa
+
+User-agent: UpContent-QA
+Disallow: /
+
+# Intelligence Gatherer
+# https://knownagents.com/agents/upcontent-test
+
+User-agent: UpContent-Test
+Disallow: /
+
 # Uncategorized
 # https://knownagents.com/agents/updownerbot
 
