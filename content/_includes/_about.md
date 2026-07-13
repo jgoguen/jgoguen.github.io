@@ -13,8 +13,8 @@ needed. Having a strong information security background allows me to identify
 potential security vulnerabilities and help teams solve the overall security
 issues they face in a consistent and reusable way.
 
-Having a strong generalist background in both system administation and
+Having a strong generalist background in both system administration and
 information security helps to keep systems I manage updated with security
 patches and configured to be hardened against common security issues. I am also
 able to more easily work with subject-matter experts to develop plans that
-enchance both security and the end-user experience.
+enhance both security and the end-user experience.
