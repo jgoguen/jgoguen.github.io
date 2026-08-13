@@ -2097,6 +2097,12 @@ Disallow: /
 User-agent: EveryoneSocialBot
 Disallow: /
 
+# AI Search Crawler
+# https://knownagents.com/agents/exasearchbot
+
+User-agent: ExaSearchBot
+Disallow: /
+
 # Uncategorized
 # https://knownagents.com/agents/experibot
 
