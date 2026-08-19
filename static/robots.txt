@@ -1029,7 +1029,7 @@ Disallow: /
 User-agent: CapterraBot
 Disallow: /
 
-# Uncategorized
+# Intelligence Gatherer
 # https://knownagents.com/agents/captify-crawler
 
 User-agent: captify-crawler
@@ -2505,7 +2505,7 @@ Disallow: /
 User-agent: gnam gnam spider
 Disallow: /
 
-# Uncategorized
+# Intelligence Gatherer
 # https://knownagents.com/agents/gnowitnewsbot
 
 User-agent: GnowitNewsbot
@@ -4563,7 +4563,7 @@ Disallow: /
 User-agent: PDFBot
 Disallow: /
 
-# Uncategorized
+# Intelligence Gatherer
 # https://knownagents.com/agents/peer39-crawler
 
 User-agent: peer39_crawler
@@ -4657,6 +4657,12 @@ Disallow: /
 # https://knownagents.com/agents/pomothy-bot
 
 User-agent: Pomothy-Bot
+Disallow: /
+
+# Uncategorized
+# https://knownagents.com/agents/poseidon-research-crawler
+
+User-agent: Poseidon Research Crawler
 Disallow: /
 
 # Uncategorized
@@ -4891,6 +4897,12 @@ Disallow: /
 # https://knownagents.com/agents/recordedfuture-global-inventory-crawler
 
 User-agent: RecordedFuture Global Inventory Crawler
+Disallow: /
+
+# Uncategorized
+# https://knownagents.com/agents/rednote-websearch-bot
+
+User-agent: rednote-websearch-bot
 Disallow: /
 
 # Uncategorized
@@ -5439,7 +5451,7 @@ Disallow: /
 User-agent: Sindup
 Disallow: /
 
-# Uncategorized
+# Intelligence Gatherer
 # https://knownagents.com/agents/sirdatabot
 
 User-agent: SirdataBot
