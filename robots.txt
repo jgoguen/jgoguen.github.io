@@ -327,6 +327,18 @@ Disallow: /
 User-agent: AISearchBot
 Disallow: /
 
+# AI Search Crawler
+# https://knownagents.com/agents/aiwebindex
+
+User-agent: AIWebIndex
+Disallow: /
+
+# AI Search Crawler
+# https://knownagents.com/agents/aiwebindex-agent
+
+User-agent: AIWebIndex-Agent
+Disallow: /
+
 # Uncategorized
 # https://knownagents.com/agents/alexabot
 
