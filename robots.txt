@@ -4695,12 +4695,6 @@ Disallow: /
 User-agent: PR-CY.RU
 Disallow: /
 
-# SEO Crawler
-# https://knownagents.com/agents/prerender
-
-User-agent: Prerender
-Disallow: /
-
 # Uncategorized
 # https://knownagents.com/agents/priecobot
 
