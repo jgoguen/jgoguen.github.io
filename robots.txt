@@ -1707,7 +1707,13 @@ Disallow: /
 User-agent: Datanyze
 Disallow: /
 
-# Scraper
+# Intelligence Gatherer
+# https://knownagents.com/agents/dataprovider
+
+User-agent: Dataprovider
+Disallow: /
+
+# Intelligence Gatherer
 # https://knownagents.com/agents/dataprovider-com
 
 User-agent: Dataprovider.com
@@ -7027,6 +7033,12 @@ Disallow: /
 # https://knownagents.com/agents/yellowbrandprotectionbot
 
 User-agent: Yellowbrandprotectionbot
+Disallow: /
+
+# AI Search Crawler
+# https://knownagents.com/agents/yepbot
+
+User-agent: YepBot
 Disallow: /
 
 # Intelligence Gatherer
