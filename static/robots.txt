@@ -1845,6 +1845,12 @@ Disallow: /
 User-agent: DnyzBot
 Disallow: /
 
+# AI Search Crawler
+# https://knownagents.com/agents/dola-searchbot
+
+User-agent: Dola-SearchBot
+Disallow: /
+
 # Uncategorized
 # https://knownagents.com/agents/domain-re-animator-bot
 
@@ -2911,6 +2917,12 @@ Disallow: /
 # https://knownagents.com/agents/idgit
 
 User-agent: IDG/IT
+Disallow: /
+
+# Uncategorized
+# https://knownagents.com/agents/imagebot
+
+User-agent: ImageBot
 Disallow: /
 
 # Intelligence Gatherer
