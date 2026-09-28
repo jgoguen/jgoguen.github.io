@@ -3225,7 +3225,7 @@ Disallow: /
 User-agent: IDG/IT
 Disallow: /
 
-# Uncategorized
+# AI Data Scraper
 # https://knownagents.com/agents/imagebot
 
 User-agent: ImageBot
