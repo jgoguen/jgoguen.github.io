@@ -2967,6 +2967,12 @@ Disallow: /
 User-agent: Grobbot
 Disallow: /
 
+# AI Agent
+# https://knownagents.com/agents/grok-bot
+
+User-agent: Grok Bot
+Disallow: /
+
 # Undocumented AI Agent
 # https://knownagents.com/agents/grok-agent
 
@@ -3307,6 +3313,12 @@ Disallow: /
 # https://knownagents.com/agents/innguma
 
 User-agent: Innguma
+Disallow: /
+
+# AI Agent
+# https://knownagents.com/agents/instinct
+
+User-agent: Instinct
 Disallow: /
 
 # Uncategorized
@@ -4531,6 +4543,12 @@ Disallow: /
 # https://knownagents.com/agents/munifinewsbot
 
 User-agent: MunifiNewsBot
+Disallow: /
+
+# AI Agent
+# https://knownagents.com/agents/muse
+
+User-agent: Muse
 Disallow: /
 
 # Uncategorized
