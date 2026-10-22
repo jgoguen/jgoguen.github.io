@@ -2313,6 +2313,12 @@ Disallow: /
 User-agent: ExaSearchBot
 Disallow: /
 
+# AI Assistant
+# https://knownagents.com/agents/exauser
+
+User-agent: ExaUser
+Disallow: /
+
 # Uncategorized
 # https://knownagents.com/agents/experibot
 
