@@ -2055,6 +2055,12 @@ Disallow: /
 User-agent: DominicBot
 Disallow: /
 
+# AI Agent
+# https://knownagents.com/agents/dot
+
+User-agent: Dot
+Disallow: /
+
 # SEO Crawler
 # https://knownagents.com/agents/dotbot
 
@@ -3049,6 +3055,12 @@ Disallow: /
 # https://knownagents.com/agents/hanaleibot
 
 User-agent: HanaleiBot
+Disallow: /
+
+# AI Agent
+# https://knownagents.com/agents/harkbot
+
+User-agent: HarkBot
 Disallow: /
 
 # Uncategorized
