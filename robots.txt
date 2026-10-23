@@ -3405,12 +3405,6 @@ Disallow: /
 User-agent: iskanie
 Disallow: /
 
-# AI Search Crawler
-# https://knownagents.com/agents/isonsearchbot
-
-User-agent: IsonSearchBot
-Disallow: /
-
 # Uncategorized
 # https://knownagents.com/agents/israbot
 
