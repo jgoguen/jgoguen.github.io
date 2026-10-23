@@ -225,6 +225,12 @@ Disallow: /
 User-agent: AdmixerBot
 Disallow: /
 
+# Intelligence Gatherer
+# https://knownagents.com/agents/adpresearchbot
+
+User-agent: AdpResearchBot
+Disallow: /
+
 # Uncategorized
 # https://knownagents.com/agents/ads-txt-crawler
 
@@ -301,6 +307,12 @@ Disallow: /
 # https://knownagents.com/agents/agentradar-research
 
 User-agent: AgentRadar-Research
+Disallow: /
+
+# AI Agent
+# https://knownagents.com/agents/agi-agent
+
+User-agent: AGI Agent
 Disallow: /
 
 # SEO Crawler
@@ -1053,6 +1065,12 @@ Disallow: /
 User-agent: BuiltBotTough
 Disallow: /
 
+# Intelligence Gatherer
+# https://knownagents.com/agents/builtwith
+
+User-agent: BuiltWith
+Disallow: /
+
 # Uncategorized
 # https://knownagents.com/agents/bullseye
 
@@ -1129,6 +1147,12 @@ Disallow: /
 # https://knownagents.com/agents/careerbot
 
 User-agent: careerbot
+Disallow: /
+
+# AI Agent
+# https://knownagents.com/agents/cartai-agentic-commerce
+
+User-agent: CartAI Agentic Commerce
 Disallow: /
 
 # Uncategorized
@@ -1341,6 +1365,12 @@ Disallow: /
 User-agent: Clearscopebot
 Disallow: /
 
+# AI Agent
+# https://knownagents.com/agents/cledarabot
+
+User-agent: CledaraBot
+Disallow: /
+
 # Uncategorized
 # https://knownagents.com/agents/clickagy
 
@@ -1377,16 +1407,22 @@ Disallow: /
 User-agent: Cloudflare Stream Webhook
 Disallow: /
 
+# AI Search Crawler
+# https://knownagents.com/agents/cloudflare-ai-search
+
+User-agent: Cloudflare-AI-Search
+Disallow: /
+
+# AI Search Crawler
+# https://knownagents.com/agents/cloudflare-ai-search-external
+
+User-agent: Cloudflare-AI-Search-External
+Disallow: /
+
 # Uncategorized
 # https://knownagents.com/agents/cloudflare-alwaysonline
 
 User-agent: CloudFlare-AlwaysOnline
-Disallow: /
-
-# AI Search Crawler
-# https://knownagents.com/agents/cloudflare-autorag
-
-User-agent: Cloudflare-AutoRAG
 Disallow: /
 
 # Uncategorized
@@ -2617,6 +2653,12 @@ Disallow: /
 # https://knownagents.com/agents/fluid
 
 User-agent: fluid
+Disallow: /
+
+# SEO Crawler
+# https://knownagents.com/agents/flyingpress
+
+User-agent: FlyingPress
 Disallow: /
 
 # Uncategorized
@@ -5109,6 +5151,12 @@ Disallow: /
 User-agent: PavingBot
 Disallow: /
 
+# AI Agent
+# https://knownagents.com/agents/payhawk-invoice-fetching-agent
+
+User-agent: Payhawk Invoice Fetching Agent
+Disallow: /
+
 # Uncategorized
 # https://knownagents.com/agents/pdfbot
 
@@ -6525,6 +6573,12 @@ Disallow: /
 User-agent: SputnikBot
 Disallow: /
 
+# SEO Crawler
+# https://knownagents.com/agents/spyglassesbot
+
+User-agent: SpyglassesBot
+Disallow: /
+
 # Uncategorized
 # https://knownagents.com/agents/sqwatcher
 
@@ -7395,6 +7449,12 @@ Disallow: /
 User-agent: WanScannerBot
 Disallow: /
 
+# Intelligence Gatherer
+# https://knownagents.com/agents/wappalyzerbot
+
+User-agent: WappalyzerBot
+Disallow: /
+
 # Uncategorized
 # https://knownagents.com/agents/wasalive-bot
 
@@ -8035,6 +8095,12 @@ Disallow: /
 # https://knownagents.com/agents/zuperlistbot
 
 User-agent: ZuperlistBot
+Disallow: /
+
+# Intelligence Gatherer
+# https://knownagents.com/agents/zvelo
+
+User-agent: Zvelo
 Disallow: /
 
 # Uncategorized
