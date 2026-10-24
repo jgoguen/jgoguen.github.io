@@ -2223,6 +2223,18 @@ Disallow: /
 User-agent: electricmonk
 Disallow: /
 
+# AI Assistant
+# https://knownagents.com/agents/elevenlabsbot
+
+User-agent: ElevenlabsBot
+Disallow: /
+
+# AI Data Scraper
+# https://knownagents.com/agents/elevenlabscrawler
+
+User-agent: ElevenlabsCrawler
+Disallow: /
+
 # Uncategorized
 # https://knownagents.com/agents/elisabot
 
