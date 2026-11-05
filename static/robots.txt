@@ -1335,6 +1335,12 @@ Disallow: /
 User-agent: ClarityBot
 Disallow: /
 
+# AI Agent
+# https://knownagents.com/agents/claude-agent
+
+User-agent: Claude-Agent
+Disallow: /
+
 # AI Search Crawler
 # https://knownagents.com/agents/claude-searchbot
 
