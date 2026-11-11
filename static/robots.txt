@@ -258,7 +258,7 @@ Disallow: /
 # Uncategorized
 # https://knownagents.com/agents/adscanner
 
-User-agent: adscanner
+User-agent: AdScanner
 Disallow: /
 
 # Uncategorized
@@ -396,7 +396,7 @@ Disallow: /
 # Uncategorized
 # https://knownagents.com/agents/alexibot
 
-User-agent: Alexibot
+User-agent: AlexiBot
 Disallow: /
 
 # Uncategorized
@@ -499,6 +499,12 @@ Disallow: /
 # https://knownagents.com/agents/andiagent
 
 User-agent: AndiAgent
+Disallow: /
+
+# AI Search Crawler
+# https://knownagents.com/agents/andibot
+
+User-agent: AndiBot
 Disallow: /
 
 # AI Search Crawler
@@ -822,7 +828,7 @@ Disallow: /
 # Uncategorized
 # https://knownagents.com/agents/betabot
 
-User-agent: betaBot
+User-agent: BetaBot
 Disallow: /
 
 # Uncategorized
@@ -900,7 +906,7 @@ Disallow: /
 # Uncategorized
 # https://knownagents.com/agents/blekkobot
 
-User-agent: Blekkobot
+User-agent: blekkobot
 Disallow: /
 
 # SEO Crawler
@@ -996,7 +1002,7 @@ Disallow: /
 # Uncategorized
 # https://knownagents.com/agents/brainobot
 
-User-agent: brainobot
+User-agent: BrainOBot
 Disallow: /
 
 # Uncategorized
@@ -1056,7 +1062,7 @@ Disallow: /
 # Uncategorized
 # https://knownagents.com/agents/buddybot
 
-User-agent: Buddybot
+User-agent: BuddyBot
 Disallow: /
 
 # Uncategorized
@@ -1614,7 +1620,13 @@ Disallow: /
 # SEO Crawler
 # https://knownagents.com/agents/contentking
 
-User-agent: contentking
+User-agent: ContentKing
+Disallow: /
+
+# AI Search Crawler
+# https://knownagents.com/agents/context7-crawler
+
+User-agent: Context7-Crawler
 Disallow: /
 
 # Uncategorized
@@ -1977,6 +1989,12 @@ Disallow: /
 User-agent: DeuSu
 Disallow: /
 
+# AI Assistant
+# https://knownagents.com/agents/diffbot-user
+
+User-agent: Diffbot-User
+Disallow: /
+
 # Uncategorized
 # https://knownagents.com/agents/digg-deeper
 
@@ -1993,6 +2011,12 @@ Disallow: /
 # https://knownagents.com/agents/digincore-bot
 
 User-agent: Digincore bot
+Disallow: /
+
+# AI Search Crawler
+# https://knownagents.com/agents/digitaloceangradientaicrawler
+
+User-agent: DigitalOceanGradientAICrawler
 Disallow: /
 
 # Uncategorized
@@ -2034,7 +2058,7 @@ Disallow: /
 # Uncategorized
 # https://knownagents.com/agents/dnsscanner
 
-User-agent: DNSScanner
+User-agent: DnsScanner
 Disallow: /
 
 # Uncategorized
@@ -2227,6 +2251,12 @@ Disallow: /
 # https://knownagents.com/agents/electricmonk
 
 User-agent: electricmonk
+Disallow: /
+
+# AI Search Crawler
+# https://knownagents.com/agents/element451bot
+
+User-agent: Element451Bot
 Disallow: /
 
 # AI Assistant
@@ -2472,7 +2502,7 @@ Disallow: /
 # Intelligence Gatherer
 # https://knownagents.com/agents/factset-spyderbot
 
-User-agent: factset_spyderbot
+User-agent: Factset_spyderbot
 Disallow: /
 
 # Uncategorized
@@ -2950,6 +2980,12 @@ User-agent: Google-Extended
 Disallow: /
 
 # AI Assistant
+# https://knownagents.com/agents/google-gemininotebook
+
+User-agent: Google-GeminiNotebook
+Disallow: /
+
+# AI Assistant
 # https://knownagents.com/agents/google-notebooklm
 
 User-agent: Google-NotebookLM
@@ -2991,6 +3027,18 @@ Disallow: /
 User-agent: GoogleOther
 Disallow: /
 
+# AI Data Scraper
+# https://knownagents.com/agents/googleother-image
+
+User-agent: GoogleOther-Image
+Disallow: /
+
+# AI Data Scraper
+# https://knownagents.com/agents/googleother-video
+
+User-agent: GoogleOther-Video
+Disallow: /
+
 # Uncategorized
 # https://knownagents.com/agents/goparserbot
 
@@ -3018,7 +3066,7 @@ Disallow: /
 # Uncategorized
 # https://knownagents.com/agents/grapeshot
 
-User-agent: grapeshot
+User-agent: Grapeshot
 Disallow: /
 
 # Intelligence Gatherer
@@ -3103,6 +3151,18 @@ Disallow: /
 # https://knownagents.com/agents/gwene
 
 User-agent: Gwene
+Disallow: /
+
+# AI Assistant
+# https://knownagents.com/agents/haiku-searchbot
+
+User-agent: Haiku-SearchBot
+Disallow: /
+
+# AI Search Crawler
+# https://knownagents.com/agents/haikubot
+
+User-agent: HaikuBot
 Disallow: /
 
 # Uncategorized
@@ -3486,7 +3546,7 @@ Disallow: /
 # Uncategorized
 # https://knownagents.com/agents/istellabot
 
-User-agent: istellabot
+User-agent: IstellaBot
 Disallow: /
 
 # Uncategorized
@@ -3621,6 +3681,12 @@ Disallow: /
 User-agent: KargoBot-Artemis-Mobile
 Disallow: /
 
+# AI Search Crawler
+# https://knownagents.com/agents/karlacrawler
+
+User-agent: KarlaCrawler
+Disallow: /
+
 # Uncategorized
 # https://knownagents.com/agents/kauaibot
 
@@ -3649,6 +3715,12 @@ Disallow: /
 # https://knownagents.com/agents/kenjin-spider
 
 User-agent: Kenjin Spider
+Disallow: /
+
+# AI Search Crawler
+# https://knownagents.com/agents/kernelsearchbot
+
+User-agent: KernelSearchBot
 Disallow: /
 
 # Uncategorized
@@ -3877,6 +3949,12 @@ Disallow: /
 # https://knownagents.com/agents/lightspeedsystemscrawler
 
 User-agent: LightspeedSystemsCrawler
+Disallow: /
+
+# AI Assistant
+# https://knownagents.com/agents/liner-user
+
+User-agent: Liner-User
 Disallow: /
 
 # AI Assistant
@@ -4401,6 +4479,12 @@ Disallow: /
 User-agent: minicrawler
 Disallow: /
 
+# AI Agent
+# https://knownagents.com/agents/minimax-agent
+
+User-agent: MiniMaxAgent
+Disallow: /
+
 # Uncategorized
 # https://knownagents.com/agents/minorus-fediverse-crawler
 
@@ -4429,6 +4513,12 @@ Disallow: /
 # https://knownagents.com/agents/mistralai-index
 
 User-agent: MistralAI-Index
+Disallow: /
+
+# AI Data Scraper
+# https://knownagents.com/agents/mistralai-training
+
+User-agent: MistralAI-Training
 Disallow: /
 
 # AI Assistant
@@ -4476,7 +4566,7 @@ Disallow: /
 # Uncategorized
 # https://knownagents.com/agents/moatbot
 
-User-agent: moatbot
+User-agent: MoatBot
 Disallow: /
 
 # Uncategorized
@@ -4669,6 +4759,12 @@ Disallow: /
 # https://knownagents.com/agents/naverbot
 
 User-agent: NaverBot
+Disallow: /
+
+# AI Search Crawler
+# https://knownagents.com/agents/navubot
+
+User-agent: NavuBot
 Disallow: /
 
 # Uncategorized
@@ -4987,6 +5083,12 @@ Disallow: /
 # https://knownagents.com/agents/oncrawl-mobile
 
 User-agent: OnCrawl Mobile
+Disallow: /
+
+# AI Search Crawler
+# https://knownagents.com/agents/onirococrawler
+
+User-agent: OnirocoCrawler
 Disallow: /
 
 # SEO Crawler
@@ -5403,6 +5505,12 @@ Disallow: /
 User-agent: ProPowerBot
 Disallow: /
 
+# AI Search Crawler
+# https://knownagents.com/agents/proratainc
+
+User-agent: ProRataInc
+Disallow: /
+
 # Uncategorized
 # https://knownagents.com/agents/prowebwalker
 
@@ -5448,7 +5556,7 @@ Disallow: /
 # Uncategorized
 # https://knownagents.com/agents/purebot
 
-User-agent: purebot
+User-agent: PUREBot
 Disallow: /
 
 # SEO Crawler
@@ -5610,7 +5718,7 @@ Disallow: /
 # AI Data Scraper
 # https://knownagents.com/agents/reflectionbot
 
-User-agent: ReflectionBot
+User-agent: Reflectionbot
 Disallow: /
 
 # Uncategorized
@@ -5862,7 +5970,7 @@ Disallow: /
 # Intelligence Gatherer
 # https://knownagents.com/agents/scoop-it
 
-User-agent: scoop.it
+User-agent: Scoop.it
 Disallow: /
 
 # Intelligence Gatherer
@@ -6144,7 +6252,7 @@ Disallow: /
 # Uncategorized
 # https://knownagents.com/agents/seolyt
 
-User-agent: SeoLyt
+User-agent: seoLyt
 Disallow: /
 
 # Uncategorized
@@ -6246,7 +6354,7 @@ Disallow: /
 # Uncategorized
 # https://knownagents.com/agents/sistrix-crawler
 
-User-agent: sistrix crawler
+User-agent: SISTRIX Crawler
 Disallow: /
 
 # Uncategorized
@@ -6534,7 +6642,7 @@ Disallow: /
 # Uncategorized
 # https://knownagents.com/agents/spanner
 
-User-agent: spanner
+User-agent: Spanner
 Disallow: /
 
 # Uncategorized
@@ -7266,7 +7374,7 @@ Disallow: /
 # Uncategorized
 # https://knownagents.com/agents/urlsuma-de-crawler
 
-User-agent: urlsuma.de crawler
+User-agent: UrlSuMa.de crawler
 Disallow: /
 
 # Uncategorized
@@ -7482,7 +7590,7 @@ Disallow: /
 # Uncategorized
 # https://knownagents.com/agents/wbsearchbot
 
-User-agent: wbsearchbot
+User-agent: WBSearchBot
 Disallow: /
 
 # Uncategorized
@@ -7758,7 +7866,7 @@ Disallow: /
 # Uncategorized
 # https://knownagents.com/agents/wotbox
 
-User-agent: wotbox
+User-agent: Wotbox
 Disallow: /
 
 # Uncategorized
@@ -7890,7 +7998,7 @@ Disallow: /
 # Uncategorized
 # https://knownagents.com/agents/xovibot
 
-User-agent: xovibot
+User-agent: XoviBot
 Disallow: /
 
 # SEO Crawler
@@ -7980,7 +8088,7 @@ Disallow: /
 # Uncategorized
 # https://knownagents.com/agents/yanga
 
-User-agent: yanga
+User-agent: Yanga
 Disallow: /
 
 # Uncategorized
@@ -8094,7 +8202,7 @@ Disallow: /
 # Uncategorized
 # https://knownagents.com/agents/zite
 
-User-agent: Zite
+User-agent: zite
 Disallow: /
 
 # SEO Crawler
