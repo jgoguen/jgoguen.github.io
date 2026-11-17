@@ -5037,6 +5037,12 @@ Disallow: /
 User-agent: OAI-SearchBot
 Disallow: /
 
+# AI Search Crawler
+# https://knownagents.com/agents/octensearchbot
+
+User-agent: OctenSearchBot
+Disallow: /
+
 # Uncategorized
 # https://knownagents.com/agents/officestorebot
 
@@ -5815,6 +5821,12 @@ Disallow: /
 # https://knownagents.com/agents/riddler
 
 User-agent: Riddler
+Disallow: /
+
+# AI Data Scraper
+# https://knownagents.com/agents/riverbot
+
+User-agent: RiverBot
 Disallow: /
 
 # Uncategorized
@@ -6655,6 +6667,12 @@ Disallow: /
 # https://knownagents.com/agents/speedyindexbot
 
 User-agent: SpeedyIndexBot
+Disallow: /
+
+# AI Data Scraper
+# https://knownagents.com/agents/speridlabsresearchcrawler
+
+User-agent: SperidLabsResearchCrawler
 Disallow: /
 
 # Intelligence Gatherer
